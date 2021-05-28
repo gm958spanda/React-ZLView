@@ -1,0 +1,4 @@
+
+.zl-invisible-scrollbar::-webkit-scrollbar {
+    display: none;
+}
