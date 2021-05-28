@@ -8,16 +8,17 @@
         ],
         "strict": true,
         "allowSyntheticDefaultImports": true,
-        "module": "amd",
+        "module": "esnext",
         "moduleResolution": "node",
         "declaration": true,
         "declarationMap": true,
         "outDir": "./dist",
-        "outFile": "./dist/zlkit.js",
+        // "outFile": "./dist/rect-zlview.js",
         "composite": true
     },
     "include": [
-        "sugar",
-        "zlview"
-    ]
+        "sugar/",
+        "zlview/", 
+        "index.ts" 
+    ],
 }

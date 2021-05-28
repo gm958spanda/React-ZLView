@@ -1,18 +1,24 @@
 {
   "name": "react-zlview",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "ZLView base react , super and sub , coordinate by x-y-width-height；基于react的视图，使用x-y-width-height坐标系",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
   "author": "zxs.zl",
   "license": "MIT",
+  "repository": {
+      "type": "git",
+      "url": "https://github.com/gm958spanda/React-ZLView.git"
+  },
   "devDependencies": {
     "typescript": "^4.3.2"
   },
+  "main": "index.js",
+  "types": "index.d.ts",
   "files": [
-      "sugar/",
-      "zlview/"
-  ]
+    "index.js",
+    "sugar/",
+    "zlview/"
+  ],
+  "scripts": {
+    "build": "tsc && cp package.json ./dist/ && cp ./zlview/ZLCSS.css ./dist/zlview"
+  },
 }

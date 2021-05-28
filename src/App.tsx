@@ -1,18 +1,15 @@
 import React from 'react';
 import './App.css';
-import { ZLView } from "./zlkit/zlview/ZLView"
-import { ZLScrollView } from "./zlkit/zlview/ZLScrollView"
-import { ZLLabel } from "./zlkit/zlview/ZLLabel"
-import { ZLTextAlignMode } from './zlkit/zlview/ZLUIDef';
+import * as zl from  "./zlkit/index"
 
 class App extends React.Component
 {
-    private appView : ZLView | undefined;
+    private appView : zl.View | undefined;
     render()
     {
         if(this.appView === undefined)
         {
-            this.appView = new ZLView();
+            this.appView = new zl.View();
             this.appView.x = 200;
             this.appView.y = 100;
             this.appView.width = 300;
@@ -20,7 +17,7 @@ class App extends React.Component
             this.appView.backgroudColor = "white";
 
             
-            let scrollView = new ZLScrollView();
+            let scrollView = new zl.ScrollView();
             this.appView.addSubview(scrollView);
             
             scrollView.width = 200;
@@ -32,10 +29,10 @@ class App extends React.Component
             
             for (let i = 0 ; i < 15 ; i++)
             {
-                let lb = new ZLLabel()
+                let lb = new zl.Label()
                 lb.clipToBounds = true;
                 lb.text = "hello world " + i.toString();
-                lb.textAlign = ZLTextAlignMode.Right;
+                lb.textAlign = zl.TextAlignMode.Right;
                 lb.width = 200;
                 lb.height = 30;
                 lb.x = 0;
