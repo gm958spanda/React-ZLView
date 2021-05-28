@@ -254,6 +254,11 @@ export class ZLHtmlAttribute
     event : React.DOMAttributes<HTMLElement>;
 
     /**
+     * src 属性
+     */
+    src : string | undefined;
+
+    /**
      * reactRef 接收
      */
     ref : undefined | ((ref:Element)=>void) ;
@@ -263,6 +268,9 @@ export class ZLHtmlAttribute
         let attr :any  = {style : this.style};
         if (this.className !== undefined && this.className.length > 0 ) {
             attr.className = this.className;
+        }
+        if (this.src !== undefined ) {
+            attr.src = this.src;
         }
         Object.assign(attr,this.event);
         if(this.ref !== undefined) {

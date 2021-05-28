@@ -24,7 +24,7 @@ export class ZLImageView extends ZLView
     {
         let attr = super.__htmlAttributes__()
         if (this.src !== undefined){
-            (attr as any).src = this.src;
+            attr.src = this.src;
         }
         return attr;
     }
