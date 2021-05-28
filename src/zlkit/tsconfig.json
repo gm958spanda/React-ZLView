@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "strict": true,
+        "allowSyntheticDefaultImports": true,
+        "module": "amd",
+        "moduleResolution": "node",
+        "declaration": true,
+        "declarationMap": true,
+        "outDir": "./dist",
+        "outFile": "./dist/zlkit.js",
+        "composite": true
+    },
+    "include": [
+        "sugar",
+        "zlview"
+    ]
+}

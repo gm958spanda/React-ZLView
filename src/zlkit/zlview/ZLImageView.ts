@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ZLView}  from './ZLView'
+import {ZLHtmlAttribute, ZLView}  from './ZLView'
 
 
 export class ZLImageView extends ZLView
@@ -20,7 +20,7 @@ export class ZLImageView extends ZLView
         return React.createElement("img",attr.toReactClassAttributes());
     }
 
-    protected __htmlAttributes__()
+    protected __htmlAttributes__() : ZLHtmlAttribute
     {
         let attr = super.__htmlAttributes__()
         if (this.src !== undefined){

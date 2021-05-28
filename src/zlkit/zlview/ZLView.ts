@@ -232,7 +232,7 @@ export class ZLView
 }
 
 
-class ZLHtmlAttribute
+export class ZLHtmlAttribute
 {
     constructor() {
         this.style = {} as any;

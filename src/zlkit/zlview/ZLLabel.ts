@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {ZLView}  from './ZLView'
+import {ZLHtmlAttribute, ZLView}  from './ZLView'
 import {ZLSize,ZLFont, ZLWordBreakMode, ZLWorkWrapMode, ZLTextAlignMode} from './ZLUIDef'
 import {ZLUtils} from './ZLUtils'
 
@@ -46,7 +46,7 @@ export class ZLLabel extends ZLView
         return React.createElement("div",attr.toReactClassAttributes(), this.text);
     }
 
-    protected __htmlAttributes__()
+    protected __htmlAttributes__() : ZLHtmlAttribute
     {
         let attr = super.__htmlAttributes__()
         let style = attr.style;
