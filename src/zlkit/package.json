@@ -5,10 +5,13 @@
   "author": "zxs.zl",
   "license": "MIT",
   "repository": {
-      "type": "git",
-      "url": "https://github.com/gm958spanda/React-ZLView.git"
+    "type": "git",
+    "url": "https://github.com/gm958spanda/React-ZLView.git"
   },
   "devDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.2.0",
     "typescript": "^4.3.2"
   },
   "main": "index.js",
@@ -20,5 +23,5 @@
   ],
   "scripts": {
     "build": "tsc && cp package.json ./dist/ && cp ./zlview/ZLCSS.css ./dist/zlview"
-  },
+  }
 }

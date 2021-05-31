@@ -17,8 +17,8 @@
         "composite": true
     },
     "include": [
-        "sugar/",
-        "zlview/", 
+        "sugar",
+        "zlview", 
         "index.ts" 
     ],
 }

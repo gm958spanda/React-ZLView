@@ -22,7 +22,7 @@ export class ZLScrollView extends ZLView
      */
     public scrollTo(x:number,y:number)
     {
-        if(this.__html_elem__ !== undefined) {
+        if(this.__html_elem__ !== undefined && this.__html_elem__ !== null ) {
             this.__html_elem__.scrollTo(x,y);
         }
     }

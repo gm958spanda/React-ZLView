@@ -1,4 +1,3 @@
-
 export { 
     ZLView as View,
     ZLHtmlAttribute as HtmlAttribute
@@ -30,3 +29,11 @@ export {
     ZLFont as Font,
     ZLFontStyle as FontStyle,
  } from './zlview/ZLUIDef';
+
+export { 
+    ZLRouter as Router,
+} from './zlview/ZLRouter';
+
+export { 
+    ZLViewPage as ViewPage,
+} from './zlview/ZLViewPage';

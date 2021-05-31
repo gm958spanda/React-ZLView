@@ -1,6 +1,7 @@
 import React, { CSSProperties} from 'react';
 import {ZLList} from '../sugar/list'
 import {ZLPoint,ZLHref} from './ZLUIDef'
+import {ZLViewPage} from './ZLViewPage'
 
 interface  ZLViewComponentProps
 {
@@ -12,11 +13,26 @@ class ZLViewComponent extends React.Component<ZLViewComponentProps>
     {
         let v : any = this.props.view;
         v.__weak_reactComponent__ = new WeakRef(this);
+
+        let page : ZLViewPage = v.__weak_view_page__?.deref();
+        if (page !==undefined) {
+            page.viewDidMount();
+        }
+        this.props.view.viewDidMount();
     }
     componentWillUnmount()
     {
+        this.props.view.viewWillUnMount();
+
         let v : any = this.props.view;
         v.__weak_reactComponent__ = undefined;
+
+        let page : ZLViewPage = v.__weak_view_page__?.deref();
+        if (page !==undefined) {
+            page.viewWillUnMount();
+            (page as any).__weak_router__ = undefined;
+            v.__weak_view_page__ = undefined;
+        }
     }
     render()
     {
@@ -100,13 +116,20 @@ export class ZLView
     /**
      * 获取父视图
      */
-    public superView() : ZLView | undefined
+    public get superView() : ZLView | undefined { return this.__weak_superview__?.deref(); }
+    
+    /**
+     * 从父视图中移除
+     */
+    public removeFromSuperview()
     {
-        if (this.__weak_superview__?.deref()) {
-            return this.__weak_superview__.deref();
+        let s = this.superView;
+        if (s !== undefined) {
+            s.__subviews__?.remove(this);
+            this.__weak_superview__ = undefined;
         }
-        return undefined;
     }
+
     /**
      * 添加子视图
      */
@@ -115,28 +138,26 @@ export class ZLView
         if(this.__subviews__ === undefined) {
             this.__subviews__ = new ZLList();
         }
-        if (view.__weak_superview__?.deref()) {
-            view.__weak_superview__.deref()?.__subviews__?.remove(view)
-        }
+        view.removeFromSuperview();
         view.__weak_superview__ = new WeakRef(this);
         this.__subviews__.add(view);
     }
     /**
      * 子视图列表
      */
-    public subViews()
-    {
-        return this.__subviews__?.toReadOnlyList();
-    }
+    public get subViews() { return this.__subviews__?.toReadOnlyList();}
 
     /**
      * 刷新  React setState
      */
-    public refresh()
-    {
-         if(this.__weak_reactComponent__?.deref()) {
-             this.__weak_reactComponent__.deref()!.setState({});
-         }
+    public refresh(callback?:() => void) 
+    { 
+        let c = this.__weak_reactComponent__?.deref();
+        if (c) {
+            c.setState({},callback);
+        } else if (callback){
+            callback();
+        }
     }
 
     /**
@@ -156,7 +177,7 @@ export class ZLView
     /**
      * React element
      */
-    reactElement() : React.ReactElement
+    public reactElement() : React.ReactElement
     {
         return React.createElement(ZLViewComponent, {view: this});
     }
@@ -164,8 +185,13 @@ export class ZLView
     /**
      * 渲染  React render
      */
-    reactRender() : React.ReactElement
+    public reactRender() : React.ReactElement
     {
+        let page = this.__weak_view_page__?.deref();
+        if (page !== undefined) {
+            page.viewLayoutSubViews();
+        }
+        
         // html attributes
         let attr = this.__htmlAttributes__()
         if (this.__subviews__ === undefined || this.__subviews__.count() === 0)
@@ -229,6 +255,11 @@ export class ZLView
      * React 容器
      */
     private __weak_reactComponent__ : WeakRef<ZLViewComponent> | undefined;
+
+    /**
+     * page
+     */
+    private __weak_view_page__ : WeakRef<ZLViewPage> | undefined;
 }
 
 
