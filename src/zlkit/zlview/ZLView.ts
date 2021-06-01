@@ -2,6 +2,7 @@ import React, { CSSProperties} from 'react';
 import {ZLList} from '../sugar/list'
 import {ZLPoint,ZLHref, ZLCurrentSizeUnit} from './ZLUIDef'
 import {ZLViewPage} from './ZLViewPage'
+import {ZLObject} from './ZLObject'
 
 interface  ZLViewComponentProps
 {
@@ -50,10 +51,11 @@ class ZLViewComponent extends React.Component<ZLViewComponentProps>
 }
 
 
-export class ZLView
+export class ZLView extends ZLObject
 {
     constructor()
     {
+        super();
         this.width = 0;
         this.height = 0;
         this.x = 0;
@@ -179,7 +181,7 @@ export class ZLView
      */
     public reactElement() : React.ReactElement
     {
-        return React.createElement(ZLViewComponent, {view: this});
+        return React.createElement(ZLViewComponent, {view: this,key:this.uniqueId});
     }
 
     /**

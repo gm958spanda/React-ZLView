@@ -2,9 +2,10 @@ import { ZLView } from './ZLView';
 import * as History from 'history';
 import { ZLSize } from './ZLUIDef';
 import { ZLRouter } from './ZLRouter';
+import {ZLObject} from './ZLObject'
 
 export type ZLViewPageClass = new (location?: History.Location,pageSize?: ZLSize) => ZLViewPage
-export class ZLViewPage
+export class ZLViewPage extends ZLObject
 {
     /**
      * 构造函数
@@ -12,6 +13,7 @@ export class ZLViewPage
      */
     constructor(location? : History.Location, pageSize?: ZLSize)
     {
+        super();
         this.location = location;
         this.__view__ = this.loadView(pageSize);
         (this.__view__ as any).__weak_view_page__ = new WeakRef(this);

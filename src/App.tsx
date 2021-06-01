@@ -21,12 +21,12 @@ class App extends React.Component
             this.router.registRoute("/sin", SinPage);
             this.router.registRoute("/scroll", ScrollPage);
 
-            let rp = ["nomatch","scroll","/","sin"];
-            let index = 0;
-            this.timer_id = setInterval(()=>{
-                this.router?.push(rp[index%4]);
-                index++;
-            },5000);
+            // let rp = ["nomatch","scroll","/","sin"];
+            // let index = 0;
+            // this.timer_id = setInterval(()=>{
+            //     this.router?.push(rp[index%4]);
+            //     index++;
+            // },5000);
         }
         return this.router.reactElement();
     }
@@ -156,7 +156,7 @@ class ScrollPage extends ZLViewPage
         }
         this.timer_id = setInterval(()=>{
 
-            scrollView.scrollTo(0, scrollView.contentOffSetY + 2);
+            // scrollView.scrollTo(0, scrollView.contentOffSetY + 2);
             // scrollView.subViews?.getElementAt(0).removeFromSuperview();
             // scrollView.refresh();
         },100);
