@@ -77,3 +77,84 @@ class App extends React.Component
 | --------------- | -------------------------- |
 | viewDidMount    | React.componentDidMount    |
 | viewWillUnMount | React.componentWillUnmount |
+
+
+## ZLRouter路由 
+
+封装`react-router-dom`。引入页面概念`ZLViewPage`，一个路由对应一个页面，采用严格模式匹配路由的`path`
+
+```ts
+import * as zl from  "./zlkit/index"
+
+class HomePage extends zl.ViewPage
+{
+    viewDidLoad()
+    {
+        super.viewDidLoad();
+        this.view.backgroudColor = "red";
+    }
+
+    viewDidMount()
+    {
+        setTimeout(()=>{
+            this.router?.push("/other");
+        },5000);
+        console.log( this.constructor.name + " mount");
+    }
+
+    viewWillUnMount()
+    {
+        console.log( this.constructor.name + " unmount");
+    }
+}
+
+class OtherPage extends zl.ViewPage
+{
+    viewDidLoad()
+    {
+        super.viewDidLoad();
+        this.view.backgroudColor = "blue";
+    }
+
+    viewDidMount()
+    {
+        console.log( this.constructor.name + " mount");
+    }
+
+    viewWillUnMount()
+    {
+        console.log( this.constructor.name + " unmount");
+    }
+}
+
+class App extends React.Component
+{
+    private router: zl.Router | undefined;
+    render()
+    {
+        if (this.router === undefined) {
+            this.router = new zl.Router();
+            this.router.registRoute("/",HomePage);
+            this.router.registRoute("/other", OtherPage);
+        }
+        return this.router.reactElement();
+    }
+}
+ ```
+
+### 注册路由
+
+```ts
+import * as zl from  "./zlkit/index"
+
+let router = new zl.Router();
+router.registRoute("/",HomePage);
+router.registRoute("/other",OtherPage);
+```
+
+### 路由跳转
+
+```ts
+router.push("/other");
+router.replace("/");
+```
