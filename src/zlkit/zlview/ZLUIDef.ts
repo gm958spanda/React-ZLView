@@ -1,4 +1,16 @@
 
+/**
+ * 尺寸单位
+ */
+export enum ZLSizeUnit
+{
+    px = "px",
+    rem = "rem"
+};
+export let ZLCurrentSizeUnit = ZLSizeUnit.px;
+
+export let ZLCurrentSizeUnitOneRemToPx = 16;
+
 
 export class ZLPoint
 {
@@ -88,7 +100,7 @@ export class ZLFont
             cs.fontStyle = this.style;
         }
 
-        cs.fontSize = this.size.toString()+"px";
+        cs.fontSize = this.size.toString()+ZLCurrentSizeUnit;
         cs.fontFamily = this.family;
         if (this.bold !== undefined )
         {

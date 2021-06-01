@@ -1,4 +1,4 @@
-import {ZLSize,ZLFont, ZLWordBreakMode, ZLWorkWrapMode, ZLTextAlignMode} from './ZLUIDef'
+import {ZLSize,ZLFont, ZLWordBreakMode, ZLWorkWrapMode, ZLTextAlignMode, ZLCurrentSizeUnit, ZLSizeUnit, ZLCurrentSizeUnitOneRemToPx} from './ZLUIDef'
 
 export class ZLUtils
 {
@@ -26,8 +26,8 @@ export class ZLUtils
         }
 
         if(boundSize !== undefined) {
-            elem.style.maxWidth = boundSize.width.toString() + "px";
-            elem.style.maxHeight = boundSize.height.toString() + "px";
+            elem.style.maxWidth = boundSize.width.toString() + ZLSizeUnit.px;
+            elem.style.maxHeight = boundSize.height.toString() + ZLSizeUnit.px;
         } else {
             (elem.style as any).maxWidth = undefined;
             (elem.style as any).maxHeight = undefined;
@@ -63,7 +63,12 @@ export class ZLUtils
         width = parseFloat(window.getComputedStyle(elem).width) - width;
         height = parseFloat(window.getComputedStyle(elem).height) - height;
         document.body.removeChild(elem);
-        return new ZLSize(width,height);
+        if (ZLCurrentSizeUnit === ZLSizeUnit.px) {
+            return new ZLSize(width,height);
+        } else {
+            return new ZLSize(width / ZLCurrentSizeUnitOneRemToPx , height/ZLCurrentSizeUnitOneRemToPx);
+        }
+        
     }
 
     /**

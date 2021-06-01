@@ -1,6 +1,6 @@
 import React, { CSSProperties} from 'react';
 import {ZLList} from '../sugar/list'
-import {ZLPoint,ZLHref} from './ZLUIDef'
+import {ZLPoint,ZLHref, ZLCurrentSizeUnit} from './ZLUIDef'
 import {ZLViewPage} from './ZLViewPage'
 
 interface  ZLViewComponentProps
@@ -229,16 +229,16 @@ export class ZLView
             style.backgroundColor = this.backgroudColor;
         }
         if (this.width !== undefined) {
-            style.width = this.width.toString() + "px";
+            style.width = this.width.toString() + ZLCurrentSizeUnit;
         }
         if (this.height !== undefined) {
-            style.height = this.height.toString()+ "px";
+            style.height = this.height.toString()+ ZLCurrentSizeUnit;
         }
         if (this.x !== undefined) {
-            style.left = this.x.toString()+ "px";
+            style.left = this.x.toString()+ ZLCurrentSizeUnit;
         }
         if (this.y !== undefined) {
-            style.top = this.y.toString()+ "px";
+            style.top = this.y.toString()+ ZLCurrentSizeUnit;
         }
         return attr
     }
