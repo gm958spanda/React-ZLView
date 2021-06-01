@@ -2,7 +2,8 @@ import React from 'react';
 import { /*BrowserRouter,*/ HashRouter, 
     Route,
     useLocation,
-    useHistory
+    useHistory,
+    Switch
  } from 'react-router-dom'
 
 import {ZLViewPageClass} from './ZLViewPage'
@@ -34,13 +35,13 @@ class ZLRouterComponent extends React.Component<ZLRouterComponentProps>
         let child = React.createElement(ZLRouteRenderFunction,{zlrouter:this.props.zlrouter});
         let routelist : React.ReactElement[] = [];
         this.props.routeMap.forEach((v,k)=>{
-            let r = React.createElement(Route,{path:k,children:child,exact:true,key:k});
+            let r = React.createElement(Route,{path:k,exact:true,children:child,key:k});
             routelist[routelist.length] = r;
         });
         /// no match
-        routelist[routelist.length] = React.createElement(Route,{path:"*",children:child,key:"*"});
+        routelist[routelist.length] = React.createElement(Route,{children:child,key:"*"});
 
-        return React.createElement(HashRouter,null,routelist);
+        return React.createElement(HashRouter,null,React.createElement(Switch,null,routelist));
     }
 }
 function ZLRouteRenderFunction( p:any )
@@ -79,9 +80,7 @@ export class ZLRouter
         }
         this.__path_calss__ = new Map();
 
-        this.__default_pagesize = defaultPageSize ? 
-                                    defaultPageSize :
-                                     new ZLSize(window.document.body.clientWidth,window.innerHeight);
+        this.__default_pagesize = defaultPageSize ? defaultPageSize : ZLSize.getWindowContentSize();
     }
     /**
      * 路由匹配的根路径

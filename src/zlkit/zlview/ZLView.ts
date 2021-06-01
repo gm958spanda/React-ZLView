@@ -16,20 +16,20 @@ class ZLViewComponent extends React.Component<ZLViewComponentProps>
 
         let page : ZLViewPage = v.__weak_view_page__?.deref();
         if (page !==undefined) {
-            page.viewDidMount();
+            page.viewDidMount?.();
         }
-        this.props.view.viewDidMount();
+        this.props.view.viewDidMount?.();
     }
     componentWillUnmount()
     {
-        this.props.view.viewWillUnMount();
+        this.props.view.viewWillUnMount?.();
 
         let v : any = this.props.view;
         v.__weak_reactComponent__ = undefined;
 
         let page : ZLViewPage = v.__weak_view_page__?.deref();
         if (page !==undefined) {
-            page.viewWillUnMount();
+            page.viewWillUnMount?.();
             (page as any).__weak_router__ = undefined;
             v.__weak_view_page__ = undefined;
         }
@@ -163,16 +163,16 @@ export class ZLView
     /**
      * 布局子视图 调用reactRender时会调用此方法
      */
-    public layoutSubViews(){}
+    public layoutSubViews?():void;
 
     /**
      * 生命周期 -- view已经挂载  React.componentDidMount
      */
-    public viewDidMount(){}
+    public viewDidMount?():void;
     /**
      * 生命周期 -- view将要卸载  React.componentWillUnmount
      */
-    public viewWillUnMount(){}
+    public viewWillUnMount?():void;
     
     /**
      * React element
@@ -189,7 +189,7 @@ export class ZLView
     {
         let page = this.__weak_view_page__?.deref();
         if (page !== undefined) {
-            page.viewLayoutSubViews();
+            page.viewLayoutSubViews?.();
         }
         
         // html attributes
@@ -200,7 +200,7 @@ export class ZLView
         }
         
         // layout subviews
-        this.layoutSubViews();
+        this.layoutSubViews?.();
 
         // child element
         let childs = [];

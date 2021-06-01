@@ -37,6 +37,16 @@ export class ZLSize
     public height : number;
 
     public static Zero = new ZLSize();
+
+    public static getWindowContentSize()
+    {
+        let sz = new ZLSize(window.document.body.clientWidth,window.innerHeight)
+        if (ZLCurrentSizeUnit !== ZLSizeUnit.px) {
+            sz.width /= ZLCurrentSizeUnitOneRemToPx;
+            sz.height /= ZLCurrentSizeUnitOneRemToPx;
+        }
+        return sz;
+    }
 }
 
 export class ZLRect
@@ -105,6 +115,14 @@ export class ZLFont
         if (this.bold !== undefined )
         {
             cs.fontWeight = this.bold ? "bold" : "normal";
+        }
+    }
+
+    public static getDefaultFont() {
+        if (ZLCurrentSizeUnit === ZLSizeUnit.px) {
+            return new ZLFont(16,'Arial');
+        } else {
+            return new ZLFont(1,'Arial');
         }
     }
 }

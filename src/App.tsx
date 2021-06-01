@@ -6,20 +6,27 @@ import { ZLViewPage } from './zlkit/zlview/ZLViewPage';
 class App extends React.Component
 {
     private router: zl.Router | undefined;
+    private timer_id : NodeJS.Timeout | undefined;
+    componentWillUnmount()
+    {
+        clearInterval(this.timer_id!);
+    }
+
     render()
     {
         if (this.router === undefined) {
+            console.log("App");
             this.router = new zl.Router();
             this.router.registRoute("/",HomePage);
             this.router.registRoute("/sin", SinPage);
             this.router.registRoute("/scroll", ScrollPage);
 
-            let rp = ["nomatch","scroll","/","sin"];
-            let index = 0;
-            setInterval(()=>{
-                this.router?.push(rp[index%4]);
-                index++;
-            },5000);
+            // let rp = ["nomatch","scroll","/","sin"];
+            // let index = 0;
+            // this.timer_id = setInterval(()=>{
+            //     this.router?.push(rp[index%4]);
+            //     index++;
+            // },5000);
         }
         return this.router.reactElement();
     }
@@ -32,16 +39,17 @@ class HomePage extends ZLViewPage
 {
     viewLayoutSubViews()
     {
-        super.viewLayoutSubViews();
+        super.viewLayoutSubViews?.();
         this.view.backgroudColor = "red";
     }
     viewDidLoad()
     {
-        super.viewDidLoad();
+        super.viewDidLoad?.();
         let lb = new zl.Label();
         lb.text = "HomePage";
-        lb.width = 100;
-        lb.height = 20;
+        let sz = lb.sizeThatWidthHeight(100,10);
+        lb.width = sz.width;
+        lb.height = sz.height;
         lb.center_x = this.view.width / 2;
         lb.center_y = this.view.height / 2;
         this.view.addSubview(lb);
@@ -62,7 +70,7 @@ class SinPage extends ZLViewPage
 {
     viewLayoutSubViews()
     {
-        super.viewLayoutSubViews();
+        super.viewLayoutSubViews?.();
         this.view.backgroudColor = "blue";
         this.testSin(this.view);
     }
@@ -79,10 +87,6 @@ class SinPage extends ZLViewPage
 
     testSin(appView:zl.View)
     {
-        appView.x = 0;
-        appView.y = 100;
-        appView.width = this.view.width;
-        appView.height = 50;
         appView.backgroudColor = "white";
 
         let colors = ["red","blue","gredd"];
@@ -104,7 +108,7 @@ class ScrollPage extends ZLViewPage
     private timer_id:NodeJS.Timeout |undefined;
     viewLayoutSubViews()
     {
-        super.viewLayoutSubViews();
+        super.viewLayoutSubViews?.();
         this.view.backgroudColor = "blue";
         this.testScollView(this.view);
     }
@@ -122,41 +126,39 @@ class ScrollPage extends ZLViewPage
 
     testScollView(appView:zl.View)
     {
-        appView.x = 200;
-        appView.y = 100;
-        appView.width = 300;
-        appView.height = 300;
         appView.backgroudColor = "white";
 
         let scrollView = new zl.ScrollView();
         appView.addSubview(scrollView);
         
-        scrollView.width = 200;
-        scrollView.height = 200;
+        scrollView.width = appView.width * 0.6;
+        scrollView.height = appView.height * 0.3;;
         scrollView.backgroudColor = "red";
         // scrollView.alwaysShowScrollIndicatorX = false;
         // scrollView.alwaysShowScrollIndicatorY = true;
         scrollView.hiddenScrollBar = true;
         
-        for (let i = 0 ; i < 15 ; i++)
+        let top = 0;
+        for (let i = 0 ; i < 99 ; i++)
         {
             let lb = new zl.Label()
             lb.clipToBounds = true;
             lb.text = "hello world " + i.toString();
             lb.textAlign = zl.TextAlignMode.Right;
-            lb.width = 200;
-            lb.height = 30;
-            lb.x = 0;
-            lb.y = i * 40;
+            let sz = lb.sizeThatWidthHeight(200,30);
+            lb.width = sz.width;
+            lb.height = sz.height;
+            lb.y = top;
+            top = lb.bottom + 3;
             lb.backgroudColor = 'blue';
             
             scrollView.addSubview(lb);
         }
         this.timer_id = setInterval(()=>{
 
-            scrollView.scrollTo(0, scrollView.contentOffSetY + 30);
+            scrollView.scrollTo(0, scrollView.contentOffSetY + 2);
             // scrollView.subViews?.getElementAt(0).removeFromSuperview();
             // scrollView.refresh();
-        },1000);
+        },100);
     }
 }

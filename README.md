@@ -69,6 +69,11 @@ class App extends React.Component
 | center_y | (y+height)/2                              |
 | center   | (center_x,center_y)                       |
 
+### ZLView的尺寸单位
+
+支持`px`和`rem`两种，默认使用`px`单位。
+可以设置`ZLCurrentSizeUnit`值来改变尺寸单位。另外，px和rem的换算，默认使用`1rem=16px`，也可以修改`ZLCurrentSizeUnitOneRemToPx`来改变这个换算比例.
+
 ## ZLView的生命周期
 
 源自React Component的生命周期

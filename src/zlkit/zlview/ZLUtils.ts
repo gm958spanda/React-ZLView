@@ -26,8 +26,8 @@ export class ZLUtils
         }
 
         if(boundSize !== undefined) {
-            elem.style.maxWidth = boundSize.width.toString() + ZLSizeUnit.px;
-            elem.style.maxHeight = boundSize.height.toString() + ZLSizeUnit.px;
+            elem.style.maxWidth = boundSize.width.toString() + ZLCurrentSizeUnit;
+            elem.style.maxHeight = boundSize.height.toString() + ZLCurrentSizeUnit;
         } else {
             (elem.style as any).maxWidth = undefined;
             (elem.style as any).maxHeight = undefined;

@@ -9,7 +9,7 @@ export class ZLLabel extends ZLView
 {
     constructor() {
         super();
-        this.font = new ZLFont(16,'Arial');
+        this.font = ZLFont.getDefaultFont();
     }
     /**
      * text 显示的文字
@@ -36,9 +36,11 @@ export class ZLLabel extends ZLView
      */
     public textAlign : ZLTextAlignMode | undefined;
 
-    sizeThatSize(size:ZLSize) : ZLSize
-    {
+    sizeThatSize(size:ZLSize) : ZLSize {
         return ZLUtils.textSize(this.text,size,this.font,this.wordBreak,this.wordWrap,this.textAlign);
+    }
+    sizeThatWidthHeight(width:number ,height : number) : ZLSize {
+        return this.sizeThatSize(new ZLSize(width,height));
     }
 
     reactRender(){

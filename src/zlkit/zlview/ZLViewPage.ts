@@ -15,7 +15,7 @@ export class ZLViewPage
         this.location = location;
         this.__view__ = this.loadView(pageSize);
         (this.__view__ as any).__weak_view_page__ = new WeakRef(this);
-        this.viewDidLoad();
+        this.viewDidLoad?.();
     }
 
     /**
@@ -47,29 +47,28 @@ export class ZLViewPage
         }
         return this.__view__;
     }
+        /**
+     * 获取视图
+     */
+         public get view():ZLView  {return this.__view__;}
     /**
      * 视图已加载，子类可重写
      */
-    public viewDidLoad(){}
+    public viewDidLoad?():void
 
     /**
      * 布局子视图
      */
-    public viewLayoutSubViews() {}
-
-    /**
-     * 获取视图
-     */
-    public get view():ZLView  {return this.__view__;}
+    public viewLayoutSubViews?():void
 
      /**
      * 生命周期 -- view已经挂载  React.componentDidMount
      */
-    public viewDidMount(){}
+    public viewDidMount?():void
     /**
      * 生命周期 -- view将要卸载  React.componentWillUnmount
      */
-    public viewWillUnMount(){}
+    public viewWillUnMount?():void
     /**
      * React element
      */
