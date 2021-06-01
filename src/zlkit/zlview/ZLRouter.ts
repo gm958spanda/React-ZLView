@@ -1,5 +1,5 @@
 import React from 'react';
-import { /*BrowserRouter,*/ HashRouter, 
+import { BrowserRouter,HashRouter, 
     Route,
     useLocation,
     useHistory,
@@ -16,6 +16,7 @@ import { ZLSize } from './ZLUIDef';
  {
      zlrouter : ZLRouter;
      routeMap : Map<string,ZLViewPageClass>;
+     useHashRouter : boolean ;
  }
 
 class ZLRouterComponent extends React.Component<ZLRouterComponentProps>
@@ -41,7 +42,11 @@ class ZLRouterComponent extends React.Component<ZLRouterComponentProps>
         /// no match
         routelist[routelist.length] = React.createElement(Route,{children:child,key:"*"});
 
-        return React.createElement(HashRouter,null,React.createElement(Switch,null,routelist));
+        if (this.props.useHashRouter === true) {
+            return React.createElement(HashRouter,null,React.createElement(Switch,null,routelist));
+        } else {
+            return React.createElement(BrowserRouter,null,React.createElement(Switch,null,routelist));
+        }
     }
 }
 function ZLRouteRenderFunction( p:any )
@@ -64,8 +69,10 @@ export class ZLRouter
     /**
      * 构造函数
      * @param rootPath 路由匹配的根路径，默认 "/"
+     * @param defaultPageSize 打开新页面时的默认大小
+     * @param useHashRouter 是否使用HashRouter。默认不使用
      */
-    constructor(rootPath? : string, defaultPageSize? : ZLSize)
+    constructor(rootPath? : string, defaultPageSize? : ZLSize, useHashRouter? : boolean)
     {
         if (rootPath === undefined || rootPath.length === 0) {
             this.__root_path__ = "/";
@@ -79,8 +86,8 @@ export class ZLRouter
             this.__root_path__ = rootPath;
         }
         this.__path_calss__ = new Map();
-
         this.__default_pagesize = defaultPageSize ? defaultPageSize : ZLSize.getWindowContentSize();
+        this.__useHashRouter__ = useHashRouter ? useHashRouter : false;
     }
     /**
      * 路由匹配的根路径
@@ -171,7 +178,7 @@ export class ZLRouter
      */
     reactElement() : React.ReactElement
     {
-        return React.createElement(ZLRouterComponent,{zlrouter:this, routeMap:this.__path_calss__});
+        return React.createElement(ZLRouterComponent,{zlrouter:this, routeMap:this.__path_calss__,useHashRouter:this.__useHashRouter__});
     }
 
     /**
@@ -192,6 +199,8 @@ export class ZLRouter
      * 默认页面尺寸
      */
     private __default_pagesize : ZLSize;
+
+    private __useHashRouter__ : boolean;
 
     /**
      * history
