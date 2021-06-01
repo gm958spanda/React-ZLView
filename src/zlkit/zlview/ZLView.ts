@@ -106,6 +106,11 @@ export class ZLView extends ZLObject
     public backgroudColor : string | undefined;
 
     /**
+     * 是否可见 
+     */
+    public visibility : boolean | undefined;
+
+    /**
      * 是否切除溢出边界的子视图 （通过设置overflow）
      */
     public clipToBounds : boolean | undefined;
@@ -224,8 +229,11 @@ export class ZLView extends ZLObject
         let style =  attr.style;
         style.position = "absolute";
 
+        if (this.visibility !== undefined) {
+            style.visibility = this.visibility ? undefined/*visible*/ : "hidden";
+        }
         if(this.clipToBounds !== undefined) {
-            style.overflow = this.clipToBounds ? "hidden" : "visible";
+            style.overflow = this.clipToBounds ? "hidden" : undefined/*"visible"*/;
         }
         if (this.backgroudColor !== undefined){
             style.backgroundColor = this.backgroudColor;
