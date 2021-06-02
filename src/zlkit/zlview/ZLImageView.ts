@@ -15,9 +15,10 @@ export class ZLImageView extends ZLView
      */
     public alt : string | undefined;
 
-    reactRender(){
+    reactRender(children?:React.ReactNode[])
+    {
         let attr = this.__htmlAttributes__();
-        return React.createElement("img",attr.toReactClassAttributes());
+        return React.createElement("img",attr.toReactClassAttributes(),children);
     }
 
     protected __htmlAttributes__() : ZLHtmlAttribute

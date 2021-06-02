@@ -137,10 +137,10 @@ export class ZLHref
     /**
      * 链接指向的页面的 URL。
      */
-    public href : string | undefined;
+    public href? : string;
 
     /**
      * 是否在新窗口打开  target=_blank
      */
-    public openInNewWindow : boolean | undefined;
+    public openInNewWindow? : boolean;
 }

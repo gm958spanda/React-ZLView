@@ -1,6 +1,7 @@
 import React from 'react';
 import './App.css';
 import * as zl from  "./zlkit/index"
+import { ZLCSSAnimation } from './zlkit/zlview/ZLCSSAnimation';
 import { ZLViewPage } from './zlkit/zlview/ZLViewPage';
 
 class App extends React.Component
@@ -47,14 +48,14 @@ class HomePage extends ZLViewPage
         super.viewDidLoad?.();
         let lb = new zl.Label();
         lb.text = "HomePage";
-        let sz = lb.sizeThatWidthHeight(100,10);
+        let sz = lb.sizeThatWidthHeight(100,100);
         lb.width = sz.width;
         lb.height = sz.height;
         lb.center_x = this.view.width / 2;
         lb.center_y = this.view.height / 2;
         this.view.addSubview(lb);
     }
-
+        
     viewDidMount()
     {
         console.log( this.constructor.name + " mount");
@@ -106,9 +107,9 @@ class SinPage extends ZLViewPage
 class ScrollPage extends ZLViewPage
 {
     private timer_id:NodeJS.Timeout |undefined;
-    viewLayoutSubViews()
+    viewDidLoad()
     {
-        super.viewLayoutSubViews?.();
+        super.viewDidLoad?.();
         this.view.backgroudColor = "blue";
         this.testScollView(this.view);
     }
@@ -137,7 +138,8 @@ class ScrollPage extends ZLViewPage
         // scrollView.alwaysShowScrollIndicatorX = false;
         // scrollView.alwaysShowScrollIndicatorY = true;
         scrollView.hiddenScrollBar = true;
-        
+        scrollView.cssAnimation = new ZLCSSAnimation();
+        scrollView.cssAnimation.duration = 3000;
         let top = 0;
         for (let i = 0 ; i < 99 ; i++)
         {

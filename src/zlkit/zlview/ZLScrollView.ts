@@ -30,6 +30,12 @@ export class ZLScrollView extends ZLView
     public get contentOffSetX(): number { return this.__html_elem__ ? this.__html_elem__.scrollLeft : 0 ;}
     public get contentOffSetY(): number { return this.__html_elem__ ? this.__html_elem__.scrollTop : 0 ;}
 
+    public onReactRefCallback(e:Element)
+    {
+        super.onReactRefCallback?.(e);
+        this.__html_elem__ = e;
+    }
+
     protected __htmlAttributes__() : ZLHtmlAttribute
     {
         let attr = super.__htmlAttributes__();
@@ -37,9 +43,6 @@ export class ZLScrollView extends ZLView
         attr.style.overflowY = (this.alwaysShowScrollIndicatorY === true) ? "scroll" : "auto";
         if (this.hiddenScrollBar === true ){
             attr.className = "zl-invisible-scrollbar";
-        }
-        attr.ref = (e:Element) =>{
-            this.__html_elem__ = e;
         }
         return attr;
     }

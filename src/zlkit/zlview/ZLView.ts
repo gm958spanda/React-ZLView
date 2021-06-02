@@ -3,6 +3,7 @@ import {ZLList} from '../sugar/list'
 import {ZLPoint,ZLHref, ZLCurrentSizeUnit} from './ZLUIDef'
 import {ZLViewPage} from './ZLViewPage'
 import {ZLObject} from './ZLObject'
+import {ZLCSSAnimation} from './ZLCSSAnimation'
 
 interface  ZLViewComponentProps
 {
@@ -15,37 +16,83 @@ class ZLViewComponent extends React.Component<ZLViewComponentProps>
         let v : any = this.props.view;
         v.__weak_reactComponent__ = new WeakRef(this);
 
-        let page : ZLViewPage = v.__weak_view_page__?.deref();
+        // ZLViewPage 生命周期
+        let page = v.viewPage;
         if (page !==undefined) {
             page.viewDidMount?.();
         }
+
+        // ZLView生命周期
         this.props.view.viewDidMount?.();
     }
     componentWillUnmount()
     {
+        // ZLView生命周期
         this.props.view.viewWillUnMount?.();
 
         let v : any = this.props.view;
+
+        // 动画资源回收
+        if(v.__css_animation__) 
+        {
+            (v.__css_animation__ as ZLCSSAnimation)?.removeCSS();
+            v.__css_animation__ = undefined;
+        }
         v.__weak_reactComponent__ = undefined;
 
-        let page : ZLViewPage = v.__weak_view_page__?.deref();
-        if (page !==undefined) {
+        // ZLViewPage 生命周期
+        let page = v.viewPage;
+        if (page !==undefined) 
+        {
             page.viewWillUnMount?.();
             (page as any).__weak_router__ = undefined;
             v.__weak_view_page__ = undefined;
         }
     }
+    
     render()
     {
         let v = this.props.view;
+
+        // page layout subviews
+        let page : ZLViewPage = (v as any).__weak_view_page__?.deref();
+        if (page !== undefined) {
+            page.viewLayoutSubViews?.();
+        }
+        // layout subviews
+        v.layoutSubViews?.();
+
+        //动画style
+        let cssAnimation = v.cssAnimation;
+        if(cssAnimation) 
+        {
+            cssAnimation.updateCSS();
+        }
+
+        // child element
+        let childs = undefined;
+        {
+            let subvs = v.subViews;
+            if ( subvs !== undefined && subvs.count() > 0 )
+            {
+                childs = [];
+                for (let index = 0; index <subvs.count(); index++)
+                {
+                    const sub= subvs.getElementAt(index);
+                    childs[index] = sub.reactElement();
+                }
+            }
+        }
+
+        // create element
         if (v.href !== undefined && v.href.href !== undefined) {
             let target = "_self";
             if (v.href.openInNewWindow !== undefined && v.href.openInNewWindow === true ){
                 target = "_blank";
             } 
-            return React.createElement("a", {href: v.href.href,target: target}, v.reactRender());
+            return React.createElement("a", {href: v.href.href,target: target}, v.reactRender(childs));
         } else {
-            return v.reactRender();
+            return v.reactRender(childs);
         }
     }
 }
@@ -103,28 +150,32 @@ export class ZLView extends ZLObject
     /**
      * 背景色
      */
-    public backgroudColor : string | undefined;
+    public backgroudColor? : string;
 
     /**
      * 是否可见 
      */
-    public visibility : boolean | undefined;
+    public visibility? : boolean;
 
     /**
      * 是否切除溢出边界的子视图 （通过设置overflow）
      */
-    public clipToBounds : boolean | undefined;
+    public clipToBounds? : boolean;
 
     /**
      * 跳转连接
      */
-    public href : ZLHref | undefined;
+    public href? : ZLHref;
 
+    /**
+     * 如果是由ZLViewPage创建，则有值
+     */
+    public get viewPage() : ZLViewPage | undefined {return this.__weak_view_page__?.deref();}
     /**
      * 获取父视图
      */
     public get superView() : ZLView | undefined { return this.__weak_superview__?.deref(); }
-    
+
     /**
      * 从父视图中移除
      */
@@ -153,6 +204,19 @@ export class ZLView extends ZLObject
      * 子视图列表
      */
     public get subViews() { return this.__subviews__?.toReadOnlyList();}
+
+    /**
+     * css 动画
+     */
+    public set cssAnimation(cssAnimation:ZLCSSAnimation | undefined)
+    {
+        this.__css_animation__?.removeCSS();
+        this.__css_animation__ = cssAnimation;
+    }
+    /**
+     * css 动画
+     */
+    public get cssAnimation():ZLCSSAnimation | undefined {return this.__css_animation__;}
 
     /**
      * 刷新  React setState
@@ -192,32 +256,16 @@ export class ZLView extends ZLObject
     /**
      * 渲染  React render
      */
-    public reactRender() : React.ReactElement
+    public reactRender(children?:React.ReactNode[]) : React.ReactElement
     {
-        let page = this.__weak_view_page__?.deref();
-        if (page !== undefined) {
-            page.viewLayoutSubViews?.();
-        }
-        
         // html attributes
-        let attr = this.__htmlAttributes__()
-        if (this.__subviews__ === undefined || this.__subviews__.count() === 0)
-        {
-            return React.createElement("div", attr.toReactClassAttributes());
-        }
-        
-        // layout subviews
-        this.layoutSubViews?.();
-
-        // child element
-        let childs = [];
-        for (let index = 0; index <this.__subviews__.count(); index++)
-        {
-            const subview = this.__subviews__.getElementAt(index);
-            childs[index] = subview.reactElement();
-        }
-        return React.createElement("div",attr.toReactClassAttributes(),childs);
+        let attr = this.__htmlAttributes__();
+        return React.createElement("div", attr.toReactClassAttributes(),children);
     }
+    /**
+     * 获取DOM Node
+     */
+    public onReactRefCallback? (e:Element) : void;
 
     /**
      * 子类可重写
@@ -225,10 +273,12 @@ export class ZLView extends ZLObject
      */
     protected __htmlAttributes__() : ZLHtmlAttribute
     {
-        let attr = new ZLHtmlAttribute();
+        let attr = new ZLHtmlAttribute(this.uniqueString,this.onReactRefCallback);
         let style =  attr.style;
         style.position = "absolute";
-
+        if (this.__css_animation__) {
+            style.animation = this.__css_animation__.toAnimationStr();
+        }
         if (this.visibility !== undefined) {
             style.visibility = this.visibility ? undefined/*visible*/ : "hidden";
         }
@@ -254,30 +304,37 @@ export class ZLView extends ZLObject
     }
 
     /**
+     * css 动画
+     */
+    private __css_animation__? : ZLCSSAnimation;
+
+    /**
      * 父视图
      */
-    private __weak_superview__ : WeakRef<ZLView> | undefined;
+    private __weak_superview__? : WeakRef<ZLView>;
     /**
      * 子视图
      */
-    private __subviews__ : ZLList<ZLView> | undefined;
+    private __subviews__? : ZLList<ZLView>;
+    /**
+     * 本视图所在的页面page（由ZLViewPage创建）
+     */
+    private __weak_view_page__? : WeakRef<ZLViewPage>;
     /**
      * React 容器
      */
-    private __weak_reactComponent__ : WeakRef<ZLViewComponent> | undefined;
-
-    /**
-     * page
-     */
-    private __weak_view_page__ : WeakRef<ZLViewPage> | undefined;
+    private __weak_reactComponent__? : WeakRef<ZLViewComponent>;
 }
 
 
 export class ZLHtmlAttribute
 {
-    constructor() {
+    constructor(dom_node_id: string , ref?: ((ref:Element)=>void))
+    {
         this.style = {} as any;
         this.event = {} as any;
+        this.__dom_node_id__ = dom_node_id;
+        this.__ref__ = ref;
     }
     /**
      * 行内样式
@@ -287,7 +344,7 @@ export class ZLHtmlAttribute
     /**
      * css class name
      */
-    className : string | undefined;
+    className? : string;
 
     /**
      * 事件
@@ -297,16 +354,11 @@ export class ZLHtmlAttribute
     /**
      * src 属性
      */
-    src : string | undefined;
-
-    /**
-     * reactRef 接收
-     */
-    ref : undefined | ((ref:Element)=>void) ;
+    src? : string;
 
     toReactClassAttributes() : {}
     {
-        let attr :any  = {style : this.style};
+        let attr :any  = {style : this.style , id : this.__dom_node_id__};
         if (this.className !== undefined && this.className.length > 0 ) {
             attr.className = this.className;
         }
@@ -314,9 +366,19 @@ export class ZLHtmlAttribute
             attr.src = this.src;
         }
         Object.assign(attr,this.event);
-        if(this.ref !== undefined) {
-            attr.ref = this.ref;
+        if(this.__ref__ !== undefined) {
+            attr.ref = this.__ref__;
         }
         return attr;
     }
+
+    /**
+     * dom node id
+     */
+    private __dom_node_id__ : string;
+
+     /**
+     * reactRef 接收
+     */
+    private __ref__ : undefined | ((ref:Element)=>void) ;
 }

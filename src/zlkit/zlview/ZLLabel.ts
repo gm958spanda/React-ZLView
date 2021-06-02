@@ -43,9 +43,10 @@ export class ZLLabel extends ZLView
         return this.sizeThatSize(new ZLSize(width,height));
     }
 
-    reactRender(){
+    reactRender(children?:React.ReactNode[])
+    {
         let attr = this.__htmlAttributes__();
-        return React.createElement("div",attr.toReactClassAttributes(), this.text);
+        return React.createElement("div",attr.toReactClassAttributes(), children,this.text);
     }
 
     protected __htmlAttributes__() : ZLHtmlAttribute
