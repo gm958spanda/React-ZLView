@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import * as zl from  "./zlkit/index"
-import { ZLCSSAnimation } from './zlkit/zlview/ZLCSSAnimation';
 import { ZLViewPage } from './zlkit/zlview/ZLViewPage';
 
 class App extends React.Component
@@ -138,8 +137,12 @@ class ScrollPage extends ZLViewPage
         // scrollView.alwaysShowScrollIndicatorX = false;
         // scrollView.alwaysShowScrollIndicatorY = true;
         scrollView.hiddenScrollBar = true;
-        scrollView.cssAnimation = new ZLCSSAnimation();
-        scrollView.cssAnimation.duration = 3000;
+        scrollView.cssAnimationTo(()=>{
+            scrollView.backgroudColor = "yellow";
+        }).end(()=>{
+            console.log("end");
+        });
+
         let top = 0;
         for (let i = 0 ; i < 99 ; i++)
         {

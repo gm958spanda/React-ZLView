@@ -4,6 +4,14 @@ export {
     ZLHtmlAttribute as HtmlAttribute
 } from './zlview/ZLView';
 
+
+export { 
+    ZLCSSAnimation as CSSAnimation,
+    ZLCSSAnimationKeyFrame as CSSAnimationKeyFrame
+} from './zlview/ZLCSSAnimation';
+
+
+
 export { 
     ZLImageView as ImageView 
 } from './zlview/ZLImageView';

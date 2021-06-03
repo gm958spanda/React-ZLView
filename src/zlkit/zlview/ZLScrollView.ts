@@ -3,6 +3,10 @@ import './ZLCSS.css'
 
 export class ZLScrollView extends ZLView
 {
+    constructor(){
+        super();
+        this.addListenOnReactRefCallback(this.__scrollView_onRectRefCallBack__, this);
+    }
     /**
      * 显示水平滚动条
      */
@@ -30,12 +34,6 @@ export class ZLScrollView extends ZLView
     public get contentOffSetX(): number { return this.__html_elem__ ? this.__html_elem__.scrollLeft : 0 ;}
     public get contentOffSetY(): number { return this.__html_elem__ ? this.__html_elem__.scrollTop : 0 ;}
 
-    public onReactRefCallback(e:Element)
-    {
-        super.onReactRefCallback?.(e);
-        this.__html_elem__ = e;
-    }
-
     protected __htmlAttributes__() : ZLHtmlAttribute
     {
         let attr = super.__htmlAttributes__();
@@ -47,6 +45,9 @@ export class ZLScrollView extends ZLView
         return attr;
     }
 
+    private __scrollView_onRectRefCallBack__(e:Element){
+        this.__html_elem__ = e;
+    }
     private __html_elem__ : Element | undefined;
     // __onload__(e:React.SyntheticEvent)
     // {

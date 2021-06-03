@@ -62,15 +62,15 @@ export class ZLViewPage extends ZLObject
      * 布局子视图
      */
     public viewLayoutSubViews?():void
-
-     /**
+    
+    /**
      * 生命周期 -- view已经挂载  React.componentDidMount
      */
     public viewDidMount?():void
     /**
      * 生命周期 -- view将要卸载  React.componentWillUnmount
      */
-    public viewWillUnMount?():void
+    public viewWillUnmount?():void
     /**
      * React element
      */

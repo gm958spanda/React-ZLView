@@ -80,8 +80,8 @@ class App extends React.Component
 
 | 方法            | 含义                       |
 | --------------- | -------------------------- |
-| viewDidMount    | React.componentDidMount    |
-| viewWillUnMount | React.componentWillUnmount |
+| viewDidMount/addListenViewDidMount/removeListenViewDidMount    | React.componentDidMount    |
+| viewWillUnmount/addListenViewWillUnMount/removeListenViewWillUnMount | React.componentWillUnmount |
 
 
 ## ZLRouter路由 
@@ -107,7 +107,7 @@ class HomePage extends zl.ViewPage
         console.log( this.constructor.name + " mount");
     }
 
-    viewWillUnMount()
+    viewWillUnmount()
     {
         console.log( this.constructor.name + " unmount");
     }
@@ -126,7 +126,7 @@ class OtherPage extends zl.ViewPage
         console.log( this.constructor.name + " mount");
     }
 
-    viewWillUnMount()
+    viewWillUnmount()
     {
         console.log( this.constructor.name + " unmount");
     }
