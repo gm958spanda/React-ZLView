@@ -141,8 +141,9 @@ class ScrollPage extends ZLViewPage
             scrollView.backgroudColor = "yellow";
             scrollView.x = 100;
             scrollView.width = 200;
+            // scrollView.visibility = false;
         },
-            duration:2000,
+            duration:3000,
             timingFunction:zl.CSSAnimationTimingFunctionMode.cubicBezier,
             cubicBezierValue:[1,0,0,1],
             end:()=>{

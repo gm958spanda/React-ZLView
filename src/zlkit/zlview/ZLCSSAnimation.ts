@@ -159,7 +159,7 @@ export class ZLCSSAnimation extends ZLObject
         let idstr = this.uniqueString;
         let style = document.getElementById(idstr) as HTMLStyleElement;
         if (style !== undefined || style !== null) {
-            // style.remove();
+            style.remove();
         }
     }
 
@@ -205,6 +205,9 @@ export class ZLCSSAnimationKeyFrame
         let s = `left:${x};top:${y};width:${width};height:${height};`;
         if (view.backgroudColor) {
             s = `${s}background-color:${view.backgroudColor};`
+        }
+        if (view.visibility === false) {
+            s = `${s}visibility:hidden;`
         }
         this.__key_frame_str__ = `${this.progress}% {${s}}`;
     }
