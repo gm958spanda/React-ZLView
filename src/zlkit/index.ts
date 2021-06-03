@@ -1,7 +1,7 @@
 
 export { 
     ZLView as View,
-    ZLHtmlAttribute as HtmlAttribute
+    ZLHtmlAttribute as HtmlAttribute,
 } from './zlview/ZLView';
 
 
@@ -37,6 +37,8 @@ export {
 
     ZLFont as Font,
     ZLFontStyle as FontStyle,
+
+    ZLCSSAnimationTimingFunctionMode as CSSAnimationTimingFunctionMode
  } from './zlview/ZLUIDef';
 
 export { 

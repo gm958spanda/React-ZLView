@@ -1,6 +1,6 @@
 import React, { CSSProperties} from 'react';
 import {ZLList} from '../sugar/list'
-import {ZLPoint,ZLHref, ZLCurrentSizeUnit} from './ZLUIDef'
+import {ZLPoint,ZLHref, ZLCurrentSizeUnit, ZLCSSAnimationParams} from './ZLUIDef'
 import {ZLViewPage} from './ZLViewPage'
 import {ZLObject} from './ZLObject'
 import {ZLCSSAnimation, ZLCSSAnimationKeyFrame} from './ZLCSSAnimation'
@@ -15,6 +15,7 @@ enum ZLViewEventName
 }
 type ZLReactRefCallback = (e:Element) => void;
 type ZLViewVoidCallback = () => void;
+
 
 interface  ZLViewComponentProps
 {
@@ -204,21 +205,21 @@ export class ZLView extends ZLObject
     /**
      * css 动画 从当前状态到指定状态的动画
      */
-    public cssAnimationTo( toStyle:()=>void ) : ZLCSSAnimation
+    public cssAnimation(p:ZLCSSAnimationParams)
     {
         let from = new ZLCSSAnimationKeyFrame();
         from.progress = 0;
         from.copyViewStyle(this);
         
-        toStyle();
+        p.to();
         let to = new ZLCSSAnimationKeyFrame();
         to.progress = 100;
         to.copyViewStyle(this);
 
         let an = new ZLCSSAnimation(this,[from,to]);
+        an.params = p;
         this.__css_animation__ = an.toAnimationStr();
         this.refresh();
-        return an;
     }
 
     /**

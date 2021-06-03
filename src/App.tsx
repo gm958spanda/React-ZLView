@@ -137,10 +137,17 @@ class ScrollPage extends ZLViewPage
         // scrollView.alwaysShowScrollIndicatorX = false;
         // scrollView.alwaysShowScrollIndicatorY = true;
         scrollView.hiddenScrollBar = true;
-        scrollView.cssAnimationTo(()=>{
+        scrollView.cssAnimation({to:()=>{
             scrollView.backgroudColor = "yellow";
-        }).end(()=>{
-            console.log("end");
+            scrollView.x = 100;
+            scrollView.width = 200;
+        },
+            duration:2000,
+            timingFunction:zl.CSSAnimationTimingFunctionMode.cubicBezier,
+            cubicBezierValue:[1,0,0,1],
+            end:()=>{
+                console.log("animation end");
+            }
         });
 
         let top = 0;

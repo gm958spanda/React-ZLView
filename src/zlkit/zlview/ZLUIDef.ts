@@ -127,6 +127,43 @@ export class ZLFont
     }
 }
 
+//动画的速度曲线
+export enum ZLCSSAnimationTimingFunctionMode
+{
+    linear = "linear",
+    ease = "ease",
+    easeIn = "ease-in",
+    easeOut = "ease-out",
+    easeInOut = "ease-out",
+    cubicBezier = "cubic-bezier",//cubic-bezier(n,n,n,n) ,在 cubic-bezier 函数中自己的值。可能的值是从 0 到 1 的数值。
+}
+
+export enum ZLCSSAnimationDirection
+{
+    normal = "normal",
+    alternate = "alternate" //动画应该轮流反向播放。
+}
+
+
+export interface ZLCSSAnimationParams
+{
+    /** 终状态*/
+    to : () => void;
+    /** 动画结束*/
+    end? : () => void;
+    /** 持续时间 单位毫秒 默认300毫秒*/
+    duration? : number;
+    /** 动画的速度曲线 默认ease*/
+    timingFunction? : ZLCSSAnimationTimingFunctionMode;
+    /** cubic-bezier(n,n,n,n) ,在 cubic-bezier 函数中自己的值。可能的值是从 0 到 1 的数值。*/
+    cubicBezierValue? : number[];
+    /** 在动画开始之前的延迟 单位毫秒 默认0毫秒*/
+    delay?:number;
+    /** 动画播放次数，默认1 */
+    iterationCount?:number | "infinite";
+    /** 定义是否应该轮流反向播放动画 默认normal*/
+    direction?:ZLCSSAnimationDirection;
+}
 
 export class ZLHref
 {

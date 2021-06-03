@@ -1,12 +1,13 @@
 import {ZLObject} from './ZLObject'
+import { ZLCSSAnimationDirection, ZLCSSAnimationParams, ZLCSSAnimationTimingFunctionMode, ZLCurrentSizeUnit } from './ZLUIDef';
 import {ZLView}  from './ZLView'
+
 
 export class ZLCSSAnimation extends ZLObject
 {
     constructor(view:ZLView, keyFrames : ZLCSSAnimationKeyFrame[])
     {
         super();
-        this.duration = 300;
         this.__keyFrames__ = keyFrames;
         this.__is_css_created__ = false;
         this.__view__ = new WeakRef(view);
@@ -16,20 +17,45 @@ export class ZLCSSAnimation extends ZLObject
         view.addListenWiewWillUnMount(this.__onViewWillUnmount__,this);
     }
     /**
-     * 动画时长 单位豪秒 ,默认300ms
+     * 动画参数
      */
-    public duration : number;
-
-
-    public end(end:()=>void) {
-        this.__endcb__ = end;
-    }
+    public params? : ZLCSSAnimationParams;
     
     public toAnimationStr()
     {
         let name = this.uniqueString;
-        let duration = (this.duration > 0) ? this.duration.toString()+"ms" : "0ms";
-        return `${name} ${duration} linear 0ms 3 normal`;
+        let duration = 300;
+        let delay = 0;
+        let timingFunction = "ease";
+        let iterationCount = 1;
+        let direction = ZLCSSAnimationDirection.normal;
+        if(this.params)
+        {
+            if(this.params.duration) {
+                duration = this.params?.duration;
+            }
+            if(this.params.delay) {
+                delay = this.params.delay;
+            }
+            if (this.params.iterationCount) {
+                (iterationCount as any) = this.params.iterationCount;
+            }
+            if (this.params.timingFunction) {
+                let f = this.params.timingFunction;
+                if (f === ZLCSSAnimationTimingFunctionMode.cubicBezier){
+                    if (this.params.cubicBezierValue && this.params.cubicBezierValue.length === 4) {
+                        let v = this.params.cubicBezierValue;
+                        timingFunction = f+`(${v[0]},${v[1]},${v[2]},${v[3]})`;
+                    } else {
+                        console.log("timingFunction set cubicBezier, but cubicBezierValue length not 4");
+                    }
+                }
+            }
+            if (this.params.direction) {
+                direction = this.params.direction;
+            }
+        }
+        return `${name} ${duration}ms ${timingFunction} ${delay}ms ${iterationCount} ${direction}`;
     }
     
     private __onViewWillRender__()
@@ -39,9 +65,11 @@ export class ZLCSSAnimation extends ZLObject
 
     private __onViewReactRefCallback__(e:Element) 
     {
-        this.__elem__ = new WeakRef(e);
-        if (this.__onAnimationend__) {
-            e.addEventListener("animationend",this.__onAnimationend__);
+        if (e !== undefined && e !== null) {
+            this.__elem__ = new WeakRef(e);
+            if (this.__onAnimationend__) {
+                e.addEventListener("animationend",this.__onAnimationend__);
+            }
         }
     }
 
@@ -51,7 +79,7 @@ export class ZLCSSAnimation extends ZLObject
     }
 
     private __onAnimationend__? = ()=> {
-        this.__endcb__?.();
+        this.params?.end?.();
         this.clearresource();
     }
 
@@ -62,7 +90,7 @@ export class ZLCSSAnimation extends ZLObject
             this.removeCSS();
 
             this.__keyFrames__ = [];
-            this.__endcb__ = undefined;
+            this.params = undefined;
 
             let view = this.__view__;
             this.__view__ = undefined;
@@ -105,8 +133,8 @@ export class ZLCSSAnimation extends ZLObject
         let csscode = `
 @keyframes ${name}
 {
-    ${from.toKeyFrameString()}
-    ${to.toKeyFrameString()}
+    ${from.keyframeString}
+    ${to.keyframeString}
 }`;
         let idstr = this.uniqueString;
         let style = document.getElementById(idstr) as HTMLStyleElement;
@@ -131,7 +159,7 @@ export class ZLCSSAnimation extends ZLObject
         let idstr = this.uniqueString;
         let style = document.getElementById(idstr) as HTMLStyleElement;
         if (style !== undefined || style !== null) {
-            style.remove();
+            // style.remove();
         }
     }
 
@@ -139,7 +167,6 @@ export class ZLCSSAnimation extends ZLObject
     private __keyFrames__ : ZLCSSAnimationKeyFrame[];
     private __view__? : WeakRef<ZLView>;
     private __elem__? : WeakRef<Element>;
-    private __endcb__? : ()=>void;
 }
 
 
@@ -147,8 +174,8 @@ export class ZLCSSAnimationKeyFrame
 {
     constructor() {
         this.__progress__ = 0;
+        this.__key_frame_str__ = "0% {}";
     }
-    public backgroudColor? : string;
 
     /**
      * 【0 ，100】  
@@ -171,18 +198,19 @@ export class ZLCSSAnimationKeyFrame
      */
     public copyViewStyle(view:ZLView)
     {
-        this.backgroudColor = view.backgroudColor;
+        let x = view.x.toString() + ZLCurrentSizeUnit;
+        let y = view.y.toString() + ZLCurrentSizeUnit;
+        let width = view.width.toString() + ZLCurrentSizeUnit;
+        let height = view.height.toString() + ZLCurrentSizeUnit;
+        let s = `left:${x};top:${y};width:${width};height:${height};`;
+        if (view.backgroudColor) {
+            s = `${s}background-color:${view.backgroudColor};`
+        }
+        this.__key_frame_str__ = `${this.progress}% {${s}}`;
     }
 
-    public toKeyFrameString()
-    {
-        let s = "";
-        if (this.backgroudColor) {
-            s = `${s} background-color:${this.backgroudColor}`
-        }
-        // if (this.backgroudColor) {
-        //     s = `${s} background-color ${this.backgroudColor}`
-        // }
-        return `${this.progress}% {${s}}`;
-    }
+    public get keyframeString() : string { return this.__key_frame_str__;}
+    public set keyframeString(s:string) {this.__key_frame_str__ = s ? s : "0% {}";}
+
+    private __key_frame_str__ : string;
 }
