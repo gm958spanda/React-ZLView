@@ -38,7 +38,7 @@ export {
     ZLFont as Font,
     ZLFontStyle as FontStyle,
 
-    ZLCSSAnimationTimingFunctionMode as CSSAnimationTimingFunctionMode
+    ZLCSSAnimationTimingFunction as CSSAnimationTimingFunction
  } from './zlview/ZLUIDef';
 
 export { 

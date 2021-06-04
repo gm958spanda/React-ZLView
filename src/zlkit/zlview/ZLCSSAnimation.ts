@@ -1,5 +1,5 @@
 import {ZLObject} from './ZLObject'
-import { ZLCSSAnimationDirection, ZLCSSAnimationParams, ZLCSSAnimationTimingFunctionMode, ZLCurrentSizeUnit } from './ZLUIDef';
+import { ZLCSSAnimationDirection, ZLCSSAnimationParams, ZLCSSAnimationTimingFunction, ZLCurrentSizeUnit } from './ZLUIDef';
 import {ZLView}  from './ZLView'
 
 
@@ -42,7 +42,7 @@ export class ZLCSSAnimation extends ZLObject
             }
             if (this.params.timingFunction) {
                 let f = this.params.timingFunction;
-                if (f === ZLCSSAnimationTimingFunctionMode.cubicBezier){
+                if (f === ZLCSSAnimationTimingFunction.cubicBezier){
                     if (this.params.cubicBezierValue && this.params.cubicBezierValue.length === 4) {
                         let v = this.params.cubicBezierValue;
                         timingFunction = f+`(${v[0]},${v[1]},${v[2]},${v[3]})`;

@@ -128,7 +128,7 @@ export class ZLFont
 }
 
 //动画的速度曲线
-export enum ZLCSSAnimationTimingFunctionMode
+export enum ZLCSSAnimationTimingFunction
 {
     linear = "linear",
     ease = "ease",
@@ -154,7 +154,7 @@ export interface ZLCSSAnimationParams
     /** 持续时间 单位毫秒 默认300毫秒*/
     duration? : number;
     /** 动画的速度曲线 默认ease*/
-    timingFunction? : ZLCSSAnimationTimingFunctionMode;
+    timingFunction? : ZLCSSAnimationTimingFunction;
     /** cubic-bezier(n,n,n,n) ,在 cubic-bezier 函数中自己的值。可能的值是从 0 到 1 的数值。*/
     cubicBezierValue? : number[];
     /** 在动画开始之前的延迟 单位毫秒 默认0毫秒*/

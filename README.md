@@ -191,7 +191,7 @@ view.cssAnimation({to:()=>{
             view.height = 100;
         },
             duration:3000,
-            timingFunction:zl.CSSAnimationTimingFunctionMode.cubicBezier,
+            timingFunction:zl.CSSAnimationTimingFunction.cubicBezier,
             cubicBezierValue:[1,0,0,1],
             end:()=>{
                 console.log("animation end");
