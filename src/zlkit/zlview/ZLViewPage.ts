@@ -13,9 +13,9 @@ export class ZLViewPage extends ZLObject
     constructor(pageSize?: ZLSize)
     {
         super();
-        this.__view__ = this.loadView(pageSize);
-        (this.__view__ as any).__weak_view_page__ = new WeakRef(this);
-        this.viewDidLoad?.();
+        if (pageSize) {
+            this.__default_size = new ZLSize(pageSize.width,pageSize.height);
+        }
     }
     
     /**
@@ -36,26 +36,34 @@ export class ZLViewPage extends ZLObject
      */
     protected loadView( pageSize?: ZLSize ): ZLView 
     {
-        if (this.__view__ === undefined) {
-            let v = new ZLView();
-            if (pageSize !== undefined ) 
-            {
-                v.width = pageSize?.width;
-                v.height = pageSize?.height;
-            }
+        let v = new ZLView();
+        if (pageSize !== undefined ) 
+        {
+            v.width = pageSize?.width;
+            v.height = pageSize?.height;
+        }
+        return v;
+    }
+    /**
+     * 获取视图
+     */
+    public get view():ZLView 
+    {
+        if (this.__view__ === undefined) 
+        {
+            let v = this.loadView(this.__default_size);
             this.__view__ = v;
+
+            (v as any).__weak_view_page__ = new WeakRef(this);
+            
+            this.viewDidLoad?.();
         }
         return this.__view__;
     }
-        /**
-     * 获取视图
-     */
-         public get view():ZLView  {return this.__view__;}
     /**
      * 视图已加载，子类可重写
      */
     public viewDidLoad?():void
-
     /**
      * 布局子视图
      */
@@ -74,13 +82,17 @@ export class ZLViewPage extends ZLObject
      */
     public reactElement() : React.ReactElement
     {
-        return this.__view__.reactElement();
+        return this.view.reactElement();
     }
 
     /**
+     * 默认尺寸
+     */
+    private __default_size? : ZLSize;
+    /**
      * 视图
      */
-    private __view__ : ZLView;
+    private __view__? : ZLView;
 
     /** 路由*/
     private __weak_router__ : WeakRef<ZLRouter> |undefined;
