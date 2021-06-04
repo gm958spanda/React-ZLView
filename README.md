@@ -2,9 +2,6 @@
 ZLView base react , super and sub  , coordinate by  x-y-width-height；基于react的视图，使用x-y-width-height坐标系
 
 
-
-[toc]
-
 ## 示例
 
 绘制正弦曲线

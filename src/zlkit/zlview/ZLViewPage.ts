@@ -4,21 +4,24 @@ import { ZLSize } from './ZLUIDef';
 import { ZLRouter } from './ZLRouter';
 import {ZLObject} from './ZLObject'
 
-export type ZLViewPageClass = new (location?: History.Location,pageSize?: ZLSize) => ZLViewPage
+export type ZLViewPageClass = new (pageSize?: ZLSize) => ZLViewPage
 export class ZLViewPage extends ZLObject
 {
     /**
      * 构造函数
-     * @param location 通过路由跳转触发的初始化参数
      */
-    constructor(location? : History.Location, pageSize?: ZLSize)
+    constructor(pageSize?: ZLSize)
     {
         super();
-        this.location = location;
         this.__view__ = this.loadView(pageSize);
         (this.__view__ as any).__weak_view_page__ = new WeakRef(this);
         this.viewDidLoad?.();
     }
+    
+    /**
+     * 路由匹配到本页面时
+     */
+    public onRouterMatchMe?(location:History.Location):void;
 
     /**
      * 获取路由
@@ -27,11 +30,6 @@ export class ZLViewPage extends ZLObject
     {
         return this.__weak_router__?.deref();
     }
-
-    /**
-     * History.Location
-     */
-    public location : History.Location | undefined;
 
     /**
      * 创建视图，子类可重写

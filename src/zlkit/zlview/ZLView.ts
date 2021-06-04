@@ -143,7 +143,15 @@ export class ZLView extends ZLObject
 
     public set center(p:ZLPoint) { this.center_x = p.x;this.center_y = p.y;}
     public get center():ZLPoint { return new ZLPoint(this.center_x,this.center_y);}
-    
+    /**
+     * 设置相同的坐标和尺寸
+     */
+    public setFrameSameAs(view:ZLView){
+        this.x = view.x;
+        this.y = view.y;
+        this.width = view.width;
+        this.height = view.height;
+    }
     /**
      * 背景色
      */

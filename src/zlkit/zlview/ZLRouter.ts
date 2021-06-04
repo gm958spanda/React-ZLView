@@ -6,7 +6,7 @@ import { BrowserRouter,HashRouter,
     Switch
  } from 'react-router-dom'
 
-import {ZLViewPageClass} from './ZLViewPage'
+import {ZLViewPage, ZLViewPageClass} from './ZLViewPage'
 
 import * as History from 'history';
 import { ZLSize } from './ZLUIDef';
@@ -15,7 +15,7 @@ import { ZLSize } from './ZLUIDef';
  interface ZLRouterComponentProps
  {
      zlrouter : ZLRouter;
-     routeMap : Map<string,ZLViewPageClass>;
+     routeMap : Map<string,ZLViewPageClass | ZLViewPage>;
      useHashRouter : boolean ;
  }
 
@@ -55,12 +55,21 @@ function ZLRouteRenderFunction( p:any )
     let router : ZLRouter = p.zlrouter;
     (router as any).__history__ = history;
     let loc = useLocation<History.LocationState>();
-    let cls = router.getRouteClass(loc.pathname);
-    if (cls === undefined) {
+    let cls_ins = router.findRoute(loc.pathname);
+    if (cls_ins === undefined) {
         return React.createElement("div",null,"404 not found " + loc.pathname);
     }
-    let page = new cls(loc, new ZLSize(router.defaultPageWidth,router.defaultPageHeight));
+    let page : ZLViewPage = (cls_ins as ZLViewPage);
+    if (page instanceof ZLViewPage) {
+        page.view.width = router.defaultPageWidth;
+        page.view.height = router.defaultPageHeight;
+        // page.viewLayoutSubViews?.();
+    }
+    else {
+        page = new (cls_ins as ZLViewPageClass)(new ZLSize(router.defaultPageWidth,router.defaultPageHeight));
+    }
     (page as any).__weak_router__ = new WeakRef(router);
+    page.onRouterMatchMe?.(loc);
     return page.reactElement();
 }
 
@@ -99,9 +108,9 @@ export class ZLRouter
     /**
      * 注册路由
      * @param path 路径
-     * @param routeClass 命中后的渲染类,将接收一个useLocation参数
+     * @param class_instance 渲染类或实例 ,路由匹配后将调用ZLViewPage.onRouterMatchMe
      */
-    public registRoute( path : string , routeClass : ZLViewPageClass)
+    public registRoute( path : string , class_instance : ZLViewPageClass | ZLViewPage)
     {
         if (path === undefined || path.length === 0 ) {
             return;
@@ -112,14 +121,14 @@ export class ZLRouter
         if (this.__root_path__ !== "/") {
             path = this.__root_path__ + path;
         }
-        this.__path_calss__.set( path ,routeClass);
+        this.__path_calss__.set( path ,class_instance);
     }
 
     /**
-     * 获取路径对应的渲染类
+     * 获取路径对应的渲染类或实例
      * @param path 路径
      */
-    public getRouteClass(path : string) : ZLViewPageClass | undefined
+    public findRoute(path : string) : ZLViewPageClass | ZLViewPage | undefined
     {
         if (path === undefined || path.length === 0 ) {
             return undefined;
@@ -194,7 +203,7 @@ export class ZLRouter
     /**
      * 路由表
      */
-    private __path_calss__ : Map<string,ZLViewPageClass>;
+    private __path_calss__ : Map<string,ZLViewPageClass | ZLViewPage>;
     /**
      * 默认页面尺寸
      */
