@@ -163,3 +163,38 @@ router.registRoute("/other",OtherPage);
 router.push("/other");
 router.replace("/");
 ```
+
+## 动画
+
+简单封装了CSS动画，直接作用在ZLView上
+
+```ts
+
+import * as zl from  "./zlkit/index"
+
+/**
+ * 开启一个3秒动画
+ * 尺寸从(100,200)变化到（200，100）
+ * 背景色从red到yellow
+ * 动画曲线使用cubic-bezier（1,0,0,1)
+ */
+
+let view = new zl.View()
+view.width = 100;
+view.height = 200;
+view.backgroudColor = "red";
+
+view.cssAnimation({to:()=>{
+            view.backgroudColor = "yellow";
+            view.x = 100;
+            view.width = 200;
+            view.height = 100;
+        },
+            duration:3000,
+            timingFunction:zl.CSSAnimationTimingFunctionMode.cubicBezier,
+            cubicBezierValue:[1,0,0,1],
+            end:()=>{
+                console.log("animation end");
+            }
+});
+```

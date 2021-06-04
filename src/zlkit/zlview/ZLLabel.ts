@@ -18,7 +18,8 @@ export class ZLLabel extends ZLView
     /**
      * 文本颜色
      */
-    public textColor : string | undefined;
+    public get textColor():string|undefined {return this.color;}
+    public set textColor(c:string|undefined) {this.color=c;}
     /**
      * 文本字体
      */
@@ -55,9 +56,6 @@ export class ZLLabel extends ZLView
         let style = attr.style;
         if (this.font !== undefined) {
             this.font.toCSSStyle(style);
-        }
-        if (this.textColor !== undefined){
-            style.color = this.textColor;
         }
         if (this.wordBreak !== undefined) {
             style.wordBreak = this.wordBreak;

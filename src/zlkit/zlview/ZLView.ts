@@ -148,7 +148,10 @@ export class ZLView extends ZLObject
      * 背景色
      */
     public backgroudColor? : string;
-
+    /**
+     * 前景色
+     */
+    public color? : string;
     /**
      * 是否可见 
      */
@@ -330,6 +333,9 @@ export class ZLView extends ZLObject
         }
         if (this.backgroudColor !== undefined){
             style.backgroundColor = this.backgroudColor;
+        }
+        if (this.color !== undefined){
+            style.color = this.color;
         }
         if (this.width !== undefined) {
             style.width = this.width.toString() + ZLCurrentSizeUnit;

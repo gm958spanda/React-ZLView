@@ -170,6 +170,19 @@ export class ZLCSSAnimation extends ZLObject
 }
 
 
+interface ZLCSSAnimatableStyle
+{
+    left? : number;
+    top? : number;
+    width? : number;
+    height? : number;
+    
+    backgroudColor? : string;
+    color? : string;
+
+    visibility? : boolean | string;
+}
+
 export class ZLCSSAnimationKeyFrame
 {
     constructor() {
@@ -196,18 +209,34 @@ export class ZLCSSAnimationKeyFrame
      * 复制视图的状态
      * @param view 视图
      */
-    public copyViewStyle(view:ZLView)
+    public copyViewStyle(view:ZLCSSAnimatableStyle)
     {
-        let x = view.x.toString() + ZLCurrentSizeUnit;
-        let y = view.y.toString() + ZLCurrentSizeUnit;
-        let width = view.width.toString() + ZLCurrentSizeUnit;
-        let height = view.height.toString() + ZLCurrentSizeUnit;
-        let s = `left:${x};top:${y};width:${width};height:${height};`;
+        let s = "";
+        if (view.left) {
+            s = `${s}left:${view.left.toString() + ZLCurrentSizeUnit};`
+        }
+        if (view.top) {
+            s = `${s}top:${view.top.toString() + ZLCurrentSizeUnit};`
+        }
+        if (view.width) {
+            s = `${s}width:${view.width.toString() + ZLCurrentSizeUnit};`
+        }
+        if (view.height) {
+            s = `${s}height:${view.height.toString() + ZLCurrentSizeUnit};`
+        }
         if (view.backgroudColor) {
             s = `${s}background-color:${view.backgroudColor};`
         }
-        if (view.visibility === false) {
-            s = `${s}visibility:hidden;`
+        if (view.color) {
+            s = `${s}color:${view.color};`
+        }
+        if (view.visibility !== undefined)
+        {
+            if ( view.visibility === false) {
+                s = `${s}visibility:hidden;`
+            } else if ( view.visibility !== true) {
+                s = `${s}visibility:${view.visibility};`
+            }
         }
         this.__key_frame_str__ = `${this.progress}% {${s}}`;
     }
