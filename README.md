@@ -9,14 +9,18 @@ ZLView base react , super and sub  , coordinate by  x-y-width-height；基于rea
 <!-- ![image](https://github.com/gm958spanda/ZLView/raw/main/readme/1.png) -->
 
 ```ts
+
+import React from 'react';
+import * as zl from 'react-zlview'
+
 class App extends React.Component
 {
-    private appView : ZLView | undefined;
+    private appView : zl.View | undefined;
     render()
     {
         if(this.appView === undefined)
         {
-            this.appView = new ZLView();
+            this.appView = new zl.View();
             this.appView.x = 200;
             this.appView.y = 100;
             this.appView.width = 1000;
@@ -26,7 +30,7 @@ class App extends React.Component
             let colors = ["red","blue","gredd"];
             for (let i = 0 ; i < 999; i ++)
             {
-                let sub = new ZLView();
+                let sub = new zl.View();
                 sub.x = i;
                 sub.y = Math.sin(i / 3.14) * 15 + this.appView.height / 2;
                 sub.width = 3;
@@ -80,13 +84,63 @@ class App extends React.Component
 | viewDidMount/addListenViewDidMount/removeListenViewDidMount    | React.componentDidMount    |
 | viewWillUnmount/addListenViewWillUnMount/removeListenViewWillUnMount | React.componentWillUnmount |
 
+## ZLView获取DOM节点
+
+可以通过实现方法`onReactRefCallback`来获取，也可以调用`addListenOnReactRefCallback`添加新方法获取.
+
+## 父视图和子视图
+
+ * `superView` 获取父视图
+ * `removeFromSuperview` 从父图中移除
+ * `subViews` 获取子视图列表
+ * `addSubview` 添加子视图
+
+ ## 刷新视图
+ 
+ * `refresh` 刷新视图，本质是调用 React.setState。 ZLView的属性变更后，需要主动调用 `refresh`来刷新视图
+ * `layoutSubViews`,是一个通知类型的方法，用于重新布局子视图列表；触发时机是在React.render返回结果前
+
+
+## 继承ZLView
+
+ZLView支持继承以自定义视图样式，通常需要重写的方法`__reactRender__`和`__htmlAttributes__`，前者用于返回React.render数据，后缀用于修改`CSS样式`
+
+示列:
+```ts
+
+import React from 'react';
+import * as zl from 'react-zlview'
+
+class CustomView extends zl.View
+{
+    /**
+     * 渲染  React render
+     */
+    protected __reactRender__(children?:React.ReactNode[]) : React.ReactElement
+    {
+        // html attributes
+        let attr = this.__htmlAttributes__();
+        return React.createElement("canvas"/*自定义标签*/, attr.toReactClassAttributes(),children);
+    }
+
+    /**
+     * 子类可重写
+     * @returns html attributes
+     */
+    protected __htmlAttributes__() : ZLHtmlAttribute
+    {
+        let attr = super.__htmlAttributes__();
+        attr.style.backgroundColor = "white";//背景色永远是白色
+        return attr
+    }
+```
 
 ## ZLRouter路由 
 
 封装`react-router-dom`。引入页面概念`ZLViewPage`，一个路由对应一个页面，采用严格模式匹配路由的`path`
 
 ```ts
-import * as zl from  "./zlkit/index"
+import * as zl from 'react-zlview'
 
 class HomePage extends zl.ViewPage
 {
@@ -147,7 +201,7 @@ class App extends React.Component
 ### 注册路由
 
 ```ts
-import * as zl from  "./zlkit/index"
+import * as zl from 'react-zlview'
 
 let router = new zl.Router();
 router.registRoute("/",HomePage);
@@ -167,7 +221,7 @@ router.replace("/");
 
 ```ts
 
-import * as zl from  "./zlkit/index"
+import * as zl from 'react-zlview'
 
 /**
  * 开启一个3秒动画

@@ -274,6 +274,7 @@ export class ZLView extends ZLObject
     /**
      * 获取DOM Node
      */
+    public onReactRefCallback?(e:Element):void;
     public addListenOnReactRefCallback(cb:ZLReactRefCallback, cbThis? : any) { 
         this.__add_evnt_cb__(ZLViewEventName.OnRefCallback,cb,cbThis);
     }
@@ -316,9 +317,12 @@ export class ZLView extends ZLObject
     {
         let refCb = undefined;
         let OnRefCallbackMap = this.__event_map__?.get(ZLViewEventName.OnRefCallback);
-        if (OnRefCallbackMap && OnRefCallbackMap.size>0)
+        if (this.onReactRefCallback || (OnRefCallbackMap && OnRefCallbackMap.size>0))
         {
             refCb = (e:Element) => {
+                if (this.onReactRefCallback){
+                    this.onReactRefCallback(e);
+                }
                 if (OnRefCallbackMap) {
                     OnRefCallbackMap.forEach((cbThis,cb)=>{
                         cb.call(cbThis,e);
