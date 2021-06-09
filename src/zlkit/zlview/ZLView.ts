@@ -27,7 +27,7 @@ class ZLViewComponent extends React.Component<ZLViewComponentProps>
     componentDidMount()
     {
         let v = this.props.view;
-        (v as any).__weak_reactComponent__ = new WeakRef(this);
+        (v as any).__zl_weakReactComponent__ = new WeakRef(this);
 
         // ZLViewPage 生命周期
         if (v.viewPage !==undefined) {
@@ -36,36 +36,36 @@ class ZLViewComponent extends React.Component<ZLViewComponentProps>
 
         // ZLView生命周期
         v.viewDidMount?.();
-        (v as any).__on_evnt_cb__(ZLViewEventName.ViewDidMount);
+        (v as any).__zl_onEvntCb__(ZLViewEventName.ViewDidMount);
     }
     componentWillUnmount()
     {
         // ZLView生命周期
         let v = this.props.view;        
         v.viewWillUnmount?.();
-        (v as any).__on_evnt_cb__(ZLViewEventName.ViewWillUnmount);
+        (v as any).__zl_onEvntCb__(ZLViewEventName.ViewWillUnmount);
 
         // ZLViewPage 生命周期
         if (v.viewPage !==undefined) 
         {
             v.viewPage.viewWillUnmount?.();
-            (v.viewPage as any).__weak_router__ = undefined;
-            (v as any).__weak_view_page__ = undefined;
+            (v.viewPage as any).__zl_weakRouter__ = undefined;
+            (v as any).__zl_weakViewPage__ = undefined;
         }
-        (v as any).__weak_reactComponent__ = undefined;
+        (v as any).__zl_weakReactComponent__ = undefined;
     }
 
     render()
     {
         let v = this.props.view;
         // page layout subviews
-        let page : ZLViewPage = (v as any).__weak_view_page__?.deref();
+        let page : ZLViewPage = (v as any).__zl_weakViewPage__?.deref();
         if (page !== undefined) {
             page.viewLayoutSubViews?.();
         }
         // layout subviews
         v.layoutSubViews?.();
-        (v as any).__on_evnt_cb__(ZLViewEventName.ViewWillRender);
+        (v as any).__zl_onEvntCb__(ZLViewEventName.ViewWillRender);
 
         // child element
         let childs = undefined;
@@ -178,11 +178,11 @@ export class ZLView extends ZLObject
     /**
      * 如果是由ZLViewPage创建，则有值
      */
-    public get viewPage() : ZLViewPage | undefined {return this.__weak_view_page__?.deref();}
+    public get viewPage() : ZLViewPage | undefined {return this.__zl_weakViewPage__?.deref();}
     /**
      * 获取父视图
      */
-    public get superView() : ZLView | undefined { return this.__weak_superview__?.deref(); }
+    public get superView() : ZLView | undefined { return this.__zl_weakSuperview__?.deref(); }
 
     /**
      * 从父视图中移除
@@ -191,8 +191,8 @@ export class ZLView extends ZLObject
     {
         let s = this.superView;
         if (s !== undefined) {
-            s.__subviews__?.remove(this);
-            this.__weak_superview__ = undefined;
+            s.__zl_subViews__?.remove(this);
+            this.__zl_weakSuperview__ = undefined;
         }
     }
 
@@ -201,17 +201,17 @@ export class ZLView extends ZLObject
      */
     public addSubview(view:ZLView)
     {
-        if(this.__subviews__ === undefined) {
-            this.__subviews__ = new ZLList();
+        if(this.__zl_subViews__ === undefined) {
+            this.__zl_subViews__ = new ZLList();
         }
         view.removeFromSuperview();
-        view.__weak_superview__ = new WeakRef(this);
-        this.__subviews__.add(view);
+        view.__zl_weakSuperview__ = new WeakRef(this);
+        this.__zl_subViews__.add(view);
     }
     /**
      * 子视图列表
      */
-    public get subViews() { return this.__subviews__?.toReadOnlyList();}
+    public get subViews() { return this.__zl_subViews__?.toReadOnlyList();}
 
     /**
      * css 动画 从当前状态到指定状态的动画
@@ -229,7 +229,7 @@ export class ZLView extends ZLObject
 
         let an = new ZLCSSAnimation(this,[from,to]);
         an.params = p;
-        this.__css_animation__ = an.toAnimationStr();
+        this.__zl_css_animation__ = an.toAnimationStr();
         this.refresh();
     }
 
@@ -238,7 +238,7 @@ export class ZLView extends ZLObject
      */
     public refresh(callback?:() => void) 
     { 
-        let c = this.__weak_reactComponent__?.deref();
+        let c = this.__zl_weakReactComponent__?.deref();
         if (c) {
             c.setState({},callback);
         } else if (callback){
@@ -256,39 +256,39 @@ export class ZLView extends ZLObject
      */
     public viewDidMount?():void
     public addListenViewDidMount(cb:ZLViewVoidCallback, cbThis? : any) { 
-        this.__add_evnt_cb__(ZLViewEventName.ViewDidMount,cb,cbThis);
+        this.__zl_addEvntCb__(ZLViewEventName.ViewDidMount,cb,cbThis);
     }
     public removeListenViewDidMount(cb:ZLViewVoidCallback) {
-        this.__remove_evnt_cb__(ZLViewEventName.ViewDidMount,cb);
+        this.__zl_removeEvntCb__(ZLViewEventName.ViewDidMount,cb);
     }
     /**
      * 生命周期 -- view将要卸载  React.componentWillUnmount
      */
     public viewWillUnmount?():void
     public addListenWiewWillUnMount(cb:ZLViewVoidCallback, cbThis? : any) { 
-        this.__add_evnt_cb__(ZLViewEventName.ViewWillUnmount,cb,cbThis);
+        this.__zl_addEvntCb__(ZLViewEventName.ViewWillUnmount,cb,cbThis);
     }
     public removeListenWiewWillUnMount(cb:ZLViewVoidCallback) {
-        this.__remove_evnt_cb__(ZLViewEventName.ViewWillUnmount,cb);
+        this.__zl_removeEvntCb__(ZLViewEventName.ViewWillUnmount,cb);
     }
     /**
      * 获取DOM Node
      */
     public onReactRefCallback?(e:Element):void;
     public addListenOnReactRefCallback(cb:ZLReactRefCallback, cbThis? : any) { 
-        this.__add_evnt_cb__(ZLViewEventName.OnRefCallback,cb,cbThis);
+        this.__zl_addEvntCb__(ZLViewEventName.OnRefCallback,cb,cbThis);
     }
     public removeListenOnReactRefCallback(cb:ZLReactRefCallback) {
-        this.__remove_evnt_cb__(ZLViewEventName.OnRefCallback,cb);
+        this.__zl_removeEvntCb__(ZLViewEventName.OnRefCallback,cb);
     }
     /**
      * 将要执行Render
      */
     public addListenViewWillRender(cb:ZLReactRefCallback, cbThis? : any) { 
-        this.__add_evnt_cb__(ZLViewEventName.ViewWillRender,cb,cbThis);
+        this.__zl_addEvntCb__(ZLViewEventName.ViewWillRender,cb,cbThis);
     }
     public removeListenViewWillRender(cb:ZLReactRefCallback) {
-        this.__remove_evnt_cb__(ZLViewEventName.ViewWillRender,cb);
+        this.__zl_removeEvntCb__(ZLViewEventName.ViewWillRender,cb);
     }
 
     /**
@@ -316,7 +316,7 @@ export class ZLView extends ZLObject
     protected __htmlAttributes__() : ZLHtmlAttribute
     {
         let refCb = undefined;
-        let OnRefCallbackMap = this.__event_map__?.get(ZLViewEventName.OnRefCallback);
+        let OnRefCallbackMap = this.__zl_EventHandlerMap__?.get(ZLViewEventName.OnRefCallback);
         if (this.onReactRefCallback || (OnRefCallbackMap && OnRefCallbackMap.size>0))
         {
             refCb = (e:Element) => {
@@ -334,8 +334,8 @@ export class ZLView extends ZLObject
         let attr = new ZLHtmlAttribute(this.uniqueString, refCb);
         let style =  attr.style;
         style.position = "absolute";
-        style.animation = this.__css_animation__;
-        this.__css_animation__ = undefined;
+        style.animation = this.__zl_css_animation__;
+        this.__zl_css_animation__ = undefined;
 
         if (this.visibility !== undefined) {
             style.visibility = this.visibility ? undefined/*visible*/ : "hidden";
@@ -367,58 +367,58 @@ export class ZLView extends ZLObject
     /**
      * css 动画
      */
-    private __css_animation__? : string;
+    private __zl_css_animation__? : string;
     /**
      * 父视图
      */
-    private __weak_superview__? : WeakRef<ZLView>;
+    private __zl_weakSuperview__? : WeakRef<ZLView>;
     /**
      * 子视图
      */
-    private __subviews__? : ZLList<ZLView>;
+    private __zl_subViews__? : ZLList<ZLView>;
     /**
      * 本视图所在的页面page（由ZLViewPage创建）
      */
-    private __weak_view_page__? : WeakRef<ZLViewPage>;
+    private __zl_weakViewPage__? : WeakRef<ZLViewPage>;
     /**
      * React 容器
      */
-    private __weak_reactComponent__? : WeakRef<ZLViewComponent>;
+    private __zl_weakReactComponent__? : WeakRef<ZLViewComponent>;
     /**
      * 事件回调列表 {事件名 : {事件回调 : 事件回调的This} }
      */
-    private __event_map__? : Map<string, Map<any,any>>;
-    private __add_evnt_cb__(name:string , cb : any , cbThis ? : any)
+    private __zl_EventHandlerMap__? : Map<string, Map<any,any>>;
+    private __zl_addEvntCb__(name:string , cb : any , cbThis ? : any)
     {
         if (cb === undefined || cb === null || name === undefined || name === null){
             return;
         }
-        if (this.__event_map__ === undefined) {
-            this.__event_map__ = new Map();
+        if (this.__zl_EventHandlerMap__ === undefined) {
+            this.__zl_EventHandlerMap__ = new Map();
         }
-        let cbmap = this.__event_map__.get(name);
+        let cbmap = this.__zl_EventHandlerMap__.get(name);
         if (cbmap === undefined) {
             cbmap = new Map();
-            this.__event_map__.set(name,cbmap);
+            this.__zl_EventHandlerMap__.set(name,cbmap);
         }
         cbmap.set(cb,cbThis);
     }
-    private __remove_evnt_cb__(name:string , cb : any)
+    private __zl_removeEvntCb__(name:string , cb : any)
     {
         if (cb === undefined || cb === null || name === undefined || name === null){
             return;
         }
-        if (this.__event_map__)
+        if (this.__zl_EventHandlerMap__)
         {
-            let cbmap = this.__event_map__.get(name);
+            let cbmap = this.__zl_EventHandlerMap__.get(name);
             if (cbmap) {
                 cbmap.delete(cb);
             }
         }
     }
-    private __on_evnt_cb__(name:string , cbArg? : any)
+    private __zl_onEvntCb__(name:string , cbArg? : any)
     {
-        let cbMap = this.__event_map__?.get(name);
+        let cbMap = this.__zl_EventHandlerMap__?.get(name);
         if (cbMap && cbMap.size>0)
         {
             cbMap.forEach((cbThis,cb)=>{

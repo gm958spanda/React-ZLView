@@ -8,6 +8,11 @@
     "type": "git",
     "url": "https://github.com/gm958spanda/React-ZLView.git"
   },
+  "dependencies": {
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "react-router-dom": "^4.0.0"
+  },
   "devDependencies": {
     "react": "^16.8.0",
     "react-dom": "^16.8.0",

@@ -26,13 +26,13 @@ export class ZLScrollView extends ZLView
      */
     public scrollTo(x:number,y:number)
     {
-        if(this.__html_elem__ !== undefined && this.__html_elem__ !== null ) {
-            this.__html_elem__.scrollTo(x,y);
+        if(this.__zl_domNode__ !== undefined && this.__zl_domNode__ !== null ) {
+            this.__zl_domNode__.scrollTo(x,y);
         }
     }
 
-    public get contentOffSetX(): number { return this.__html_elem__ ? this.__html_elem__.scrollLeft : 0 ;}
-    public get contentOffSetY(): number { return this.__html_elem__ ? this.__html_elem__.scrollTop : 0 ;}
+    public get contentOffSetX(): number { return this.__zl_domNode__ ? this.__zl_domNode__.scrollLeft : 0 ;}
+    public get contentOffSetY(): number { return this.__zl_domNode__ ? this.__zl_domNode__.scrollTop : 0 ;}
 
     protected __htmlAttributes__() : ZLHtmlAttribute
     {
@@ -46,9 +46,9 @@ export class ZLScrollView extends ZLView
     }
 
     private __scrollView_onRectRefCallBack__(e:Element){
-        this.__html_elem__ = e;
+        this.__zl_domNode__ = e;
     }
-    private __html_elem__ : Element | undefined;
+    private __zl_domNode__ : Element | undefined;
     // __onload__(e:React.SyntheticEvent)
     // {
     //     console.log(e.currentTarget.scrollTop,e.currentTarget.scrollLeft, e.currentTarget.scrollHeight,e.currentTarget.scrollWidth);

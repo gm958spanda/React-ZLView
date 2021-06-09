@@ -14,7 +14,7 @@ export class ZLViewPage extends ZLObject
     {
         super();
         if (pageSize) {
-            this.__default_size = new ZLSize(pageSize.width,pageSize.height);
+            this.__zl_defaultSZ__ = new ZLSize(pageSize.width,pageSize.height);
         }
     }
     
@@ -28,7 +28,7 @@ export class ZLViewPage extends ZLObject
      */
     public get router() : ZLRouter | undefined 
     {
-        return this.__weak_router__?.deref();
+        return this.__zl_weakRouter__?.deref();
     }
 
     /**
@@ -49,16 +49,16 @@ export class ZLViewPage extends ZLObject
      */
     public get view():ZLView 
     {
-        if (this.__view__ === undefined) 
+        if (this.__zl_view__ === undefined) 
         {
-            let v = this.loadView(this.__default_size);
-            this.__view__ = v;
+            let v = this.loadView(this.__zl_defaultSZ__);
+            this.__zl_view__ = v;
 
-            (v as any).__weak_view_page__ = new WeakRef(this);
+            (v as any).__zl_weakViewPage__ = new WeakRef(this);
             
             this.viewDidLoad?.();
         }
-        return this.__view__;
+        return this.__zl_view__;
     }
     /**
      * 视图已加载，子类可重写
@@ -88,12 +88,12 @@ export class ZLViewPage extends ZLObject
     /**
      * 默认尺寸
      */
-    private __default_size? : ZLSize;
+    private __zl_defaultSZ__? : ZLSize;
     /**
      * 视图
      */
-    private __view__? : ZLView;
+    private __zl_view__? : ZLView;
 
     /** 路由*/
-    private __weak_router__ : WeakRef<ZLRouter> |undefined;
+    private __zl_weakRouter__ : WeakRef<ZLRouter> |undefined;
 }

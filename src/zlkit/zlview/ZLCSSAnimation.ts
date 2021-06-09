@@ -10,7 +10,7 @@ export class ZLCSSAnimation extends ZLObject
         super();
         this.__keyFrames__ = keyFrames;
         this.__is_css_created__ = false;
-        this.__view__ = new WeakRef(view);
+        this.__zl_view__ = new WeakRef(view);
 
         view.addListenViewWillRender(this.__onViewWillRender__,this);
         view.addListenOnReactRefCallback(this.__onViewReactRefCallback__,this);
@@ -85,15 +85,15 @@ export class ZLCSSAnimation extends ZLObject
 
     private clearresource()
     {
-        if (this.__view__)
+        if (this.__zl_view__)
         {
             this.removeCSS();
 
             this.__keyFrames__ = [];
             this.params = undefined;
 
-            let view = this.__view__;
-            this.__view__ = undefined;
+            let view = this.__zl_view__;
+            this.__zl_view__ = undefined;
             
             let elem = this.__elem__;
             this.__elem__ = undefined;
@@ -165,7 +165,7 @@ export class ZLCSSAnimation extends ZLObject
 
     private __is_css_created__ : boolean;
     private __keyFrames__ : ZLCSSAnimationKeyFrame[];
-    private __view__? : WeakRef<ZLView>;
+    private __zl_view__? : WeakRef<ZLView>;
     private __elem__? : WeakRef<Element>;
 }
 

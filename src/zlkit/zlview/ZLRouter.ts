@@ -24,12 +24,12 @@ class ZLRouterComponent extends React.Component<ZLRouterComponentProps>
     componentDidMount()
     {
         let r = this.props.zlrouter;
-        (r as any).__weak_reactComponent__ = new WeakRef(this);
+        (r as any).__zl_weakReactComponent__ = new WeakRef(this);
     }
     componentWillUnmount()
     {
         let r = this.props.zlrouter;
-        (r as any).__weak_reactComponent__ = undefined;
+        (r as any).__zl_weakReactComponent__ = undefined;
     }
     render()
     {
@@ -68,7 +68,7 @@ function ZLRouteRenderFunction( p:any )
     else {
         page = new (cls_ins as ZLViewPageClass)(new ZLSize(router.defaultPageWidth,router.defaultPageHeight));
     }
-    (page as any).__weak_router__ = new WeakRef(router);
+    (page as any).__zl_weakRouter__ = new WeakRef(router);
     page.onRouterMatchMe?.(loc);
     return page.reactElement();
 }
@@ -174,7 +174,7 @@ export class ZLRouter
      */
      public reloadRoute(callback?:() => void) 
      { 
-         let c = this.__weak_reactComponent__?.deref();
+         let c = this.__zl_weakReactComponent__?.deref();
          if (c) {
              c.setState({},callback);
          } else if (callback){
@@ -193,7 +193,7 @@ export class ZLRouter
     /**
      * React 容器
      */
-     private __weak_reactComponent__ : WeakRef<ZLRouterComponent> | undefined;
+     private __zl_weakReactComponent__ : WeakRef<ZLRouterComponent> | undefined;
 
     /**
      * 路由匹配的根路径
