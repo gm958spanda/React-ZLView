@@ -1,5 +1,5 @@
 import React from 'react';
-import {ZLView}  from './ZLView'
+import {ZLHtmlAttribute, ZLView}  from './ZLView'
 import {ZLEventCallbackList} from '../sugar/eventcb'
 
 
@@ -7,11 +7,21 @@ type ZLButtonOnClickCallback = (sender:ZLButton)=>void;
 
 export class ZLButton extends ZLView
 {
+    // constructor(){
+    //     super();
+    //     this.addListenWiewWillUnMount(()=>{
+    //         this.__zl_btn_event_list__?.clear();
+    //     })
+    // }
     /**
      * 按钮标题
      */
     public title? : string;
 
+    /**
+     * 是否禁用按钮
+     */
+    public disabled? : boolean;
     /**
      * 添加onClick回调
      * @param cb 回调函数
@@ -31,10 +41,7 @@ export class ZLButton extends ZLView
      */
     public removeOnClickEventCallback(cb:ZLButtonOnClickCallback)
     {
-        if (this.__zl_btn_event_list__ === undefined) {
-            this.__zl_btn_event_list__ = new ZLEventCallbackList();
-        }
-        this.__zl_btn_event_list__.removeEvntCallback("onclick",cb);
+        this.__zl_btn_event_list__?.removeEvntCallback("onclick",cb);
     }
 
     protected __reactRender__(children?:React.ReactNode[])
@@ -45,5 +52,14 @@ export class ZLButton extends ZLView
         }
         return React.createElement("button",attr.toReactClassAttributes(), children,this.title);
     }
+    protected __htmlAttributes__() : ZLHtmlAttribute
+    {
+        let attr = super.__htmlAttributes__();
+        if (this.disabled === true) {
+            (attr.otherAttr as any).disabled = "disabled";
+        }
+        return attr;
+    }
+    
     private __zl_btn_event_list__? : ZLEventCallbackList;
 }

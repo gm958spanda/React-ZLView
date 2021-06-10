@@ -41,10 +41,23 @@ class HomePage extends zl.ViewPage
 
         let view;
         {
+            let lb = new zl.TextArea()
+            lb.text = "456  \n \n123";
+            lb.addOnInputEventCallback((sender)=>{
+                console.log(sender.text);
+            })
+            lb.top = 10;
+            lb.left = 10;
+            lb.width = 180;
+            lb.height = 200;
+            this.view.addSubview(lb);
+            view = lb;
+        }
+        {
             let btn = new zl.Button();
             btn.backgroudColor = "rgb(00,00,255,0.2)";
             btn.left = 20;
-            btn.top = 40;
+            btn.top = view.bottom + 60;
             btn.width = 120;
             btn.height = 30;
             btn.title = "SinPage"

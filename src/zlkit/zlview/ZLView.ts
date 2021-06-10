@@ -158,6 +158,16 @@ export class ZLView extends ZLObject
         this.height = view.height;
     }
     /**
+     * 设置坐标和尺寸
+     */
+    public setFrame(x:number,y:number,width:number,height:number)
+    {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+    /**
      * 背景色
      */
     public backgroudColor? : string;
@@ -407,6 +417,7 @@ export class ZLHtmlAttribute
 {
     constructor(dom_node_id: string , ref?: ((ref:Element)=>void))
     {
+        this.otherAttr = {};
         this.style = {} as any;
         this.event = {} as any;
         this.__dom_node_id__ = dom_node_id;
@@ -428,9 +439,9 @@ export class ZLHtmlAttribute
     event : React.DOMAttributes<HTMLElement>;
 
     /**
-     * src 属性
+     * 其他属性
      */
-    src? : string;
+    otherAttr : {}
 
     toReactClassAttributes() : {}
     {
@@ -438,14 +449,12 @@ export class ZLHtmlAttribute
         if (this.className !== undefined && this.className.length > 0 ) {
             attr.className = this.className;
         }
-        if (this.src !== undefined ) {
-            attr.src = this.src;
-        }
-        Object.assign(attr,this.event);
+        Object.assign(this.otherAttr,this.event);
+        Object.assign(this.otherAttr,attr);
         if(this.__ref__ !== undefined) {
             attr.ref = this.__ref__;
         }
-        return attr;
+        return this.otherAttr;
     }
 
     /**

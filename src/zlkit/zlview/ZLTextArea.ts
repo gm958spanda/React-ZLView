@@ -1,0 +1,161 @@
+import React from 'react';
+
+import {ZLHtmlAttribute, ZLView}  from './ZLView'
+import {ZLSize,ZLFont, ZLWordBreakMode, ZLWorkWrapMode, ZLTextAlignMode} from './ZLUIDef'
+import {ZLEventCallbackList} from '../sugar/eventcb'
+
+
+type ZLButtonOnInputCallback = (sender:ZLTextArea)=>void;
+
+export class ZLTextArea extends ZLView
+{
+    constructor() {
+        super();
+        this.font = ZLFont.getDefaultFont();
+        this.addListenOnReactRefCallback((e:Element) =>{
+            this.__zl_txa_node__ = e as HTMLTextAreaElement;
+        });
+    }
+
+    /**
+     * 滚动尺寸
+     */
+    public get scrollSize() : ZLSize |undefined {return this.__zl_txa_scrollSize__;}
+
+    /**
+     * text 显示的文字
+     */
+    public get text(): string{ return this.__zl_txa_text__ ? this.__zl_txa_text__ : "";}
+    public set text(value:string) 
+    {
+        this.__zl_txa_text__ = value;
+        if(this.__zl_txa_node__) {
+            this.__zl_txa_node__.value = value;
+        } else {
+            this.refresh();
+        }
+    }
+    /**
+     * 文本颜色
+     */
+    public get textColor():string|undefined {return this.color;}
+    public set textColor(c:string|undefined) {this.color=c;}
+    /**
+     * 简短提示
+     */
+    public placeholder? : string;
+    /**
+     * 文本区域的最大字符数
+     */
+    public maxlength? : number;
+    /**
+     * 文本字体
+     */
+    public font : ZLFont;
+    /**
+     * 词内换行
+     */
+    public wordBreak : ZLWordBreakMode | undefined;
+    /**
+     * 内容换行
+     */
+    public wordWrap : ZLWorkWrapMode | undefined;
+    /**
+     * 对齐方式
+     */
+    public textAlign : ZLTextAlignMode | undefined;
+    /**
+     * 是否只读
+     */
+    public readonly? : boolean;
+    /**
+     * 是否禁用
+     */
+    public disabled? :boolean;
+    /**
+     * 页面加载后文本区域自动获得焦点
+     */
+    public autofocus? : boolean;
+    /**
+     * 添加onInput回调
+     * @param cb 回调函数
+     * @param cbThis 回调函数的this
+     */
+     public addOnInputEventCallback(cb:ZLButtonOnInputCallback,cbThis?:any)
+     {
+         if (this.__zl_txa_event_list__ === undefined) {
+             this.__zl_txa_event_list__ = new ZLEventCallbackList();
+         }
+         this.__zl_txa_event_list__.addEvntCallback("oninput",cb,cbThis);
+     }
+ 
+     /**
+      * 移除 onInput回调
+      * @param cb 回调函数
+      */
+     public removeOnClickEventCallback(cb:ZLButtonOnInputCallback)
+     {
+         this.__zl_txa_event_list__?.removeEvntCallback("oninput",cb);
+     }
+
+    protected __reactRender__(children?:React.ReactNode[])
+    {
+        let attr = this.__htmlAttributes__();
+        return React.createElement("textarea",attr.toReactClassAttributes());
+    }
+
+    protected __htmlAttributes__() : ZLHtmlAttribute
+    {
+        let attr = super.__htmlAttributes__();
+        attr.event.onInput = (e:React.SyntheticEvent)=>{
+            let node = (e.target as HTMLTextAreaElement);
+            this.__zl_txa_node__ = node
+            this.__zl_txa_text__ = node.value;
+            if (this.__zl_txa_scrollSize__ === undefined) {
+                this.__zl_txa_scrollSize__ = new ZLSize();
+            }
+            this.__zl_txa_scrollSize__.width = node.scrollWidth;
+            this.__zl_txa_scrollSize__.height = node.scrollHeight;
+            
+            this.__zl_txa_event_list__?.onEvnt("oninput",this);
+        }
+        if (this.__zl_txa_text__ !== undefined) {
+            (attr.otherAttr as any).defaultValue = this.__zl_txa_text__;
+        }
+        if(this.readonly === true){
+            (attr.otherAttr as any).readonly = "readonly";
+        }
+        if (this.disabled === true) {
+            (attr.otherAttr as any).disabled = "disabled";
+        }
+        if (this.placeholder !== undefined) {
+            (attr.otherAttr as any).placeholder = this.placeholder;
+        }
+        if (this.maxlength !== undefined) {
+            (attr.otherAttr as any).maxlength = this.maxlength;
+        }
+        if (this.autofocus === true) {
+            (attr.otherAttr as any).autofocus = "";
+        }
+        let style = attr.style;
+        style.resize = "none";
+        if (this.font !== undefined) {
+            this.font.toCSSStyle(style);
+        }
+        if (this.wordBreak !== undefined) {
+            style.wordBreak = this.wordBreak;
+        }
+        if (this.wordWrap !== undefined) {
+            style.wordWrap = this.wordWrap;
+        }
+        if (this.textAlign !== undefined) {
+            style.textAlign = this.textAlign;
+        }
+        return attr;
+    }
+    
+    private __zl_txa_node__? : HTMLTextAreaElement;
+    private __zl_txa_text__? :string;
+    private __zl_txa_scrollSize__? : ZLSize;
+    private __zl_txa_event_list__? : ZLEventCallbackList;
+}

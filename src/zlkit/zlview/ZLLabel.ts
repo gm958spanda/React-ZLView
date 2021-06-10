@@ -14,7 +14,7 @@ export class ZLLabel extends ZLView
     /**
      * text 显示的文字
      */
-    public text: string | undefined;
+    public text?: string ;
     /**
      * 文本颜色
      */
@@ -27,19 +27,25 @@ export class ZLLabel extends ZLView
     /**
      * 词内换行
      */
-    public wordBreak : ZLWordBreakMode | undefined;
+    public wordBreak? : ZLWordBreakMode;
     /**
      * 内容换行
      */
-    public wordWrap : ZLWorkWrapMode | undefined;
+    public wordWrap? : ZLWorkWrapMode;
     /**
      * 对齐方式
      */
-    public textAlign : ZLTextAlignMode | undefined;
+    public textAlign? : ZLTextAlignMode;
 
+    /**
+     * 计算合适的尺寸
+     */
     sizeThatSize(size:ZLSize) : ZLSize {
         return ZLUtils.textSize(this.text,size,this.font,this.wordBreak,this.wordWrap,this.textAlign);
     }
+    /**
+     * 计算合适的尺寸
+     */
     sizeThatWidthHeight(width:number ,height : number) : ZLSize {
         return this.sizeThatSize(new ZLSize(width,height));
     }

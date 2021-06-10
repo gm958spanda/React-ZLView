@@ -66,6 +66,10 @@ export class ZLEventCallbackList
              });
          }
      }
+     public clear()
+     {
+         this.__zl_EventHandlerMap__?.clear();
+     }
     /**
      * 触发事件
      * @param name 事件名称
