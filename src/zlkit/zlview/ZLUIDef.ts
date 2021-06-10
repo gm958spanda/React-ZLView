@@ -62,6 +62,23 @@ export class ZLRect
     public static Zero = new ZLRect();
 }
 
+export class ZLEdgeInset
+{
+    constructor(left?:number,right?:number,top?:number,bottom?:number)
+    {
+        this.left = left?left:0;
+        this.right = right?right:0;
+        this.top = top?top:0;
+        this.bottom = bottom?bottom:0;
+    }
+    left: number;
+    right: number;
+    top: number;
+    bottom: number;
+
+    public static Zero = new ZLEdgeInset();
+}
+
 export enum ZLWordBreakMode
 {
     Normal = "normal" , //使用浏览器默认的换行规则

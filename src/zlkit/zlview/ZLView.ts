@@ -3,7 +3,7 @@ import React, { CSSProperties} from 'react';
 import {ZLList} from '../sugar/list'
 import {ZLEventCallbackList} from '../sugar/eventcb'
 
-import {ZLPoint,ZLHref, ZLCurrentSizeUnit, ZLCSSAnimationParams} from './ZLUIDef'
+import {ZLPoint,ZLHref, ZLCurrentSizeUnit, ZLCSSAnimationParams, ZLEdgeInset} from './ZLUIDef'
 import {ZLViewPage} from './ZLViewPage'
 import {ZLObject} from './ZLObject'
 import {ZLCSSAnimation, ZLCSSAnimationKeyFrame} from './ZLCSSAnimation'
@@ -184,6 +184,18 @@ export class ZLView extends ZLObject
      * 是否切除溢出边界的子视图 （通过设置overflow）
      */
     public clipToBounds? : boolean;
+
+    /**
+     * padding
+     */
+    public get padding() : ZLEdgeInset | undefined {return this.__zl_padding__;}
+    public set padding(p: ZLEdgeInset | undefined ) {this.__zl_padding__ = p;}
+
+    /**
+     * borderWidth
+     */
+    public get borderWidth():number | undefined { return this.__zl_borderWidth__;}
+    public set borderWidth(w:number | undefined){ this.__zl_borderWidth__ = w;}
 
     /**
      * 跳转连接
@@ -376,6 +388,26 @@ export class ZLView extends ZLObject
         if (this.y !== undefined) {
             style.top = this.y.toString()+ ZLCurrentSizeUnit;
         }
+        if (this.__zl_borderWidth__) {
+            style.borderWidth = this.__zl_borderWidth__.toString() + ZLCurrentSizeUnit;
+        }
+        if (this.__zl_padding__ !== undefined)
+        {
+            let t = this.__zl_padding__;
+            if ((t.left === t.right) 
+                && (t.bottom === t.top)
+                && (t.left === t.bottom) )
+            {
+                style.padding =  t.left.toString() + ZLCurrentSizeUnit;
+            }
+            else 
+            {
+                style.paddingTop = t.top.toString() + ZLCurrentSizeUnit;
+                style.paddingBottom = t.bottom.toString() + ZLCurrentSizeUnit
+                style.paddingLeft = t.left.toString() + ZLCurrentSizeUnit
+                style.paddingRight = t.right.toString() + ZLCurrentSizeUnit
+            }
+        }
         return attr
     }
 
@@ -410,6 +442,9 @@ export class ZLView extends ZLObject
         }
         return this.__zl_eventHandlerlist__;
     }
+    ///padding border
+    private __zl_padding__? :ZLEdgeInset;
+    private __zl_borderWidth__? : number;
 }
 
 
@@ -446,14 +481,14 @@ export class ZLHtmlAttribute
     toReactClassAttributes() : {}
     {
         let attr :any  = {style : this.style , id : this.__dom_node_id__};
+        if(this.__ref__ !== undefined) {
+            attr.ref = this.__ref__;
+        }
         if (this.className !== undefined && this.className.length > 0 ) {
             attr.className = this.className;
         }
         Object.assign(this.otherAttr,this.event);
         Object.assign(this.otherAttr,attr);
-        if(this.__ref__ !== undefined) {
-            attr.ref = this.__ref__;
-        }
         return this.otherAttr;
     }
 

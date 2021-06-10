@@ -36,6 +36,7 @@ export {
     ZLPoint as Point,
     ZLSize as Size,
     ZLRect as Rect,
+    ZLEdgeInset as EdgeInset,
     
     ZLWordBreakMode as WordBreakMode,
     ZLWorkWrapMode as  WorkWrapMode,

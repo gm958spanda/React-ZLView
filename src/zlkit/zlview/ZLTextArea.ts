@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {ZLHtmlAttribute, ZLView}  from './ZLView'
-import {ZLSize,ZLFont, ZLWordBreakMode, ZLWorkWrapMode, ZLTextAlignMode} from './ZLUIDef'
+import {ZLSize,ZLFont, ZLWordBreakMode, ZLWorkWrapMode, ZLTextAlignMode, ZLEdgeInset, ZLCurrentSizeUnit} from './ZLUIDef'
 import {ZLEventCallbackList} from '../sugar/eventcb'
 
 
@@ -11,6 +11,8 @@ export class ZLTextArea extends ZLView
 {
     constructor() {
         super();
+        this.borderWidth = 1;
+        this.padding = new ZLEdgeInset(2,2,2,2);
         this.font = ZLFont.getDefaultFont();
         this.addListenOnReactRefCallback((e:Element) =>{
             this.__zl_txa_node__ = e as HTMLTextAreaElement;
@@ -123,7 +125,7 @@ export class ZLTextArea extends ZLView
             (attr.otherAttr as any).defaultValue = this.__zl_txa_text__;
         }
         if(this.readonly === true){
-            (attr.otherAttr as any).readonly = "readonly";
+            (attr.otherAttr as any).readOnly = "readonly";
         }
         if (this.disabled === true) {
             (attr.otherAttr as any).disabled = "disabled";
@@ -139,6 +141,23 @@ export class ZLTextArea extends ZLView
         }
         let style = attr.style;
         style.resize = "none";
+        {
+            let p = this.padding;
+            let w = 0;
+            let h = 0;
+            if (p){
+                w += p.left + p.right;
+                h += p.top + p.bottom;
+            }
+            let bw = this.borderWidth;
+            if (bw) {
+                w += bw *2;
+                h += bw *2;
+            }
+            style.width = (this.width -w).toString() + ZLCurrentSizeUnit;
+            style.height = (this.height -h).toString() + ZLCurrentSizeUnit;
+        }
+        
         if (this.font !== undefined) {
             this.font.toCSSStyle(style);
         }
