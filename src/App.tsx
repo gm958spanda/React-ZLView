@@ -1,7 +1,6 @@
 import React from 'react';
 import './App.css';
 import * as zl from  "./zlkit/index"
-import { ZLViewPage } from './zlkit/zlview/ZLViewPage';
 
 class App extends React.Component
 {
@@ -20,13 +19,7 @@ class App extends React.Component
             this.router.registRoute("/",HomePage);
             this.router.registRoute("/sin", SinPage);
             this.router.registRoute("/scroll", ScrollPage);
-
-            // let rp = ["nomatch","scroll","/","sin"];
-            // let index = 0;
-            // this.timer_id = setInterval(()=>{
-            //     this.router?.push(rp[index%4]);
-            //     index++;
-            // },5000);
+            this.router.registRoute("/animation", AnimationPage);
         }
         return this.router.reactElement();
     }
@@ -35,24 +28,59 @@ class App extends React.Component
 export default App;
 
 
-class HomePage extends ZLViewPage
+class HomePage extends zl.ViewPage
 {
     viewLayoutSubViews()
     {
         super.viewLayoutSubViews?.();
-        this.view.backgroudColor = "red";
+        this.view.backgroudColor = "white";
     }
     viewDidLoad()
     {
         super.viewDidLoad?.();
-        let lb = new zl.Label();
-        lb.text = "HomePage";
-        let sz = lb.sizeThatWidthHeight(100,100);
-        lb.width = sz.width;
-        lb.height = sz.height;
-        lb.center_x = this.view.width / 2;
-        lb.center_y = this.view.height / 2;
-        this.view.addSubview(lb);
+
+        let view;
+        {
+            let btn = new zl.Button();
+            btn.backgroudColor = "rgb(00,00,255,0.2)";
+            btn.left = 20;
+            btn.top = 40;
+            btn.width = 120;
+            btn.height = 30;
+            btn.title = "SinPage"
+            btn.addOnClickEventCallback((sender)=>{
+                this.router?.push("/sin");
+            })
+            this.view.addSubview(btn);
+
+            view = btn;
+        }
+
+        {
+            let btn = new zl.Button();
+            btn.backgroudColor = "rgb(00,00,255,0.2)";
+            btn.setFrameSameAs(view);
+            btn.top = view.bottom + 20;
+            btn.title = "ScrollPage"
+            btn.addOnClickEventCallback((sender)=>{
+                this.router?.push("/scroll");
+            })
+            this.view.addSubview(btn);
+
+            view = btn;
+        }
+
+        {
+            let btn = new zl.Button();
+            btn.backgroudColor = "rgb(00,00,255,0.2)";
+            btn.setFrameSameAs(view);
+            btn.top = view.bottom + 20;
+            btn.title = "Animation"
+            btn.addOnClickEventCallback((sender)=>{
+                this.router?.push("/animation");
+            })
+            this.view.addSubview(btn);
+        }
     }
         
     viewDidMount()
@@ -66,7 +94,7 @@ class HomePage extends ZLViewPage
     }
 }
 
-class SinPage extends ZLViewPage
+class SinPage extends zl.ViewPage
 {
     viewLayoutSubViews()
     {
@@ -103,7 +131,7 @@ class SinPage extends ZLViewPage
     }
 }
 
-class ScrollPage extends ZLViewPage
+class ScrollPage extends zl.ViewPage
 {
     private timer_id:NodeJS.Timeout |undefined;
     viewDidLoad()
@@ -137,20 +165,6 @@ class ScrollPage extends ZLViewPage
         // scrollView.alwaysShowScrollIndicatorX = false;
         // scrollView.alwaysShowScrollIndicatorY = true;
         scrollView.hiddenScrollBar = true;
-        scrollView.cssAnimation({to:()=>{
-            scrollView.backgroudColor = "yellow";
-            scrollView.x = 100;
-            scrollView.width = 200;
-            // scrollView.visibility = false;
-        },
-            duration:3000,
-            timingFunction:zl.CSSAnimationTimingFunction.cubicBezier,
-            cubicBezierValue:[1,0,0,1],
-            end:()=>{
-                console.log("animation end");
-            }
-        });
-
         let top = 0;
         for (let i = 0 ; i < 99 ; i++)
         {
@@ -173,5 +187,51 @@ class ScrollPage extends ZLViewPage
             // scrollView.subViews?.getElementAt(0).removeFromSuperview();
             // scrollView.refresh();
         },100);
+    }
+}
+
+
+
+class AnimationPage extends zl.ViewPage
+{
+    viewDidLoad()
+    {
+        super.viewDidLoad?.();
+        this.view.backgroudColor = "white";
+        this.test(this.view);
+    }
+
+    viewDidMount()
+    {
+        console.log( this.constructor.name + " mount");
+    }
+
+    viewWillUnMount()
+    {
+        console.log( this.constructor.name + " unmount");
+    }
+
+    test(appView:zl.View)
+    {
+        appView.backgroudColor = "white";
+
+        let view = new zl.View();
+        appView.addSubview(view);
+        
+        view.width = appView.width * 0.6;
+        view.height = appView.height * 0.3;;
+        view.backgroudColor = "red";
+        view.cssAnimation({to:()=>{
+            view.backgroudColor = "yellow";
+            view.x = 100;
+            view.width = 200;
+        },
+            duration:3000,
+            timingFunction:zl.CSSAnimationTimingFunction.cubicBezier,
+            cubicBezierValue:[1,0,0,1],
+            end:()=>{
+                console.log("animation end");
+            }
+        });
     }
 }

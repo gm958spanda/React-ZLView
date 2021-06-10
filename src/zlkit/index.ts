@@ -10,7 +10,9 @@ export {
     ZLCSSAnimationKeyFrame as CSSAnimationKeyFrame
 } from './zlview/ZLCSSAnimation';
 
-
+export { 
+    ZLButton as Button
+} from './zlview/ZLButton';
 
 export { 
     ZLImageView as ImageView 

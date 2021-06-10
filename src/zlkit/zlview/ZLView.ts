@@ -1,9 +1,13 @@
 import React, { CSSProperties} from 'react';
+
 import {ZLList} from '../sugar/list'
+import {ZLEventCallbackList} from '../sugar/eventcb'
+
 import {ZLPoint,ZLHref, ZLCurrentSizeUnit, ZLCSSAnimationParams} from './ZLUIDef'
 import {ZLViewPage} from './ZLViewPage'
 import {ZLObject} from './ZLObject'
 import {ZLCSSAnimation, ZLCSSAnimationKeyFrame} from './ZLCSSAnimation'
+
 
 enum ZLViewEventName
 {
@@ -13,6 +17,7 @@ enum ZLViewEventName
     
     ViewWillRender = "ViewWillRender" , // React Render事件， 事件回调类型为ZLReactRefCallback
 }
+
 type ZLReactRefCallback = (e:Element) => void;
 type ZLViewVoidCallback = () => void;
 
@@ -36,14 +41,14 @@ class ZLViewComponent extends React.Component<ZLViewComponentProps>
 
         // ZLView生命周期
         v.viewDidMount?.();
-        (v as any).__zl_onEvntCb__(ZLViewEventName.ViewDidMount);
+        ((v as any).__zl_eventHandlerlist__ as ZLEventCallbackList)?.onEvnt(ZLViewEventName.ViewDidMount);
     }
     componentWillUnmount()
     {
         // ZLView生命周期
         let v = this.props.view;        
         v.viewWillUnmount?.();
-        (v as any).__zl_onEvntCb__(ZLViewEventName.ViewWillUnmount);
+        ((v as any).__zl_eventHandlerlist__ as ZLEventCallbackList)?.onEvnt(ZLViewEventName.ViewWillUnmount);
 
         // ZLViewPage 生命周期
         if (v.viewPage !==undefined) 
@@ -65,7 +70,7 @@ class ZLViewComponent extends React.Component<ZLViewComponentProps>
         }
         // layout subviews
         v.layoutSubViews?.();
-        (v as any).__zl_onEvntCb__(ZLViewEventName.ViewWillRender);
+        ((v as any).__zl_eventHandlerlist__ as ZLEventCallbackList)?.onEvnt(ZLViewEventName.ViewWillRender);
 
         // child element
         let childs = undefined;
@@ -256,39 +261,39 @@ export class ZLView extends ZLObject
      */
     public viewDidMount?():void
     public addListenViewDidMount(cb:ZLViewVoidCallback, cbThis? : any) { 
-        this.__zl_addEvntCb__(ZLViewEventName.ViewDidMount,cb,cbThis);
+        this.__get_zl_eventHandlerlist__().addEvntCallback(ZLViewEventName.ViewDidMount,cb,cbThis);
     }
     public removeListenViewDidMount(cb:ZLViewVoidCallback) {
-        this.__zl_removeEvntCb__(ZLViewEventName.ViewDidMount,cb);
+        this.__zl_eventHandlerlist__?.removeEvntCallback(ZLViewEventName.ViewDidMount,cb);
     }
     /**
      * 生命周期 -- view将要卸载  React.componentWillUnmount
      */
     public viewWillUnmount?():void
     public addListenWiewWillUnMount(cb:ZLViewVoidCallback, cbThis? : any) { 
-        this.__zl_addEvntCb__(ZLViewEventName.ViewWillUnmount,cb,cbThis);
+        this.__get_zl_eventHandlerlist__().addEvntCallback(ZLViewEventName.ViewWillUnmount,cb,cbThis);
     }
     public removeListenWiewWillUnMount(cb:ZLViewVoidCallback) {
-        this.__zl_removeEvntCb__(ZLViewEventName.ViewWillUnmount,cb);
+        this.__zl_eventHandlerlist__?.removeEvntCallback(ZLViewEventName.ViewWillUnmount,cb);
     }
     /**
      * 获取DOM Node
      */
     public onReactRefCallback?(e:Element):void;
     public addListenOnReactRefCallback(cb:ZLReactRefCallback, cbThis? : any) { 
-        this.__zl_addEvntCb__(ZLViewEventName.OnRefCallback,cb,cbThis);
+        this.__get_zl_eventHandlerlist__().addEvntCallback(ZLViewEventName.OnRefCallback,cb,cbThis);
     }
     public removeListenOnReactRefCallback(cb:ZLReactRefCallback) {
-        this.__zl_removeEvntCb__(ZLViewEventName.OnRefCallback,cb);
+        this.__zl_eventHandlerlist__?.removeEvntCallback(ZLViewEventName.OnRefCallback,cb);
     }
     /**
      * 将要执行Render
      */
     public addListenViewWillRender(cb:ZLReactRefCallback, cbThis? : any) { 
-        this.__zl_addEvntCb__(ZLViewEventName.ViewWillRender,cb,cbThis);
+        this.__get_zl_eventHandlerlist__().addEvntCallback(ZLViewEventName.ViewWillRender,cb,cbThis);
     }
     public removeListenViewWillRender(cb:ZLReactRefCallback) {
-        this.__zl_removeEvntCb__(ZLViewEventName.ViewWillRender,cb);
+        this.__zl_eventHandlerlist__?.removeEvntCallback(ZLViewEventName.ViewWillRender,cb);
     }
 
     /**
@@ -316,7 +321,7 @@ export class ZLView extends ZLObject
     protected __htmlAttributes__() : ZLHtmlAttribute
     {
         let refCb = undefined;
-        let OnRefCallbackMap = this.__zl_EventHandlerMap__?.get(ZLViewEventName.OnRefCallback);
+        let OnRefCallbackMap = this.__zl_eventHandlerlist__?.getEventCallbackList(ZLViewEventName.OnRefCallback);
         if (this.onReactRefCallback || (OnRefCallbackMap && OnRefCallbackMap.size>0))
         {
             refCb = (e:Element) => {
@@ -387,44 +392,13 @@ export class ZLView extends ZLObject
     /**
      * 事件回调列表 {事件名 : {事件回调 : 事件回调的This} }
      */
-    private __zl_EventHandlerMap__? : Map<string, Map<any,any>>;
-    private __zl_addEvntCb__(name:string , cb : any , cbThis ? : any)
+    private __zl_eventHandlerlist__? : ZLEventCallbackList;
+    private __get_zl_eventHandlerlist__() :ZLEventCallbackList 
     {
-        if (cb === undefined || cb === null || name === undefined || name === null){
-            return;
+        if (this.__zl_eventHandlerlist__ === undefined) {
+            this.__zl_eventHandlerlist__ = new ZLEventCallbackList();
         }
-        if (this.__zl_EventHandlerMap__ === undefined) {
-            this.__zl_EventHandlerMap__ = new Map();
-        }
-        let cbmap = this.__zl_EventHandlerMap__.get(name);
-        if (cbmap === undefined) {
-            cbmap = new Map();
-            this.__zl_EventHandlerMap__.set(name,cbmap);
-        }
-        cbmap.set(cb,cbThis);
-    }
-    private __zl_removeEvntCb__(name:string , cb : any)
-    {
-        if (cb === undefined || cb === null || name === undefined || name === null){
-            return;
-        }
-        if (this.__zl_EventHandlerMap__)
-        {
-            let cbmap = this.__zl_EventHandlerMap__.get(name);
-            if (cbmap) {
-                cbmap.delete(cb);
-            }
-        }
-    }
-    private __zl_onEvntCb__(name:string , cbArg? : any)
-    {
-        let cbMap = this.__zl_EventHandlerMap__?.get(name);
-        if (cbMap && cbMap.size>0)
-        {
-            cbMap.forEach((cbThis,cb)=>{
-                cb.call(cbThis,cbArg);
-            });
-        }
+        return this.__zl_eventHandlerlist__;
     }
 }
 
