@@ -17,6 +17,10 @@ export class ZLReadOnlyList<T>
     {
         return this._arr.values();
     }
+    forEach(callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any)
+    {
+        this._arr.forEach(callbackfn,thisArg);
+    }
 
     /**
      * 数组长度
@@ -63,6 +67,10 @@ export class ZLList<T>
     [Symbol.iterator](): IterableIterator<T> 
     {
         return this._arr.values();
+    }
+    forEach(callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any)
+    {
+        this._arr.forEach(callbackfn,thisArg);
     }
 
     /**
