@@ -3,7 +3,7 @@ import React, { CSSProperties} from 'react';
 import {ZLList} from '../sugar/list'
 import {ZLEventCallbackList} from '../sugar/eventcb'
 
-import {ZLPoint,ZLHref, ZLCurrentSizeUnit, ZLCSSAnimationParams, ZLEdgeInset} from './ZLUIDef'
+import {ZLPoint,ZLHref, ZLCurrentSizeUnit, ZLCSSAnimationParams, ZLEdgeInset,ZLBorderStyle} from './ZLUIDef'
 import {ZLViewPage} from './ZLViewPage'
 import {ZLObject} from './ZLObject'
 import {ZLCSSAnimation, ZLCSSAnimationKeyFrame} from './ZLCSSAnimation'
@@ -219,13 +219,23 @@ export class ZLView extends ZLObject
         }
     }
     /**
-     * borderWidth
+     * 边框线宽
      */
     public get borderWidth():number | undefined { return this.__zl_borderWidth__;}
     public set borderWidth(w:number | undefined){
         this.__zl_borderWidth__ = w;
         this.__zl_cssStyle__.borderWidth = w ? (w.toString() + ZLCurrentSizeUnit) : undefined;
     }
+    /**
+     * 边框线色
+     */
+    public get borderColor():string | undefined { return this.__zl_cssStyle__.borderColor;}
+    public set borderColor(v:string | undefined ){ this.__zl_cssStyle__.borderColor = v;}
+    /**
+     * 边框样式
+     */
+    public get borderStyle():ZLBorderStyle | undefined { return this.__cssStyle__.borderStyle as ZLBorderStyle;}
+    public set borderStyle(m:ZLBorderStyle | undefined) {this.__cssStyle__.borderStyle = m;}
 
     /**
      * 跳转连接

@@ -38,6 +38,8 @@ export {
     ZLRect as Rect,
     ZLEdgeInset as EdgeInset,
     
+    ZLBorderStyle as BorderStyle,
+
     ZLWordBreakMode as WordBreakMode,
     ZLWorkWrapMode as  WorkWrapMode,
     ZLTextAlignMode as TextAlignMode,

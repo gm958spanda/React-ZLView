@@ -79,6 +79,21 @@ export class ZLEdgeInset
     public static Zero = new ZLEdgeInset();
 }
 
+
+export enum ZLBorderStyle
+{
+    None = "none" ,//　无边框。与任何指定的border-width值无关
+    Hidden ="hidden" , // 　隐藏边框。IE不支持
+    Dotted = "dotted" , // 在MAC平台上IE4+与WINDOWS和UNIX平台上IE5.5+为点线。否则为实线（常用）
+    Dashed = "dashed" , 　// 在MAC平台上IE4+与WINDOWS和UNIX平台上IE5.5+为虚线。否则为实线（常用）
+    Solid = "solid" ,　// 实线边框（常用）
+    Double = "double" ,　// 双线边框。两条单线与其间隔的和等于指定的border-width值
+    Groove = "groove" ,　// 根据border-color的值画3D凹槽
+    Ridge = "ridge" ,　// 根据border-color的值画菱形边框
+    Inset = "inset" ,　// 根据border-color的值画3D凹边
+    Outset = "outset" ,　// 根据border-color的值画3D凸边
+}
+
 export enum ZLWordBreakMode
 {
     Normal = "normal" , //使用浏览器默认的换行规则
