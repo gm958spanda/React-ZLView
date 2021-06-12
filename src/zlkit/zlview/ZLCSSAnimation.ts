@@ -57,7 +57,8 @@ export class ZLCSSAnimation extends ZLObject
         }
         return `${name} ${duration}ms ${timingFunction} ${delay}ms ${iterationCount} ${direction}`;
     }
-    
+    public onViewReactRefCallback? : ()=>void;
+
     private __onViewWillRender__()
     {
         this.updateCSS();
@@ -71,6 +72,7 @@ export class ZLCSSAnimation extends ZLObject
                 e.addEventListener("animationend",this.__onAnimationend__);
             }
         }
+        this.onViewReactRefCallback?.();
     }
 
     private __onViewWillUnmount__()

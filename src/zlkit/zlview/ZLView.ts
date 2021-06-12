@@ -170,32 +170,61 @@ export class ZLView extends ZLObject
     /**
      * 背景色
      */
-    public backgroudColor? : string;
+    public get backgroudColor():string | undefined { return this.__zl_style__.backgroundColor;}
+    public set backgroudColor(v:string | undefined ){ this.__zl_style__.backgroundColor = v;}
     /**
      * 前景色
      */
-    public color? : string;
+    public get color():string | undefined { return this.__zl_style__.color;}
+    public set color(v:string | undefined ){ this.__zl_style__.color = v;}
     /**
      * 是否可见 
      */
-    public visibility? : boolean;
-
+    public get visibility():boolean { return (this.__zl_style__.visibility !== "hidden");}
+    public set visibility(v:boolean) { this.__zl_style__.visibility = (v === false) ? "hidden" : undefined;}
     /**
      * 是否切除溢出边界的子视图 （通过设置overflow）
      */
-    public clipToBounds? : boolean;
-
+    public get clipToBounds(): boolean{ return (this.__zl_style__.overflow === "hidden");}
+    public set clipToBounds(v:boolean) {this.__zl_style__.overflow = (v === true) ? "hidden" : undefined;}
     /**
      * padding
      */
     public get padding() : ZLEdgeInset | undefined {return this.__zl_padding__;}
-    public set padding(p: ZLEdgeInset | undefined ) {this.__zl_padding__ = p;}
-
+    public set padding(p: ZLEdgeInset | undefined ){
+        this.__zl_padding__ = p;
+        let style = this.__zl_style__;
+        if ( p !== undefined)
+        {
+            if ((p.left === p.right) 
+                && (p.bottom === p.top)
+                && (p.left === p.bottom) )
+            {
+                style.padding =  p.left.toString() + ZLCurrentSizeUnit;
+            }
+            else 
+            {
+                style.paddingTop = p.top.toString() + ZLCurrentSizeUnit;
+                style.paddingBottom = p.bottom.toString() + ZLCurrentSizeUnit
+                style.paddingLeft = p.left.toString() + ZLCurrentSizeUnit
+                style.paddingRight = p.right.toString() + ZLCurrentSizeUnit
+            }
+        } else {
+            style.padding = undefined;
+            style.paddingTop = undefined;
+            style.paddingBottom = undefined
+            style.paddingLeft = undefined
+            style.paddingRight = undefined
+        }
+    }
     /**
      * borderWidth
      */
     public get borderWidth():number | undefined { return this.__zl_borderWidth__;}
-    public set borderWidth(w:number | undefined){ this.__zl_borderWidth__ = w;}
+    public set borderWidth(w:number | undefined){
+        this.__zl_borderWidth__ = w;
+        this.__zl_style__.borderWidth = w ? (w.toString() + ZLCurrentSizeUnit) : undefined;
+    }
 
     /**
      * 跳转连接
@@ -256,7 +285,12 @@ export class ZLView extends ZLObject
 
         let an = new ZLCSSAnimation(this,[from,to]);
         an.params = p;
-        this.__zl_css_animation__ = an.toAnimationStr();
+
+        let style = this.__zl_style__;
+        an.onViewReactRefCallback = ()=>{
+            this.__zl_style__.animation = undefined;
+        }
+        style.animation = an.toAnimationStr();
         this.refresh();
     }
 
@@ -342,6 +376,20 @@ export class ZLView extends ZLObject
      */
     protected __htmlAttributes__() : ZLHtmlAttribute
     {
+        let style =  this.__zl_style__;
+        style.position = "absolute";
+        if (this.width !== undefined) {
+            style.width = this.width.toString() + ZLCurrentSizeUnit;
+        }
+        if (this.height !== undefined) {
+            style.height = this.height.toString()+ ZLCurrentSizeUnit;
+        }
+        if (this.x !== undefined) {
+            style.left = this.x.toString()+ ZLCurrentSizeUnit;
+        }
+        if (this.y !== undefined) {
+            style.top = this.y.toString()+ ZLCurrentSizeUnit;
+        }
         let refCb = undefined;
         let OnRefCallbackMap = this.__zl_eventHandlerlist__?.getEventCallbackList(ZLViewEventName.OnRefCallback);
         if (this.onReactRefCallback || (OnRefCallbackMap && OnRefCallbackMap.size>0))
@@ -357,64 +405,10 @@ export class ZLView extends ZLObject
                 }
             }
         }
-
-        let attr = new ZLHtmlAttribute(this.uniqueString, refCb);
-        let style =  attr.style;
-        style.position = "absolute";
-        style.animation = this.__zl_css_animation__;
-        this.__zl_css_animation__ = undefined;
-
-        if (this.visibility !== undefined) {
-            style.visibility = this.visibility ? undefined/*visible*/ : "hidden";
-        }
-        if(this.clipToBounds !== undefined) {
-            style.overflow = this.clipToBounds ? "hidden" : undefined/*"visible"*/;
-        }
-        if (this.backgroudColor !== undefined){
-            style.backgroundColor = this.backgroudColor;
-        }
-        if (this.color !== undefined){
-            style.color = this.color;
-        }
-        if (this.width !== undefined) {
-            style.width = this.width.toString() + ZLCurrentSizeUnit;
-        }
-        if (this.height !== undefined) {
-            style.height = this.height.toString()+ ZLCurrentSizeUnit;
-        }
-        if (this.x !== undefined) {
-            style.left = this.x.toString()+ ZLCurrentSizeUnit;
-        }
-        if (this.y !== undefined) {
-            style.top = this.y.toString()+ ZLCurrentSizeUnit;
-        }
-        if (this.__zl_borderWidth__) {
-            style.borderWidth = this.__zl_borderWidth__.toString() + ZLCurrentSizeUnit;
-        }
-        if (this.__zl_padding__ !== undefined)
-        {
-            let t = this.__zl_padding__;
-            if ((t.left === t.right) 
-                && (t.bottom === t.top)
-                && (t.left === t.bottom) )
-            {
-                style.padding =  t.left.toString() + ZLCurrentSizeUnit;
-            }
-            else 
-            {
-                style.paddingTop = t.top.toString() + ZLCurrentSizeUnit;
-                style.paddingBottom = t.bottom.toString() + ZLCurrentSizeUnit
-                style.paddingLeft = t.left.toString() + ZLCurrentSizeUnit
-                style.paddingRight = t.right.toString() + ZLCurrentSizeUnit
-            }
-        }
+        let attr = new ZLHtmlAttribute(this.uniqueString, style, refCb);
         return attr
     }
 
-    /**
-     * css 动画
-     */
-    private __zl_css_animation__? : string;
     /**
      * 父视图
      */
@@ -442,6 +436,9 @@ export class ZLView extends ZLObject
         }
         return this.__zl_eventHandlerlist__;
     }
+
+    /// css style
+    private __zl_style__: CSSProperties = {};
     ///padding border
     private __zl_padding__? :ZLEdgeInset;
     private __zl_borderWidth__? : number;
@@ -450,10 +447,10 @@ export class ZLView extends ZLObject
 
 export class ZLHtmlAttribute
 {
-    constructor(dom_node_id: string , ref?: ((ref:Element)=>void))
+    constructor(dom_node_id: string , style:CSSProperties , ref?: ((ref:Element)=>void))
     {
         this.otherAttr = {};
-        this.style = {} as any;
+        this.style = style;
         this.event = {} as any;
         this.__dom_node_id__ = dom_node_id;
         this.__ref__ = ref;
@@ -480,16 +477,21 @@ export class ZLHtmlAttribute
 
     toReactClassAttributes() : {}
     {
-        let attr :any  = {style : this.style , id : this.__dom_node_id__};
+        let cssStyle = {};
+        Object.assign(cssStyle,this.style);
+
+        let attr :any  = {style : cssStyle , id : this.__dom_node_id__};
         if(this.__ref__ !== undefined) {
             attr.ref = this.__ref__;
         }
         if (this.className !== undefined && this.className.length > 0 ) {
             attr.className = this.className;
         }
-        Object.assign(this.otherAttr,this.event);
-        Object.assign(this.otherAttr,attr);
-        return this.otherAttr;
+        let ret = {}
+        Object.assign(ret,this.otherAttr);
+        Object.assign(ret,this.event);
+        Object.assign(ret,attr);
+        return ret;
     }
 
     /**

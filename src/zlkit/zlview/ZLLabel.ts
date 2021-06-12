@@ -10,6 +10,7 @@ export class ZLLabel extends ZLView
     constructor() {
         super();
         this.font = ZLFont.getDefaultFont();
+        this.clipToBounds = true;
     }
     /**
      * text 显示的文字
