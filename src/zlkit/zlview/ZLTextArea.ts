@@ -1,13 +1,14 @@
 import React from 'react';
 
-import {ZLHtmlAttribute, ZLView}  from './ZLView'
-import {ZLSize,ZLFont, ZLWordBreakMode, ZLWorkWrapMode, ZLTextAlignMode, ZLEdgeInset, ZLCurrentSizeUnit} from './ZLUIDef'
+import {ZLHtmlAttribute}  from './ZLView'
+import {ZLSize,ZLFont, ZLEdgeInset, ZLCurrentSizeUnit} from './ZLUIDef'
 import {ZLEventCallbackList} from '../sugar/eventcb'
+import {ZLTextBaseView}  from './ZLTextBaseView'
 
 
 type ZLButtonOnInputCallback = (sender:ZLTextArea)=>void;
 
-export class ZLTextArea extends ZLView
+export class ZLTextArea extends ZLTextBaseView
 {
     constructor() {
         super();
@@ -27,7 +28,7 @@ export class ZLTextArea extends ZLView
     /**
      * text 显示的文字
      */
-    public get text(): string{ return this.__zl_txa_text__ ? this.__zl_txa_text__ : "";}
+    public get text():string{ return this.__zl_txa_text__ ? this.__zl_txa_text__ : "";}
     public set text(value:string) 
     {
         this.__zl_txa_text__ = value;
@@ -38,11 +39,6 @@ export class ZLTextArea extends ZLView
         }
     }
     /**
-     * 文本颜色
-     */
-    public get textColor():string|undefined {return this.color;}
-    public set textColor(c:string|undefined) {this.color=c;}
-    /**
      * 简短提示
      */
     public placeholder? : string;
@@ -50,22 +46,6 @@ export class ZLTextArea extends ZLView
      * 文本区域的最大字符数
      */
     public maxlength? : number;
-    /**
-     * 文本字体
-     */
-    public font : ZLFont;
-    /**
-     * 词内换行
-     */
-    public wordBreak : ZLWordBreakMode | undefined;
-    /**
-     * 内容换行
-     */
-    public wordWrap : ZLWorkWrapMode | undefined;
-    /**
-     * 对齐方式
-     */
-    public textAlign : ZLTextAlignMode | undefined;
     /**
      * 是否只读
      */
@@ -156,19 +136,6 @@ export class ZLTextArea extends ZLView
             }
             style.width = (this.width -w).toString() + ZLCurrentSizeUnit;
             style.height = (this.height -h).toString() + ZLCurrentSizeUnit;
-        }
-        
-        if (this.font !== undefined) {
-            this.font.toCSSStyle(style);
-        }
-        if (this.wordBreak !== undefined) {
-            style.wordBreak = this.wordBreak;
-        }
-        if (this.wordWrap !== undefined) {
-            style.wordWrap = this.wordWrap;
-        }
-        if (this.textAlign !== undefined) {
-            style.textAlign = this.textAlign;
         }
         return attr;
     }

@@ -1,43 +1,16 @@
 import React from 'react';
 
-import {ZLHtmlAttribute, ZLView}  from './ZLView'
-import {ZLSize,ZLFont, ZLWordBreakMode, ZLWorkWrapMode, ZLTextAlignMode} from './ZLUIDef'
+import {ZLTextBaseView}  from './ZLTextBaseView'
+import { ZLSize } from './ZLUIDef';
 import {ZLUtils} from './ZLUtils'
 
 
-export class ZLLabel extends ZLView
+export class ZLLabel extends ZLTextBaseView
 {
     constructor() {
         super();
-        this.font = ZLFont.getDefaultFont();
         this.clipToBounds = true;
     }
-    /**
-     * text 显示的文字
-     */
-    public text?: string ;
-    /**
-     * 文本颜色
-     */
-    public get textColor():string|undefined {return this.color;}
-    public set textColor(c:string|undefined) {this.color=c;}
-    /**
-     * 文本字体
-     */
-    public font : ZLFont;
-    /**
-     * 词内换行
-     */
-    public wordBreak? : ZLWordBreakMode;
-    /**
-     * 内容换行
-     */
-    public wordWrap? : ZLWorkWrapMode;
-    /**
-     * 对齐方式
-     */
-    public textAlign? : ZLTextAlignMode;
-
     /**
      * 计算合适的尺寸
      */
@@ -49,30 +22,5 @@ export class ZLLabel extends ZLView
      */
     sizeThatWidthHeight(width:number ,height : number) : ZLSize {
         return this.sizeThatSize(new ZLSize(width,height));
-    }
-
-    protected __reactRender__(children?:React.ReactNode[])
-    {
-        let attr = this.__htmlAttributes__();
-        return React.createElement("div",attr.toReactClassAttributes(), children,this.text);
-    }
-
-    protected __htmlAttributes__() : ZLHtmlAttribute
-    {
-        let attr = super.__htmlAttributes__()
-        let style = attr.style;
-        if (this.font !== undefined) {
-            this.font.toCSSStyle(style);
-        }
-        if (this.wordBreak !== undefined) {
-            style.wordBreak = this.wordBreak;
-        }
-        if (this.wordWrap !== undefined) {
-            style.wordWrap = this.wordWrap;
-        }
-        if (this.textAlign !== undefined) {
-            style.textAlign = this.textAlign;
-        }
-        return attr;
     }
 }

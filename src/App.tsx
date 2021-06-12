@@ -42,14 +42,14 @@ class HomePage extends zl.ViewPage
         let view;
         {
             let lb = new zl.TextArea()
-            lb.text = "456  \n \n123";
+            lb.text = "456\n123\n789\nabc\nefg\nasdfgh\nqwer";
             lb.addOnInputEventCallback((sender)=>{
-                console.log(sender.text);
+                console.log(sender.scrollSize?.height);
             })
             lb.top = 10;
             lb.left = 10;
             lb.width = 180;
-            lb.height = 200;
+            lb.height = 100;
             this.view.addSubview(lb);
             view = lb;
         }

@@ -109,6 +109,7 @@ export class ZLView extends ZLObject
         this.height = 0;
         this.x = 0;
         this.y = 0;
+        this.__zl_cssStyle__ = {};
     }
 
     /**
@@ -170,30 +171,30 @@ export class ZLView extends ZLObject
     /**
      * 背景色
      */
-    public get backgroudColor():string | undefined { return this.__zl_style__.backgroundColor;}
-    public set backgroudColor(v:string | undefined ){ this.__zl_style__.backgroundColor = v;}
+    public get backgroudColor():string | undefined { return this.__zl_cssStyle__.backgroundColor;}
+    public set backgroudColor(v:string | undefined ){ this.__zl_cssStyle__.backgroundColor = v;}
     /**
      * 前景色
      */
-    public get color():string | undefined { return this.__zl_style__.color;}
-    public set color(v:string | undefined ){ this.__zl_style__.color = v;}
+    public get color():string | undefined { return this.__zl_cssStyle__.color;}
+    public set color(v:string | undefined ){ this.__zl_cssStyle__.color = v;}
     /**
      * 是否可见 
      */
-    public get visibility():boolean { return (this.__zl_style__.visibility !== "hidden");}
-    public set visibility(v:boolean) { this.__zl_style__.visibility = (v === false) ? "hidden" : undefined;}
+    public get visibility():boolean { return (this.__zl_cssStyle__.visibility !== "hidden");}
+    public set visibility(v:boolean) { this.__zl_cssStyle__.visibility = (v === false) ? "hidden" : undefined;}
     /**
      * 是否切除溢出边界的子视图 （通过设置overflow）
      */
-    public get clipToBounds(): boolean{ return (this.__zl_style__.overflow === "hidden");}
-    public set clipToBounds(v:boolean) {this.__zl_style__.overflow = (v === true) ? "hidden" : undefined;}
+    public get clipToBounds(): boolean{ return (this.__zl_cssStyle__.overflow === "hidden");}
+    public set clipToBounds(v:boolean) {this.__zl_cssStyle__.overflow = (v === true) ? "hidden" : undefined;}
     /**
      * padding
      */
     public get padding() : ZLEdgeInset | undefined {return this.__zl_padding__;}
     public set padding(p: ZLEdgeInset | undefined ){
         this.__zl_padding__ = p;
-        let style = this.__zl_style__;
+        let style = this.__zl_cssStyle__;
         if ( p !== undefined)
         {
             if ((p.left === p.right) 
@@ -223,7 +224,7 @@ export class ZLView extends ZLObject
     public get borderWidth():number | undefined { return this.__zl_borderWidth__;}
     public set borderWidth(w:number | undefined){
         this.__zl_borderWidth__ = w;
-        this.__zl_style__.borderWidth = w ? (w.toString() + ZLCurrentSizeUnit) : undefined;
+        this.__zl_cssStyle__.borderWidth = w ? (w.toString() + ZLCurrentSizeUnit) : undefined;
     }
 
     /**
@@ -286,9 +287,9 @@ export class ZLView extends ZLObject
         let an = new ZLCSSAnimation(this,[from,to]);
         an.params = p;
 
-        let style = this.__zl_style__;
+        let style = this.__zl_cssStyle__;
         an.onViewReactRefCallback = ()=>{
-            this.__zl_style__.animation = undefined;
+            this.__zl_cssStyle__.animation = undefined;
         }
         style.animation = an.toAnimationStr();
         this.refresh();
@@ -376,7 +377,7 @@ export class ZLView extends ZLObject
      */
     protected __htmlAttributes__() : ZLHtmlAttribute
     {
-        let style =  this.__zl_style__;
+        let style =  this.__zl_cssStyle__;
         style.position = "absolute";
         if (this.width !== undefined) {
             style.width = this.width.toString() + ZLCurrentSizeUnit;
@@ -408,6 +409,10 @@ export class ZLView extends ZLObject
         let attr = new ZLHtmlAttribute(this.uniqueString, style, refCb);
         return attr
     }
+    /**
+     * 暴露给子类，方便访问
+     */
+    protected get __cssStyle__() : CSSProperties {return this.__cssStyle__;}
 
     /**
      * 父视图
@@ -438,7 +443,7 @@ export class ZLView extends ZLObject
     }
 
     /// css style
-    private __zl_style__: CSSProperties = {};
+    private __zl_cssStyle__: CSSProperties;
     ///padding border
     private __zl_padding__? :ZLEdgeInset;
     private __zl_borderWidth__? : number;
