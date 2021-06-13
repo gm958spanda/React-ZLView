@@ -23,9 +23,10 @@ export class AnimationPage extends zl.ViewPage
     test(appView:zl.View)
     {
         appView.backgroudColor = "white";
-        let view = new zl.View();
+        let view = new zl.Label();
         appView.addSubview(view);
 
+        view.text = "ABCD";
         view.width = appView.width * 0.6;
         view.height = appView.height * 0.3;;
         view.backgroudColor = "red";
@@ -53,14 +54,32 @@ export class AnimationPage extends zl.ViewPage
     {
         view.cssAnimation({to:()=>{
             let transform = new zl.Transform();
-            transform.rotate(30);
-            transform.translate(10,90);
+            transform.rotate(Math.PI);
+            transform.translate(10,190);
             view.transform = transform;
         },
             duration:2000,
             timingFunction:zl.CSSAnimationTimingFunction.easeInOut,
             end:()=>{
                 console.log("animation2 end");
+                this.animation3(view);
+            }
+        });
+    }
+
+    animation3(view:zl.View)
+    {
+        view.cssAnimation({to:()=>{
+            let transform = view.transform!;//new zl.Transform();
+            transform.translate(10,190);
+            transform.skew(70/Math.PI,80/Math.PI);
+            // transform.rotate(Math.PI);
+            view.transform = transform;
+        },
+            duration:2000,
+            timingFunction:zl.CSSAnimationTimingFunction.easeInOut,
+            end:()=>{
+                console.log("animation3 end");
             }
         });
     }

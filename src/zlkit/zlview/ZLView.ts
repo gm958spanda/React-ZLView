@@ -259,7 +259,7 @@ export class ZLView extends ZLObject
      * transform
      */
     public get transform():ZLTransform | undefined { return this.__zl_transform__;}
-    public set transform(m:ZLTransform | undefined) {this.__zl_transform__ = m;}
+    public set transform(m:ZLTransform | undefined) { ;this.__zl_transform__ = m?.copy();}
 
     /**
      * 跳转连接

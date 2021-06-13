@@ -1,4 +1,5 @@
 import { CSSProperties } from "react";
+import { ZLTransformMatrix3D, ZLTransformMatrix2D} from '../sugar/cssmatrix';
 
 /**
  * 尺寸单位
@@ -280,12 +281,14 @@ export class ZLTransform
      * @param x 移动距离
      * @param y 移动距离
      */
-    public translate(x?:number,y?:number)
+    public translate(x:number,y:number)
     {
-        this.tx = x ? x : 0;
-        this.ty = y ? y : 0;
-        if(this._is3D===true && this.tz === undefined) {
-            this.tz = 0;
+        if(this._is3D) {
+            let mtr = ZLTransformMatrix3D.translationMatrix( x ,y , 0);
+            this._matrixs.push(mtr);
+        } else {
+            let mtr = ZLTransformMatrix2D.translationMatrix( x ,y);
+            this._matrixs.push(mtr);
         }
     }
     /**
@@ -294,27 +297,28 @@ export class ZLTransform
      * @param y 移动距离
      * @param z 移动距离
      */
-    public translate3D(x?:number,y?:number,z?:number)
+    public translate3D(x:number,y:number,z:number)
     {
-        this._is3D = true;
-        this.tx = x ? x : 0;
-        this.ty = y ? y : 0;
-        this.tz = z ? z : 0;
+        this.converTo3D();
+        let mtr = ZLTransformMatrix3D.translationMatrix( x ,y , z);
+        this._matrixs.push(mtr);
     }
-    public translateX(x:number) { this.translate(x,this.ty);}
-    public translateY(y:number) { this.translate(this.tx ,y);}
-    public translateZ(z:number) { this.translate3D(this.tx ,this.ty ,z);}
+    public translateX(x:number) { this.translate(x,0);}
+    public translateY(y:number) { this.translate(0 ,y);}
+    public translateZ(z:number) { this.translate3D(0 ,0 ,z);}
     /**
      * 缩放
      * @param x 倍数
      * @param y 倍数
      */
-    public scale(x?:number,y?:number)
+    public scale(x:number,y:number)
     {
-        this.scx = x ? x : 1;
-        this.scy = y ? y : 1;
-        if(this._is3D===true && this.scz === undefined) {
-            this.scz = 1;
+        if(this._is3D) {
+            let mtr = ZLTransformMatrix3D.scaleMatrix(x , y , 1);
+            this._matrixs.push(mtr);
+        } else {
+            let mtr = ZLTransformMatrix2D.scaleMatrix( x , y );
+            this._matrixs.push(mtr);
         }
     }
     /**
@@ -323,26 +327,28 @@ export class ZLTransform
      * @param y 倍数
      * @param z 倍数
      */
-     public scale3D(x?:number,y?:number,z?:number)
-     {
-        this._is3D = true;
-        this.scx = x ? x : 1;
-        this.scy = y ? y : 1;
-        this.scz = z ? z : 1;
-     }
-    public scaleX(x:number) { this.scale(x,this.scy);}
-    public scaleY(y:number) { this.scale(this.scx,y);}
-    public scaleZ(z:number) { this.scale3D(this.scx,this.scz,z);}
+    public scale3D(x:number,y:number,z:number)
+    {
+    this.converTo3D();
+    let mtr = ZLTransformMatrix3D.scaleMatrix(x , y , z);
+    this._matrixs.push(mtr);
+    }
+    public scaleX(x:number) { this.scale(x,1);}
+    public scaleY(y:number) { this.scale(1,y);}
+    public scaleZ(z:number) { this.scale3D(1,1,z);}
 
     /**
      * 旋转
-     * @param d 角度deg
+     * @param r 弧度
      */
-    public rotate(d:number) 
+    public rotate(r:number) 
     { 
-        this.r = d;
-        if(this._is3D === true){
-            this.rotateZ(d);
+        if(this._is3D) {
+            let mtr = ZLTransformMatrix3D.rotateAroundZ(r);
+            this._matrixs.push(mtr);
+        } else {
+            let mtr = ZLTransformMatrix2D.rotateMatrix(r);
+            this._matrixs.push(mtr);
         }
     }
     /**
@@ -350,32 +356,81 @@ export class ZLTransform
      * @param x 表示旋转轴X坐标方向的矢量
      * @param y 表示旋转轴Y坐标方向的矢量
      * @param z 表示旋转轴Z坐标方向的矢量
-     * @param d 角度deg
+     * @param r 弧度
      */
-    public rotate3d(x?:number,y?:number,z?:number,d?:number)
+    public rotate3d(x:number,y:number,z:number,r:number)
     {
-        this._is3D = true;
-        this.rx = x?x:0;
-        this.ry = y?y:0;
-        this.rz = z?z:1;
-        this.r = d?d:0;
+        this.converTo3D();
+        let mtr = ZLTransformMatrix3D.rotate3D(x,y,z,r);
+        this._matrixs.push(mtr);
     }
-    public rotateX(d:number) { this.rotate3d(1,0,0,d);}
-    public rotateY(d:number) { this.rotate3d(0,1,0,d);}
-    public rotateZ(d:number) { this.rotate3d(0,0,1,d);}
+    public rotateX(r:number) 
+    {
+        this.converTo3D();
+        let mtr = ZLTransformMatrix3D.rotateAroundX(r);
+        this._matrixs.push(mtr);
+    }
+    public rotateY(r:number) 
+    {
+        this.converTo3D();
+        let mtr = ZLTransformMatrix3D.rotateAroundY(r);
+        this._matrixs.push(mtr);
+    }
+    public rotateZ(r:number) 
+    {
+        this.converTo3D();
+        let mtr = ZLTransformMatrix3D.rotateAroundZ(r);
+        this._matrixs.push(mtr);
+    }
 
     /**
      * 拉伸
-     * @param dx 角度deg
-     * @param dy 角度deg
+     * @param rx 弧度
+     * @param ry 弧度
      */
-    public skew(dx:number,dy:number)
+    public skew(rx:number,ry:number)
     {
-        this.swx = dx;
-        this.swy = dy;
+        if(this._is3D) 
+        {
+            let mtr = ZLTransformMatrix3D.skewMatrix(ry,0,rx,0,0,0);
+            this._matrixs.push(mtr);
+        }
+        else
+        {
+            let mtr = ZLTransformMatrix2D.skewMatrix(rx,ry);
+            this._matrixs.push(mtr);
+        }
     }
-    public skewX(dx:number) { this.skew(dx,this.swy ? this.swy : 0);}
-    public skewY(dy:number) { this.skew(this.swx ? this.swx : 0 ,dy);}
+    public skewX(rx:number) { this.skew(rx,0);}
+    public skewY(ry:number) { this.skew(0,ry);}
+    public skew3d(rxy:number , rxz:number, ryx:number, ryz:number , rzx:number, rzy:number)
+    {
+        this.converTo3D();
+        let mtr = ZLTransformMatrix3D.skewMatrix(rxy,rxz,ryx,ryz,rzx,rzy);
+        this._matrixs.push(mtr);
+    }
+    /**
+     * 镜像
+     */
+    public reflect(x:boolean,y:boolean)
+    {
+        if(this._is3D) {
+            let mtr = ZLTransformMatrix3D.relectMatrix(x,y,false);
+            this._matrixs.push(mtr);
+        } else {
+            let mtr = ZLTransformMatrix2D.relectMatrix(x,y);
+            this._matrixs.push(mtr);
+        }
+    }
+    public reflect3d(x:boolean,y:boolean,z:boolean)
+    {
+        this.converTo3D();
+        let mtr = ZLTransformMatrix3D.relectMatrix(x,y,z);
+        this._matrixs.push(mtr);
+    }
+    public reflectX(b:boolean) { this.reflect(b,false);}
+    public reflectY(b:boolean) { this.reflect(false ,b);}
+    public reflectZ(b:boolean) { this.reflect3d(false ,false, b);}
 
     /**
      *  z=0平面与用户之间的距离，以便给三维定位元素一定透视度。当每个3D元素的z>0时会显得比较大，而在z<0时会显得比较小。其影响的程度由这个属性的值来决定
@@ -383,8 +438,8 @@ export class ZLTransform
      */
     public perspective(n:number)
     { 
-        this._is3D = true;
-        this.pz = n;
+        this.converTo3D();
+        this._pz = n;
     }
     /**
      * 指定了观察者的位置，用作 perspective 属性的消失点
@@ -393,9 +448,9 @@ export class ZLTransform
      */
     public perspectiveOrigin(x:number,y:number)
     { 
-        this._is3D = true;
-        this.pox = x;
-        this.poy = y;
+        this.converTo3D();
+        this._pox = x;
+        this._poy = y;
     }
 
     /**
@@ -403,7 +458,7 @@ export class ZLTransform
      */
     public set preserve3d(b:boolean)
     {
-        this._is3D = true;
+        this.converTo3D();
         this._preserve3d = b;
     }
     /**
@@ -411,7 +466,7 @@ export class ZLTransform
      */
     public set backfaceVisibility(b:boolean)
     {
-        this._is3D = true;
+        this.converTo3D();
         this._backfaceVisibility = b;
     }
 
@@ -422,64 +477,111 @@ export class ZLTransform
      */
     public origin(x:number,y:number)
     {
-        this.ox = x;
-        this.oy = y;
+        this._ox = x;
+        this._oy = y;
     }
-    public originX(x:number) {this.origin(x,this.oy?this.oy:0.5);}
-    public originY(y:number) {this.origin(this.ox?this.ox:0.5 , y);}
-    
-    private tx?:number;
-    private ty?:number;
-    private tz?:number;
+    public originX(x:number) {this.origin(x,this._oy?this._oy:0.5);}
+    public originY(y:number) {this.origin(this._ox?this._ox:0.5 , y);}
 
-    private scx?:number;
-    private scy?:number;
-    private scz?:number;
-
-    private swx?:number;
-    private swy?:number;
-    private swz?:number;
-
-    private r?:number;
-    private rx?:number;
-    private ry?:number;
-    private rz?:number;
-
-    private pz?:number;
-    private pox?:number;
-    private poy?:number;
-
-    private ox?:number;
-    private oy?:number; 
-    private oz?:number; 
+    private _matrixs : number[][] = [ZLTransformMatrix2D.identityMatrix];
+    private _is3D:boolean = false;
+    private converTo3D()
+    {
+        if( true !== this._is3D)
+        {
+            this._is3D = true;
+            this._matrixs.forEach((v,index) => {
+                this._matrixs[index] = ZLTransformMatrix2D.toMatrix3D(v);
+            });
+        }
+    }
 
     private _preserve3d?:boolean;
     private _backfaceVisibility?:boolean;
 
-    private _is3D:boolean = false;
+    private _pz?:number;
+    private _pox?:number;
+    private _poy?:number;
+
+    private _ox?:number;
+    private _oy?:number; 
+ 
+    public copy() : ZLTransform
+    {
+        let t = new ZLTransform();
+        t._is3D = this._is3D;
+        t._backfaceVisibility = this._backfaceVisibility;
+        t._preserve3d = this._preserve3d;
+        t._ox = this._ox;
+        t._oy = this._oy;
+        t._pz = this._pz;
+        t._pox = this._pox;
+        t._poy = this._poy;
+        t._matrixs = [];
+        this._matrixs.forEach((arr,index)=>{
+            let e :number[]= [];
+            t._matrixs[index] = e;
+            arr.forEach((v,index)=>{
+                e[index] = v;
+            });
+        });
+        return t;
+    }
+    /**
+     * 计算矩阵
+     */
+    public mergeMatrixesToOne() : number[]
+    {
+        if (this._matrixs.length > 1)
+        {
+            //图像处理时，矩阵的运算是从右边往左边方向进行运算的。这就形成了越在右边(右乘)的矩阵，越先运算(先乘)，反之亦然。所以，右乘就是先乘，左乘就是后乘。
+            if (this._is3D) 
+            {
+                let m = this._matrixs[0];
+                for (let i = this._matrixs.length -1; i > 0 ; i--)
+                {
+                    m = ZLTransformMatrix3D.multiplyMatrix(m,this._matrixs[i]);
+                }
+                return m;
+            }
+            else
+            {
+                let m = this._matrixs[0];
+                for (let i = this._matrixs.length -1; i > 0 ; i--)
+                {
+                    m = ZLTransformMatrix2D.multiplyMatrix(m,this._matrixs[i]);
+                }
+                return m;
+            }
+        }
+        else{
+            let m :number[]= [];
+            this._matrixs[0].forEach((v,index)=>{
+                m[index] = v;
+            })
+            return m;
+        }
+    }
     public toCSSStyle(style:CSSProperties)
     {
-        if (this.ox) 
+        if (this._ox) 
         {
-            let x = (this.ox*100).toString().split(".")[0];
-            let y = (this.oy!*100).toString().split(".")[0];
+            let x = (this._ox*100).toString().split(".")[0];
+            let y = (this._oy!*100).toString().split(".")[0];
             style.transformOrigin = `${x}% ${y}%`;
         }
         if (this._is3D) 
         {
-            let s = ""
-            if (this.tx) {
-                s += ` translate3d(${this.tx+ZLCurrentSizeUnit},${this.ty+ZLCurrentSizeUnit},${this.tz+ZLCurrentSizeUnit})`
-            }
-            if (this.r) {
-                s += ` rotate3d(${this.rx},${this.ry},${this.rz},${this.r}deg)`
-            }
-            if (this.scx) {
-                s += ` scale3d(${this.scx},${this.scy},${this.scz})`
-            }
-            if(s.length > 3) {
-                style.transform = s;
-            }
+            let m = this.mergeMatrixesToOne();
+            /* 
+            martix3d[a1, b1, c1, tx, 
+                     a2, b2, c2, ty,
+                     a3, b3, c3, tz,
+                     0,  0,  0,   1]
+            ]
+            matrix3d(a1, b1, c1, 0, a2, b2, c2, 0, a3, b3, c3, 0, tx, ty, tz, 1)
+            */
+            style.transform = `matrix3d(${m[0]},${m[1]},${m[2]},0,${m[4]},${m[5]},${m[6]},0,${m[8]},${m[9]},${m[10]},0,${m[3]},${m[7]},${m[11]},1)`;
 
             if (this._preserve3d === true) {
                 style.transformStyle = "preserve-3d";
@@ -487,35 +589,29 @@ export class ZLTransform
             if (this._backfaceVisibility === true) {
                 style.backfaceVisibility = "visible";
             }
-            if(this.pz)
+            if(this._pz)
             {
-                style.perspective = this.pz.toString();
-                if (this.pox) 
+                style.perspective = this._pz.toString();
+                if (this._pox) 
                 {
-                    let x = (this.pox*100).toString().split(".")[0];
-                    let y = (this.poy!*100).toString().split(".")[0];
+                    let x = (this._pox*100).toString().split(".")[0];
+                    let y = (this._poy!*100).toString().split(".")[0];
                     style.perspectiveOrigin = `${x}% ${y}%`;
                 }
             }
         }
         else
         {
-            let s = ""
-            if (this.tx) {
-                s += ` translate(${this.tx+ZLCurrentSizeUnit},${this.ty+ZLCurrentSizeUnit})`
-            }
-            if (this.r) {
-                s += ` rotate(${this.r}deg)`
-            }
-            if (this.scx) {
-                s += ` scale(${this.scx},${this.scy})`
-            }
-            if (this.swx) {
-                s += ` skew(${this.swx}deg,${this.swy}deg)`
-            }
-            if(s.length > 3) {
-                style.transform = s;
-            }
+            let m = this.mergeMatrixesToOne();
+            /*
+            martix2d  [
+                a,b,tx,
+                c,d,ty,
+                0,0,1
+            ]
+            matrix2d(a, b, c, d, tx, ty)
+            */
+            style.transform = `matrix(${m[0]},${m[1]},${m[3]},${m[4]},${m[2]},${m[5]})`;
         }
     }
 }
