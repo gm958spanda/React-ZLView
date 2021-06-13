@@ -1,8 +1,11 @@
+import { CSSProperties } from 'react';
 import {ZLObject} from './ZLObject'
-import { ZLBoxShadow, ZLCSSAnimationDirection,
+import { ZLBoxShadow,
+     ZLCSSAnimationDirection,
      ZLCSSAnimationParams, 
      ZLCSSAnimationTimingFunction,
-     ZLCurrentSizeUnit } from './ZLUIDef';
+     ZLCurrentSizeUnit, 
+     ZLTransform} from './ZLUIDef';
 import {ZLView}  from './ZLView'
 
 
@@ -193,6 +196,8 @@ interface ZLCSSAnimatableStyle
     borderStyle?:string;
 
     boxShadow?:ZLBoxShadow;
+
+    transform?:ZLTransform;
 }
 
 export class ZLCSSAnimationKeyFrame
@@ -271,6 +276,31 @@ export class ZLCSSAnimationKeyFrame
         }
         if (view.boxShadow) {
             s += `box-shadow:${view.boxShadow.toCSSString()};`
+        }
+        if (view.transform) {
+            let tsf:CSSProperties = {};
+            view.transform.toCSSStyle(tsf);
+            if (tsf.transform) {
+                s += `transform:${tsf.transform};`;
+            }
+            if (tsf.transformOrigin) {
+                s += `transform-origin:${tsf.transformOrigin};`;
+            }
+            if (tsf.transformStyle) {
+                s += `transform-style:${tsf.transformStyle};`;
+            }
+            if (tsf.backfaceVisibility) {
+                s +=`backface-visibility:${tsf.backfaceVisibility}`;
+            }
+            if(tsf.perspective) {
+                s += `perspective:${tsf.perspective}`;
+                if (tsf.perspectiveOrigin) {
+                    s+= `perspective-origin:${tsf.perspectiveOrigin}`;
+                }
+            }
+        } else {
+            ///此处为了使动画过程中的transform状态不完全相同
+            s += `transform:none;`;
         }
         this.__key_frame_str__ = `${this.progress}% {${s}}`;
     }

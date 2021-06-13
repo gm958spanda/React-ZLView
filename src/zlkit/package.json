@@ -1,6 +1,6 @@
 {
   "name": "react-zlview",
-  "version": "0.0.11",
+  "version": "0.0.12",
   "description": "ZLView base react , super and sub , coordinate by x-y-width-height；基于react的视图，使用x-y-width-height坐标系",
   "author": "zxs.zl",
   "license": "MIT",

@@ -9,7 +9,8 @@ import {ZLPoint,
     ZLCSSAnimationParams, 
     ZLEdgeInset,
     ZLBorderStyle,
-    ZLBoxShadow
+    ZLBoxShadow,
+    ZLTransform
 } from './ZLUIDef'
 import {ZLViewPage} from './ZLViewPage'
 import {ZLObject} from './ZLObject'
@@ -255,6 +256,12 @@ export class ZLView extends ZLObject
     public set borderStyle(m:ZLBorderStyle | undefined) {this.__cssStyle__.borderStyle = m;}
 
     /**
+     * transform
+     */
+    public get transform():ZLTransform | undefined { return this.__zl_transform__;}
+    public set transform(m:ZLTransform | undefined) {this.__zl_transform__ = m;}
+
+    /**
      * 跳转连接
      */
     public href? : ZLHref;
@@ -409,6 +416,9 @@ export class ZLView extends ZLObject
         if(this.__zl_boxShadow__) {
             style.boxShadow = this.__zl_boxShadow__.toCSSString();
         }
+        if (this.__zl_transform__) {
+            this.__zl_transform__.toCSSStyle(style);
+        }
         if (this.width !== undefined) {
             style.width = this.width.toString() + ZLCurrentSizeUnit;
         }
@@ -475,6 +485,8 @@ export class ZLView extends ZLObject
     /// css style
     private __zl_cssStyle__: CSSProperties;
     private __zl_boxShadow__?:ZLBoxShadow;
+    private __zl_transform__?:ZLTransform;
+    
     ///padding border
     private __zl_padding__? :ZLEdgeInset;
     private __zl_borderWidth__? : number;
@@ -486,25 +498,25 @@ export class ZLHtmlAttribute
     constructor(dom_node_id: string , style:CSSProperties , ref?: ((ref:Element)=>void))
     {
         this.otherAttr = {};
-        this.style = style;
-        this.event = {} as any;
+        this.__style__ = style;
+        this.__event__ = {} as any;
         this.__dom_node_id__ = dom_node_id;
         this.__ref__ = ref;
     }
     /**
      * 行内样式
      */
-    style : CSSProperties; 
+    public get style() : CSSProperties {return this.__style__;}
     
     /**
      * css class name
      */
-    className? : string;
+    public className? : string;
 
     /**
      * 事件
      */
-    event : React.DOMAttributes<HTMLElement>;
+    public get event(): React.DOMAttributes<HTMLElement> {return this.__event__;}
 
     /**
      * 其他属性
@@ -514,7 +526,7 @@ export class ZLHtmlAttribute
     toReactClassAttributes() : {}
     {
         let cssStyle = {};
-        Object.assign(cssStyle,this.style);
+        Object.assign(cssStyle,this.__style__);
 
         let attr :any  = {style : cssStyle , id : this.__dom_node_id__};
         if(this.__ref__ !== undefined) {
@@ -525,11 +537,13 @@ export class ZLHtmlAttribute
         }
         let ret = {}
         Object.assign(ret,this.otherAttr);
-        Object.assign(ret,this.event);
+        Object.assign(ret,this.__event__);
         Object.assign(ret,attr);
         return ret;
     }
 
+    private __event__ : React.DOMAttributes<HTMLElement>;
+    private __style__ : CSSProperties;
     /**
      * dom node id
      */

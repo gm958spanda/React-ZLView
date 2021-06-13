@@ -1,5 +1,3 @@
-import React from 'react';
-
 import {ZLTextBaseView}  from './ZLTextBaseView'
 import { ZLSize } from './ZLUIDef';
 import {ZLUtils} from './ZLUtils'

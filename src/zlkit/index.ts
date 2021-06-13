@@ -50,6 +50,7 @@ export {
     ZLFont as Font,
     ZLFontStyle as FontStyle,
 
+    ZLTransform as Transform,
     ZLCSSAnimationTimingFunction as CSSAnimationTimingFunction
  } from './zlview/ZLUIDef';
 
