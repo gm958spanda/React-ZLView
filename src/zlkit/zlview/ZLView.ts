@@ -442,7 +442,7 @@ export class ZLView extends ZLObject
     /**
      * 暴露给子类，方便访问
      */
-    protected get __cssStyle__() : CSSProperties {return this.__cssStyle__;}
+    protected get __cssStyle__() : CSSProperties {return this.__zl_cssStyle__;}
 
     /**
      * 父视图

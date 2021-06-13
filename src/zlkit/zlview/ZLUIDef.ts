@@ -82,8 +82,8 @@ export class ZLBoxShadow
 {
     constructor()
     {
-        this.hShadow = 0;
-        this.vShadow = 0;
+        this.hShadow = 1;
+        this.vShadow = 1;
     }
 
     /**
@@ -105,7 +105,7 @@ export class ZLBoxShadow
     /**
      * 阴影的颜色。请参阅 CSS 颜色值
      */
-    public color?:number;
+    public color?:string;
     /**
      * 将外部阴影 (outset) 改为内部阴影
      */

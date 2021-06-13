@@ -123,6 +123,18 @@ export class ZLRouter
         }
         this.__path_calss__.set( path ,class_instance);
     }
+    /**
+     * 注册页面，用class_instance的类型名生成路由的path
+     * @param page 页面 
+     * @returns 
+     */
+    public registViewPage(page : ZLViewPageClass)
+    {
+        if (page === undefined) {
+            return;
+        }
+        this.registRoute("/"+page.name,page);
+    }
 
     /**
      * 获取路径对应的渲染类或实例
@@ -149,10 +161,24 @@ export class ZLRouter
         this.__history__?.push(path)
     }
     /**
+     * 推入页面（page页面需要先注册路由）
+     * @param page 页面 
+     */
+    public pushViewPage(page :ZLViewPageClass){
+        this.push("/"+page.name);
+    }
+    /**
      * 替换当前页面
      */
     public replace(path : string) {
         this.__history__?.replace(path);
+    }
+    /**
+     * 替换当前页面（page页面需要先注册路由）
+     * @param page 页面 
+     */
+    public replaceViewPage(page : ZLViewPageClass) {
+        this.__history__?.replace("/"+page.name);
     }
     /**
      * 返回上一页面
