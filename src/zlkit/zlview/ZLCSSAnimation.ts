@@ -1,5 +1,8 @@
 import {ZLObject} from './ZLObject'
-import { ZLCSSAnimationDirection, ZLCSSAnimationParams, ZLCSSAnimationTimingFunction, ZLCurrentSizeUnit } from './ZLUIDef';
+import { ZLBoxShadow, ZLCSSAnimationDirection,
+     ZLCSSAnimationParams, 
+     ZLCSSAnimationTimingFunction,
+     ZLCurrentSizeUnit } from './ZLUIDef';
 import {ZLView}  from './ZLView'
 
 
@@ -182,7 +185,14 @@ interface ZLCSSAnimatableStyle
     backgroudColor? : string;
     color? : string;
 
-    visibility? : boolean | string;
+    opacity?:number;
+    // visibility? : boolean | string;
+
+    borderWidth?:number;
+    borderColor?:string;
+    borderStyle?:string;
+
+    boxShadow?:ZLBoxShadow;
 }
 
 export class ZLCSSAnimationKeyFrame
@@ -215,30 +225,52 @@ export class ZLCSSAnimationKeyFrame
     {
         let s = "";
         if (view.left) {
-            s = `${s}left:${view.left.toString() + ZLCurrentSizeUnit};`
+            s += `left:${view.left.toString() + ZLCurrentSizeUnit};`
         }
         if (view.top) {
-            s = `${s}top:${view.top.toString() + ZLCurrentSizeUnit};`
+            s += `top:${view.top.toString() + ZLCurrentSizeUnit};`
         }
         if (view.width) {
-            s = `${s}width:${view.width.toString() + ZLCurrentSizeUnit};`
+            s += `width:${view.width.toString() + ZLCurrentSizeUnit};`
         }
         if (view.height) {
-            s = `${s}height:${view.height.toString() + ZLCurrentSizeUnit};`
+            s += `height:${view.height.toString() + ZLCurrentSizeUnit};`
         }
+
         if (view.backgroudColor) {
-            s = `${s}background-color:${view.backgroudColor};`
+            s += `background-color:${view.backgroudColor};`
         }
         if (view.color) {
-            s = `${s}color:${view.color};`
+            s += `color:${view.color};`
         }
-        if (view.visibility !== undefined)
-        {
-            if ( view.visibility === false) {
-                s = `${s}visibility:hidden;`
-            } else if ( view.visibility !== true) {
-                s = `${s}visibility:${view.visibility};`
+
+        if (view.opacity) {
+            s += `opacity:${view.opacity};`
+        }
+        // if (view.visibility !== undefined)
+        // {
+        //     if ( view.visibility === false) {
+        //         s = `${s}visibility:hidden;`
+        //     } else if ( view.visibility !== true) {
+        //         s = `${s}visibility:${view.visibility};`
+        //     }
+        // }
+
+        if (view.borderColor || view.borderWidth || view.borderStyle) {
+            s += "border:";
+            if(view.borderWidth) {
+                s+= view.borderWidth.toString()+ZLCurrentSizeUnit;
             }
+            if (view.borderStyle) {
+                s += view.borderStyle;
+            }
+            if (view.borderColor) {
+                s += view.borderColor;
+            }
+            s+=";"
+        }
+        if (view.boxShadow) {
+            s += `box-shadow:${view.boxShadow.toCSSString()};`
         }
         this.__key_frame_str__ = `${this.progress}% {${s}}`;
     }

@@ -110,23 +110,22 @@ export class ZLBoxShadow
      * 将外部阴影 (outset) 改为内部阴影
      */
     public inset?:boolean;
-    public toCSSStyle(cssStyle : {}) : void
+    public toCSSString() : string
     {
         let s = `${this.hShadow}${ZLCurrentSizeUnit} ${this.vShadow}${ZLCurrentSizeUnit}`;
         if (this.blur) {
-            s = `${s} ${this.blur}${ZLCurrentSizeUnit}`;
+            s += ` ${this.blur}${ZLCurrentSizeUnit}`;
         }
         if (this.spread) {
-            s = `${s} ${this.spread}${ZLCurrentSizeUnit}`;
+            s += ` ${this.spread}${ZLCurrentSizeUnit}`;
         }
         if (this.color) {
-            s = `${s} ${this.color}${ZLCurrentSizeUnit}`;
+            s += ` ${this.color}${ZLCurrentSizeUnit}`;
         }
         if (this.inset === true) {
-            s = `${s} inset`;
+            s += ` inset`;
         }
-        let cs : any = cssStyle;
-        cs.boxShadow = s;
+        return s;
     }
 
     public static getDefaultFont() {

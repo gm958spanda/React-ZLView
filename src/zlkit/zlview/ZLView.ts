@@ -407,7 +407,7 @@ export class ZLView extends ZLObject
         let style =  this.__zl_cssStyle__;
         style.position = "absolute";
         if(this.__zl_boxShadow__) {
-            this.__zl_boxShadow__.toCSSStyle(style);
+            style.boxShadow = this.__zl_boxShadow__.toCSSString();
         }
         if (this.width !== undefined) {
             style.width = this.width.toString() + ZLCurrentSizeUnit;
