@@ -80,7 +80,7 @@ export class ZLEdgeInset
 
 export class ZLBoxShadow
 {
-    constructor(size:number,family : string)
+    constructor()
     {
         this.hShadow = 0;
         this.vShadow = 0;
