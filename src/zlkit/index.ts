@@ -39,7 +39,8 @@ export {
     ZLEdgeInset as EdgeInset,
     
     ZLBorderStyle as BorderStyle,
-
+    ZLBoxShadow as BoxShadow,
+    
     ZLWordBreakMode as WordBreakMode,
     ZLWorkWrapMode as  WorkWrapMode,
     ZLTextAlignMode as TextAlignMode,

@@ -3,7 +3,14 @@ import React, { CSSProperties} from 'react';
 import {ZLList} from '../sugar/list'
 import {ZLEventCallbackList} from '../sugar/eventcb'
 
-import {ZLPoint,ZLHref, ZLCurrentSizeUnit, ZLCSSAnimationParams, ZLEdgeInset,ZLBorderStyle} from './ZLUIDef'
+import {ZLPoint,
+    ZLHref, 
+    ZLCurrentSizeUnit, 
+    ZLCSSAnimationParams, 
+    ZLEdgeInset,
+    ZLBorderStyle,
+    ZLBoxShadow
+} from './ZLUIDef'
 import {ZLViewPage} from './ZLViewPage'
 import {ZLObject} from './ZLObject'
 import {ZLCSSAnimation, ZLCSSAnimationKeyFrame} from './ZLCSSAnimation'
@@ -183,6 +190,16 @@ export class ZLView extends ZLObject
      */
     public get visibility():boolean { return (this.__zl_cssStyle__.visibility !== "hidden");}
     public set visibility(v:boolean) { this.__zl_cssStyle__.visibility = (v === false) ? "hidden" : undefined;}
+    /**
+     * 不透明度 0 ~ 1，0完全透明  1完全不透明
+     */
+    public get opacity():number|undefined {return this.__zl_cssStyle__.opacity as number;}
+    public set opacity(v:number|undefined){this.__zl_cssStyle__.opacity=v;}
+    /**
+     * box shadow 边框阴影
+     */
+    public get boxShadow():ZLBoxShadow|undefined {return this.__zl_boxShadow__;}
+    public set boxShadow(v:ZLBoxShadow|undefined) {this.__zl_boxShadow__=v;}
     /**
      * 是否切除溢出边界的子视图 （通过设置overflow）
      */
@@ -389,6 +406,9 @@ export class ZLView extends ZLObject
     {
         let style =  this.__zl_cssStyle__;
         style.position = "absolute";
+        if(this.__zl_boxShadow__) {
+            this.__zl_boxShadow__.toCSSStyle(style);
+        }
         if (this.width !== undefined) {
             style.width = this.width.toString() + ZLCurrentSizeUnit;
         }
@@ -454,6 +474,7 @@ export class ZLView extends ZLObject
 
     /// css style
     private __zl_cssStyle__: CSSProperties;
+    private __zl_boxShadow__?:ZLBoxShadow;
     ///padding border
     private __zl_padding__? :ZLEdgeInset;
     private __zl_borderWidth__? : number;

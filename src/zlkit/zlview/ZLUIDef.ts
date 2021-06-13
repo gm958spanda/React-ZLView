@@ -1,4 +1,3 @@
-
 /**
  * 尺寸单位
  */
@@ -79,6 +78,65 @@ export class ZLEdgeInset
     public static Zero = new ZLEdgeInset();
 }
 
+export class ZLBoxShadow
+{
+    constructor(size:number,family : string)
+    {
+        this.hShadow = 0;
+        this.vShadow = 0;
+    }
+
+    /**
+     * 水平阴影的位置。允许负值
+     */
+    public hShadow:number;
+    /**
+     * 垂直阴影的位置。允许负值
+     */
+    public vShadow:number;
+    /**
+     * 模糊距离
+     */
+    public blur?:number;
+    /**
+     * 阴影的尺寸
+     */
+    public spread?:number;
+    /**
+     * 阴影的颜色。请参阅 CSS 颜色值
+     */
+    public color?:number;
+    /**
+     * 将外部阴影 (outset) 改为内部阴影
+     */
+    public inset?:boolean;
+    public toCSSStyle(cssStyle : {}) : void
+    {
+        let s = `${this.hShadow}${ZLCurrentSizeUnit} ${this.vShadow}${ZLCurrentSizeUnit}`;
+        if (this.blur) {
+            s = `${s} ${this.blur}${ZLCurrentSizeUnit}`;
+        }
+        if (this.spread) {
+            s = `${s} ${this.spread}${ZLCurrentSizeUnit}`;
+        }
+        if (this.color) {
+            s = `${s} ${this.color}${ZLCurrentSizeUnit}`;
+        }
+        if (this.inset === true) {
+            s = `${s} inset`;
+        }
+        let cs : any = cssStyle;
+        cs.boxShadow = s;
+    }
+
+    public static getDefaultFont() {
+        if (ZLCurrentSizeUnit === ZLSizeUnit.px) {
+            return new ZLFont(16,'Arial');
+        } else {
+            return new ZLFont(1,'Arial');
+        }
+    }
+}
 
 export enum ZLBorderStyle
 {
