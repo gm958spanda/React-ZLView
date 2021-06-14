@@ -276,6 +276,21 @@ export class ZLHref
 //https://developer.mozilla.org/zh-CN/docs/Web/CSS/transform-function
 export class ZLTransform
 {
+    constructor() {
+        this._is3D = false;
+        this._matrixs = [ZLTransformMatrix2D.identityMatrix]
+    }
+    /**
+     * 恢复到identityMatrix
+     */
+    public resumeIdentityMatrix()
+    {
+        if (this._is3D) {
+            this._matrixs = [ZLTransformMatrix3D.identityMatrix];
+        } else {
+            this._matrixs = [ZLTransformMatrix2D.identityMatrix];
+        }
+    }
     /**
      * 平移
      * @param x 移动距离
@@ -483,8 +498,8 @@ export class ZLTransform
     public originX(x:number) {this.origin(x,this._oy?this._oy:0.5);}
     public originY(y:number) {this.origin(this._ox?this._ox:0.5 , y);}
 
-    private _matrixs : number[][] = [ZLTransformMatrix2D.identityMatrix];
-    private _is3D:boolean = false;
+    private _matrixs : number[][];
+    private _is3D:boolean;
     private converTo3D()
     {
         if( true !== this._is3D)

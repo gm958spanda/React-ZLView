@@ -197,8 +197,8 @@ class App extends React.Component
     }
 }
  ```
-## transform
-封装了matrix2d和matrix3d变换`ZLTransform`，内部实现使用了矩阵乘法，支持`translate2d/3d`、`sacle2d/3d`、`rotate2d/3d`、`skew2d/3d`。
+## Transform
+封装了matrix2d和matrix3d变换`ZLTransform`，内部实现使用了矩阵乘法，支持`translate 平动`、`scale 缩放`、`rotate 旋转`、`skew 倾斜`、`refect 翻转`。
 
 ```ts
 import * as zl from 'react-zlview'

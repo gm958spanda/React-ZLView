@@ -183,9 +183,9 @@ export class ZLTransformMatrix3D
      public static relectMatrix(x:boolean ,y:boolean, z:boolean)
      {
          return [        
-             y===true?-1:0,      0,                0,           0,
-                 0,          x===true?-1:0,        0,           0,
-                 0,              0,           z===true?-1:0,    0,
+             y===true?-1:1,      0,                0,           0,
+                 0,          x===true?-1:1,        0,           0,
+                 0,              0,           z===true?-1:1,    0,
                  0,              0,                0,           1
          ];
      }
@@ -313,8 +313,8 @@ export class ZLTransformMatrix3D
     public static relectMatrix(x:boolean ,y:boolean)
     {
         return [        
-            y===true?-1:0,      0,           0,
-                0,          x===true?-1:0,   0,
+            y===true?-1:1,      0,           0,
+                0,          x===true?-1:1,   0,
                 0,              0,           1
         ];
     }

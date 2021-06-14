@@ -4,6 +4,7 @@ import { SinPage } from './demo/SinPage';
 import { ScrollPage } from './demo/ScrollPage';
 import { AnimationPage } from './demo/AnimationPage';
 import * as zl from  "./zlkit/index"
+import { TransformPage } from './demo/TransformPage';
 
 class App extends React.Component
 {
@@ -15,7 +16,8 @@ class App extends React.Component
             this.router.registRoute("/",HomePage);
             this.router.registViewPage(SinPage);
             this.router.registViewPage(ScrollPage);
-            this.router.registRoute("/animation", AnimationPage);
+            this.router.registViewPage(AnimationPage);
+            this.router.registViewPage(TransformPage);
         }
         return this.router.reactElement();
     }
@@ -35,7 +37,7 @@ class HomePage extends zl.ViewPage
     {
         super.viewDidLoad?.();
 
-        let view;
+        let view:zl.View;
         {
             let lb = new zl.TextArea()
             lb.text = "456\n123\n789\nabc\nefg\nasdfgh\nqwer";
@@ -49,51 +51,25 @@ class HomePage extends zl.ViewPage
             this.view.addSubview(lb);
             view = lb;
         }
-        {
+
+        let btns = [SinPage,ScrollPage,AnimationPage,TransformPage];
+        btns.forEach((v)=>{
             let shadow = new zl.BoxShadow();
             let btn = new zl.Button();
             btn.boxShadow = shadow;
             btn.backgroudColor = "rgb(00,00,255,0.2)";
             btn.left = 20;
-            btn.top = view.bottom + 60;
+            btn.top = view.bottom + 20;
             btn.width = 120;
             btn.height = 30;
-            btn.title = "SinPage"
+            btn.title = v.name
             btn.addOnClickEventCallback((sender)=>{
-                this.router?.pushViewPage(SinPage);
+                this.router?.pushViewPage(v);
             })
             this.view.addSubview(btn);
 
             view = btn;
-        }
-
-        {
-            let btn = new zl.Button();
-            btn.backgroudColor = "rgb(00,00,255,0.2)";
-            btn.setFrameSameAs(view);
-            btn.top = view.bottom + 20;
-            btn.title = "ScrollPage"
-            btn.addOnClickEventCallback((sender)=>{
-                this.router?.pushViewPage(ScrollPage);
-            })
-            this.view.addSubview(btn);
-
-            view = btn;
-        }
-
-        {
-            let btn = new zl.Button();
-            btn.backgroudColor = "rgb(00,00,255,0.2)";
-            btn.setFrameSameAs(view);
-            btn.top = view.bottom + 20;
-            btn.title = "Animation"
-            btn.addOnClickEventCallback((sender)=>{
-                this.router?.push("/animation");
-            })
-            this.view.addSubview(btn);
-
-            view = btn;
-        }
+        });
     }
         
     viewDidMount()
