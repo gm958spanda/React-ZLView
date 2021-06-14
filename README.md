@@ -197,24 +197,23 @@ class App extends React.Component
     }
 }
  ```
-
-### 注册路由
+## transform
+封装了matrix2d和matrix3d变换`ZLTransform`，内部实现使用了矩阵乘法，支持`translate2d/3d`、`sacle2d/3d`、`rotate2d/3d`、`skew2d/3d`。
 
 ```ts
 import * as zl from 'react-zlview'
 
-let router = new zl.Router();
-router.registRoute("/",HomePage);
-router.registRoute("/other",OtherPage);
+let view:zl.View = new zl.View();
+view.width = 200;
+view.height = 100;
+view.backgroundColor = "yellor";
+
+let transform = new zl.Transform();
+transform.rotate(Math.PI);
+transform.translate(10,190);
+view.transform = transform;
+view.refresh();
 ```
-
-### 路由跳转
-
-```ts
-router.push("/other");
-router.replace("/");
-```
-
 ## 动画
 
 简单封装了CSS动画，直接作用在ZLView上
@@ -240,6 +239,10 @@ view.cssAnimation({to:()=>{
             view.x = 100;
             view.width = 200;
             view.height = 100;
+            
+            let transform = new zl.Transform();
+            transform.rotate(Math.PI);
+            transform.translate(10,190);
         },
             duration:3000,
             timingFunction:zl.CSSAnimationTimingFunction.cubicBezier,
@@ -248,4 +251,21 @@ view.cssAnimation({to:()=>{
                 console.log("animation end");
             }
 });
+```
+
+### 注册路由
+
+```ts
+import * as zl from 'react-zlview'
+
+let router = new zl.Router();
+router.registRoute("/",HomePage);
+router.registRoute("/other",OtherPage);
+```
+
+### 路由跳转
+
+```ts
+router.push("/other");
+router.replace("/");
 ```
