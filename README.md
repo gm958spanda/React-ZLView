@@ -84,10 +84,6 @@ class App extends React.Component
 | viewDidMount/addListenViewDidMount/removeListenViewDidMount    | React.componentDidMount    |
 | viewWillUnmount/addListenViewWillUnMount/removeListenViewWillUnMount | React.componentWillUnmount |
 
-## ZLView获取DOM节点
-
-可以通过实现方法`onReactRefCallback`来获取，也可以调用`addListenOnReactRefCallback`添加新方法获取.
-
 ## 父视图和子视图
 
  * `superView` 获取父视图
@@ -100,6 +96,19 @@ class App extends React.Component
  * `refresh` 刷新视图，本质是调用 React.setState。 ZLView的属性变更后，需要主动调用 `refresh`来刷新视图
  * `layoutSubViews`,是一个通知类型的方法，用于重新布局子视图列表；触发时机是在React.render返回结果前
 
+## ZLView获取DOM节点
+
+可以通过实现方法`onReactRefCallback`来获取，也可以调用`addListenOnReactRefCallback`添加新方法获取.
+
+## 监听DOM事件
+ 
+ 通过`addListenDOMEvent`和`removeListenDOMEvent`可以监听/移除监听DOM事件，例如
+ ```ts
+ view.addListenDOMEvent("onClick", (e:React.SyntheticEvent)=>{
+     console.log("clicked");
+ })
+ ```
+
 
 ## 继承ZLView
 
@@ -107,10 +116,6 @@ ZLView支持继承以自定义视图样式，通常需要重写的方法`__react
 
 示列:
 ```ts
-
-import React from 'react';
-import * as zl from 'react-zlview'
-
 class CustomView extends zl.View
 {
     /**
@@ -135,13 +140,89 @@ class CustomView extends zl.View
     }
 ```
 
+
+## Transform
+封装了matrix2d和matrix3d变换`ZLTransform`，内部实现使用了矩阵乘法，支持`translate 平动`、`scale 缩放`、`rotate 旋转`、`skew 倾斜`、`refect 翻转`。
+
+```ts
+let view:zl.View = new zl.View();
+view.width = 200;
+view.height = 100;
+view.backgroundColor = "yellow";
+
+let transform = new zl.Transform();
+transform.rotate(Math.PI);
+transform.translate(10,190);
+view.transform = transform;
+view.refresh();
+```
+
+## 背景色、前景色、不透明度、是否可见
+
+* `backgroundColor` 略
+* `color`  略
+* `opacity`  略
+* `visibility`  略
+
+## 设置阴影
+
+简单封装了`css box shadow`，可以直接设置`ZLView.boxShadow`属性
+```ts
+view.backgroundColor = "yellow";
+
+let shadow = new zl.BoxShadow();
+shadow.color = "green";
+view.boxShadow = shadow;
+```
+
+## 边框
+支持简单设置
+* `borderColor` 边框颜色
+* `borderStyle` 边框样式
+* `borderWidth` 边框宽度
+
+
+## 动画
+
+简单封装了CSS动画，直接作用在ZLView上
+
+```ts
+/**
+ * 开启一个3秒动画
+ * 尺寸从(100,200)变化到（200，100）
+ * 背景色从red到yellow
+ * 动画曲线使用cubic-bezier（1,0,0,1)
+ */
+
+let view = new zl.View()
+view.width = 100;
+view.height = 200;
+view.backgroudColor = "red";
+
+view.cssAnimation({to:()=>{
+            view.backgroudColor = "yellow";
+            view.x = 100;
+            view.width = 200;
+            view.height = 100;
+            
+            let transform = new zl.Transform();
+            transform.rotate(Math.PI);
+            transform.translate(10,190);
+        },
+            duration:3000,
+            timingFunction:zl.CSSAnimationTimingFunction.cubicBezier,
+            cubicBezierValue:[1,0,0,1],
+            end:()=>{
+                console.log("animation end");
+            }
+});
+```
+
 ## ZLRouter路由 
 
 封装`react-router-dom`。引入页面概念`ZLViewPage`，一个路由对应一个页面，采用严格模式匹配路由的`path`
 
 ```ts
-import * as zl from 'react-zlview'
-
 class HomePage extends zl.ViewPage
 {
     viewDidLoad()
@@ -197,70 +278,18 @@ class App extends React.Component
     }
 }
  ```
-## Transform
-封装了matrix2d和matrix3d变换`ZLTransform`，内部实现使用了矩阵乘法，支持`translate 平动`、`scale 缩放`、`rotate 旋转`、`skew 倾斜`、`refect 翻转`。
-
-```ts
-import * as zl from 'react-zlview'
-
-let view:zl.View = new zl.View();
-view.width = 200;
-view.height = 100;
-view.backgroundColor = "yellor";
-
-let transform = new zl.Transform();
-transform.rotate(Math.PI);
-transform.translate(10,190);
-view.transform = transform;
-view.refresh();
-```
-## 动画
-
-简单封装了CSS动画，直接作用在ZLView上
-
-```ts
-
-import * as zl from 'react-zlview'
-
-/**
- * 开启一个3秒动画
- * 尺寸从(100,200)变化到（200，100）
- * 背景色从red到yellow
- * 动画曲线使用cubic-bezier（1,0,0,1)
- */
-
-let view = new zl.View()
-view.width = 100;
-view.height = 200;
-view.backgroudColor = "red";
-
-view.cssAnimation({to:()=>{
-            view.backgroudColor = "yellow";
-            view.x = 100;
-            view.width = 200;
-            view.height = 100;
-            
-            let transform = new zl.Transform();
-            transform.rotate(Math.PI);
-            transform.translate(10,190);
-        },
-            duration:3000,
-            timingFunction:zl.CSSAnimationTimingFunction.cubicBezier,
-            cubicBezierValue:[1,0,0,1],
-            end:()=>{
-                console.log("animation end");
-            }
-});
-```
-
 ### 注册路由
 
 ```ts
-import * as zl from 'react-zlview'
-
 let router = new zl.Router();
 router.registRoute("/",HomePage);
 router.registRoute("/other",OtherPage);
+```
+
+也可以直接注册`ZLViewPage`
+```ts
+// 等同于  router.registRoute("/OtherPage",OtherPage);
+router.registViewPage(OtherPage);
 ```
 
 ### 路由跳转
@@ -268,4 +297,10 @@ router.registRoute("/other",OtherPage);
 ```ts
 router.push("/other");
 router.replace("/");
+```
+
+也可以直接push`ZLViewPage`
+```ts
+// 等同于  router.push("/OtherPage");
+router.pushViewPage(OtherPage);
 ```
