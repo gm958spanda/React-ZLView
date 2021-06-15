@@ -15,7 +15,7 @@ export class SinPage extends zl.ViewPage
         console.log( this.constructor.name + " mount");
     }
 
-    viewWillUnMount()
+    viewWillUnmount()
     {
         console.log( this.constructor.name + " unmount");
     }

@@ -16,7 +16,7 @@ export class ScrollPage extends zl.ViewPage
         console.log( this.constructor.name + " mount");
     }
 
-    viewWillUnMount()
+    viewWillUnmount()
     {
         console.log( this.constructor.name + " unmount");
         clearInterval(this.timer_id!);

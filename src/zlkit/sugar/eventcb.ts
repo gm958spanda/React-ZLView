@@ -46,30 +46,35 @@ export class ZLEventCallbackList
      * 移除所有cbThis回调
      * @param cbThis 回调函数的this
      */
-     public removeEvntCallbackByThis(cbThis : any)
-     {
-         if (cbThis === undefined){
-             return;
-         }
-         if (this.__zl_EventHandlerMap__)
-         {
-             this.__zl_EventHandlerMap__.forEach((v,name) => {
-                 let cbArr : any[]= [];
-                 v.forEach((cbThis_,cb)=>{
-                     if (cbThis === cbThis_) {
-                         cbArr.push(cb);
-                     }
-                 })
-                 cbArr.forEach((cb)=>{
-                     v.delete(cb)
-                 })
-             });
-         }
-     }
-     public clear()
-     {
-         this.__zl_EventHandlerMap__?.clear();
-     }
+    public removeEvntCallbackByThis(cbThis : any)
+    {
+        if (cbThis === undefined){
+            return;
+        }
+        if (this.__zl_EventHandlerMap__)
+        {
+            this.__zl_EventHandlerMap__.forEach((v,name) => {
+                let cbArr : any[]= [];
+                v.forEach((cbThis_,cb)=>{
+                    if (cbThis === cbThis_) {
+                        cbArr.push(cb);
+                    }
+                })
+                cbArr.forEach((cb)=>{
+                    v.delete(cb)
+                })
+            });
+        }
+    }
+
+     /**
+      * 清空所有
+      */
+    public clear()
+    {
+        this.__zl_EventHandlerMap__?.clear();
+    }
+
     /**
      * 触发事件
      * @param name 事件名称
@@ -94,6 +99,14 @@ export class ZLEventCallbackList
         return this.__zl_EventHandlerMap__?.get(name);
     }
 
+    public getEventNameList() : string[]
+    {
+        let arr : string[]= [];
+        this.__zl_EventHandlerMap__?.forEach((v,k)=>{
+            arr.push(k);
+        });
+        return arr;
+    }
     /**
      * 事件回调列表 {事件名 : {事件回调 : 事件回调的This} }
      */

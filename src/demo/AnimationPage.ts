@@ -15,7 +15,7 @@ export class AnimationPage extends zl.ViewPage
         console.log( this.constructor.name + " mount");
     }
 
-    viewWillUnMount()
+    viewWillUnmount()
     {
         console.log( this.constructor.name + " unmount");
     }
@@ -35,6 +35,7 @@ export class AnimationPage extends zl.ViewPage
 
     animation1(view:zl.View)
     {
+        console.log("animation1 start" , new Date());
         view.cssAnimation({to:()=>{
             view.backgroudColor = "yellow";
             view.x = 100;
@@ -44,7 +45,7 @@ export class AnimationPage extends zl.ViewPage
             timingFunction:zl.CSSAnimationTimingFunction.cubicBezier,
             cubicBezierValue:[1,0,0,1],
             end:()=>{
-                console.log("animation1 end");
+                console.log("animation1 end", new Date());
                 this.animation2(view);
             }
         });
@@ -52,6 +53,7 @@ export class AnimationPage extends zl.ViewPage
 
     animation2(view:zl.View)
     {
+        console.log("animation2 start", new Date());
         view.cssAnimation({to:()=>{
             let transform = new zl.Transform();
             transform.rotate(Math.PI);
@@ -61,7 +63,7 @@ export class AnimationPage extends zl.ViewPage
             duration:2000,
             timingFunction:zl.CSSAnimationTimingFunction.easeInOut,
             end:()=>{
-                console.log("animation2 end");
+                console.log("animation2 end", new Date());
                 this.animation3(view);
             }
         });
@@ -69,6 +71,7 @@ export class AnimationPage extends zl.ViewPage
 
     animation3(view:zl.View)
     {
+        console.log("animation3 start", new Date());
         view.cssAnimation({to:()=>{
             let transform = view.transform!;//new zl.Transform();
             transform.translate(10,190);
@@ -79,7 +82,7 @@ export class AnimationPage extends zl.ViewPage
             duration:2000,
             timingFunction:zl.CSSAnimationTimingFunction.easeInOut,
             end:()=>{
-                console.log("animation3 end");
+                console.log("animation3 end", new Date());
             }
         });
     }

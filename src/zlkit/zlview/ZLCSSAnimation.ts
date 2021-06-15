@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties} from 'react';
 import {ZLObject} from './ZLObject'
 import { ZLBoxShadow,
      ZLCSSAnimationDirection,
@@ -65,30 +65,41 @@ export class ZLCSSAnimation extends ZLObject
     }
     public onViewReactRefCallback? : ()=>void;
 
-    private __onViewWillRender__()
+    private __onViewWillRender__ = ()=>
     {
         this.updateCSS();
     }
 
-    private __onViewReactRefCallback__(e:Element) 
+    private __onViewReactRefCallback__ = (e:Element) =>
     {
         if (e !== undefined && e !== null) {
             this.__elem__ = new WeakRef(e);
-            if (this.__onAnimationend__) {
-                e.addEventListener("animationend",this.__onAnimationend__);
+            if (this.__onViewAnimationend__) {
+                e.addEventListener("animationend",this.__onViewAnimationend__);
+            }
+            if (this.__onViewAnimationStart__) {
+                e.addEventListener("animationstart",this.__onViewAnimationStart__);
             }
         }
         this.onViewReactRefCallback?.();
     }
 
-    private __onViewWillUnmount__()
+    private __onViewWillUnmount__ = () =>
     {
         this.clearresource();
     }
 
-    private __onAnimationend__? = ()=> {
+    private __onViewAnimationend__? = (e:Event)=> {
         this.params?.end?.();
         this.clearresource();
+    }
+    private __onViewAnimationStart__? = (e:Event)=> {
+        if (e && e.currentTarget!==null){
+            let str = (e.currentTarget as HTMLElement).style.animation;
+            if (str === undefined || str.indexOf(this.uniqueString) < 0) {
+                this.__onViewAnimationend__?.(e);
+            }
+        }
     }
 
     private clearresource()
@@ -116,11 +127,15 @@ export class ZLCSSAnimation extends ZLObject
 
                 let e = elem?.deref();
                 if(e) {
-                    if (this.__onAnimationend__ ) {
-                        e.removeEventListener("animationend",this.__onAnimationend__);
+                    if (this.__onViewAnimationend__ ) {
+                        e.removeEventListener("animationend",this.__onViewAnimationend__);
+                    }
+                    if (this.__onViewAnimationStart__ ) {
+                        e.removeEventListener("animationstart",this.__onViewAnimationStart__);
                     }
                 }
-                this.__onAnimationend__ = undefined;
+                this.__onViewAnimationend__ = undefined;
+                this.__onViewAnimationStart__ = undefined;
             }, 0);
         }
     }
@@ -166,7 +181,7 @@ export class ZLCSSAnimation extends ZLObject
     {
         let idstr = this.uniqueString;
         let style = document.getElementById(idstr) as HTMLStyleElement;
-        if (style !== undefined || style !== null) {
+        if (style !== undefined && style !== null) {
             style.remove();
         }
     }

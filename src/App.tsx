@@ -63,9 +63,9 @@ class HomePage extends zl.ViewPage
             btn.width = 120;
             btn.height = 30;
             btn.title = v.name
-            btn.addOnClickEventCallback((sender)=>{
+            btn.onClick = (sender)=>{
                 this.router?.pushViewPage(v);
-            })
+            };
             this.view.addSubview(btn);
 
             view = btn;

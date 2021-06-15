@@ -89,7 +89,7 @@ export class ZLTextArea extends ZLTextBaseView
     protected __htmlAttributes__() : ZLHtmlAttribute
     {
         let attr = super.__htmlAttributes__();
-        attr.event.onInput = (e:React.SyntheticEvent)=>{
+        this.addListenDOMEvent("onInput", (e:React.SyntheticEvent)=>{
             let node = (e.target as HTMLTextAreaElement);
             this.__zl_txa_node__ = node
             this.__zl_txa_text__ = node.value;
@@ -100,7 +100,7 @@ export class ZLTextArea extends ZLTextBaseView
             this.__zl_txa_scrollSize__.height = node.scrollHeight;
             
             this.__zl_txa_event_list__?.onEvnt("oninput",this);
-        }
+        });
         if (this.__zl_txa_text__ !== undefined) {
             (attr.otherAttr as any).defaultValue = this.__zl_txa_text__;
         }
