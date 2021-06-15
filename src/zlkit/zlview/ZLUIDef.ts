@@ -458,8 +458,8 @@ export class ZLTransform
     }
     /**
      * 指定了观察者的位置，用作 perspective 属性的消失点
-     * @param x 指定消失点的横坐标 取值范围[0,1]
-     * @param y 指定消失点的纵坐标 取值范围[0,1]
+     * @param x 指定消失点的横坐标 最终将转换为百分数(x * 100)%
+     * @param y 指定消失点的纵坐标 最终将转换为百分数(y * 100)%
      */
     public perspectiveOrigin(x:number,y:number)
     { 
@@ -606,7 +606,7 @@ export class ZLTransform
             }
             if(this._pz)
             {
-                style.perspective = this._pz.toString();
+                style.perspective = this._pz.toString() + ZLCurrentSizeUnit;
                 if (this._pox) 
                 {
                     let x = (this._pox*100).toString().split(".")[0];

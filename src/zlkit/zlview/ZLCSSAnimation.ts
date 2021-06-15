@@ -16,6 +16,7 @@ export class ZLCSSAnimation extends ZLObject
         super();
         this.__keyFrames__ = keyFrames;
         this.__is_css_created__ = false;
+        this.__is_end__ = false;
         this.__zl_view__ = new WeakRef(view);
 
         view.addListenViewWillRender(this.__onViewWillRender__,this);
@@ -63,7 +64,7 @@ export class ZLCSSAnimation extends ZLObject
         }
         return `${name} ${duration}ms ${timingFunction} ${delay}ms ${iterationCount} ${direction}`;
     }
-    public onViewReactRefCallback? : ()=>void;
+    public get isEnd () { return this.__is_end__;}
 
     private __onViewWillRender__ = ()=>
     {
@@ -81,7 +82,6 @@ export class ZLCSSAnimation extends ZLObject
                 e.addEventListener("animationstart",this.__onViewAnimationStart__);
             }
         }
-        this.onViewReactRefCallback?.();
     }
 
     private __onViewWillUnmount__ = () =>
@@ -104,6 +104,7 @@ export class ZLCSSAnimation extends ZLObject
 
     private clearresource()
     {
+        this.__is_end__ = true;
         if (this.__zl_view__)
         {
             this.removeCSS();
@@ -186,6 +187,7 @@ export class ZLCSSAnimation extends ZLObject
         }
     }
 
+    private __is_end__: boolean;
     private __is_css_created__ : boolean;
     private __keyFrames__ : ZLCSSAnimationKeyFrame[];
     private __zl_view__? : WeakRef<ZLView>;
@@ -315,7 +317,8 @@ export class ZLCSSAnimationKeyFrame
             }
         } else {
             ///此处为了使动画过程中的transform状态不完全相同
-            s += `transform:none;`;
+            // s += "transform:matrix(1,0,0,1,0,0);";
+            s += "transform:none;";
         }
         this.__key_frame_str__ = `${this.progress}% {${s}}`;
     }
