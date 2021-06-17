@@ -307,7 +307,7 @@ router.pushViewPage(OtherPage);
 ```
 
 
-##更新日志
+## 更新日志
 
 ### 0.1.0
 * 使用x-y-width-height坐标系统
