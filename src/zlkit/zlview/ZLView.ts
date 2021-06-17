@@ -333,7 +333,14 @@ export class ZLView extends ZLObject
 
         let style = this.__zl_cssStyle__;
         style.animation = an.toAnimationStr();
-        this.__zl_animation__ = new WeakRef(an);
+        this.__zl_animation__ = an;
+        this.refresh();
+    }
+    public cssAnimationClear() 
+    {
+        this.__zl_animation__?.onViewAnimationClear();
+        this.__zl_animation__ = undefined;
+        this.__zl_cssStyle__.animation = undefined;
         this.refresh();
     }
 
@@ -458,7 +465,7 @@ export class ZLView extends ZLObject
             style.top = this.y.toString()+ ZLCurrentSizeUnit;
         }
         // 动画处理
-        let zlAn = this.__zl_animation__?.deref();
+        let zlAn = this.__zl_animation__;
         if (zlAn && zlAn.isEnd === false){
             ;
         } else {
@@ -551,7 +558,7 @@ export class ZLView extends ZLObject
     private __zl_cssStyle__: CSSProperties;
     private __zl_boxShadow__?:ZLBoxShadow;
     private __zl_transform__?:ZLTransform;
-    private __zl_animation__?:WeakRef<ZLCSSAnimation>;
+    private __zl_animation__?:ZLCSSAnimation;
     ///padding border
     private __zl_padding__? :ZLEdgeInset;
     private __zl_borderWidth__? : number;

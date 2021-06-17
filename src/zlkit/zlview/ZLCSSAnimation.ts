@@ -66,6 +66,10 @@ export class ZLCSSAnimation extends ZLObject
     }
     public get isEnd () { return this.__is_end__;}
 
+    public onViewAnimationClear() {
+        this.__onViewAnimationend__?.();
+    }
+
     private __onViewWillRender__ = ()=>
     {
         this.updateCSS();
@@ -89,7 +93,7 @@ export class ZLCSSAnimation extends ZLObject
         this.clearresource();
     }
 
-    private __onViewAnimationend__? = (e:Event)=> {
+    private __onViewAnimationend__? = (e?:Event)=> {
         this.params?.end?.();
         this.clearresource();
     }

@@ -447,6 +447,7 @@ export class TransformPage extends zl.ViewPage
         slider.minValue = 1;
         slider.value = 6;
         slider.onValueChanged = (v) =>{
+            transView.cssAnimationClear();
             let trans = this.create3DTransForm();
             trans.perspective(100*v);
             transView.transform = trans;

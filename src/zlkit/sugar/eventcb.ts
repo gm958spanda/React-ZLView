@@ -23,7 +23,7 @@ export class ZLEventCallbackList
         }
 
         let weakCbThis = cbThis;
-        if (cbThis !== undefined ||cbThis!== null) {
+        if (cbThis !== undefined && cbThis!== null) {
             weakCbThis = new WeakRef(cbThis);
         }
         cbmap.set(cb,weakCbThis);
