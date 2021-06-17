@@ -157,12 +157,13 @@ view.transform = transform;
 view.refresh();
 ```
 
-## 背景色、前景色、不透明度、是否可见
+## 背景色、前景色、不透明度、是否可见、是否禁用
 
 * `backgroundColor` 略
 * `color`  略
 * `opacity`  略
 * `visibility`  略
+* `disabled` 略
 
 ## 设置阴影
 
@@ -319,5 +320,7 @@ router.pushViewPage(OtherPage);
 
 ### 0.1.1
 * 重写ZLList和ZLReadOnlyList的实现
+* ZLEventCallbackList使用WeakRef存储thisArg
 * 修复ZLCSSAnimation在含有perspective时，生成tansform字符串格式错误。
 * 修复ZLView的tansform style样式字符串格式错误
+* 增加ZLSlider（封装input type="range"）

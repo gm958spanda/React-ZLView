@@ -1,5 +1,5 @@
 import React from 'react';
-import {ZLHtmlAttribute, ZLView}  from './ZLView'
+import {ZLView}  from './ZLView'
 
 type ZLButtonOnClickCallback = (sender:ZLButton)=>void;
 
@@ -38,13 +38,5 @@ export class ZLButton extends ZLView
     {
         let attr = this.__htmlAttributes__();
         return React.createElement("button",attr.toReactClassAttributes(), children,this.title);
-    }
-    protected __htmlAttributes__() : ZLHtmlAttribute
-    {
-        let attr = super.__htmlAttributes__();
-        if (this.disabled === true) {
-            (attr.otherAttr as any).disabled = "disabled";
-        }
-        return attr;
-    }    
+    }  
 }

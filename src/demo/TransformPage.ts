@@ -11,104 +11,107 @@ export class TransformPage extends zl.ViewPage
         s.perspective(600);
         return s;
     }
+    create3DBox() : zl.View
+    {
+        let transView = new zl.View();
+        transView.transform = this.create3DTransForm();
+
+        // https://developer.mozilla.org/zh-CN/docs/Web/CSS/perspective
+        transView.backgroudColor = "rgb(240,230,210,0.2)";
+        transView.width = 200;
+        transView.height = 200;
+        transView.center = this.view.center;
+        transView.left += 200;
+        let font = new zl.Font(50,"sans-serif");
+
+        let tr = new zl.Transform();
+        tr.translateZ(50);
+        let face_front = new zl.Label();
+        face_front.width = 100;
+        face_front.height = 100;
+        face_front.textAlign = zl.TextAlignMode.Center;
+        face_front.text = "A";
+        face_front.font = font;
+        face_front.color = "white";
+        face_front.backgroudColor = "rgba(0, 0, 0, 0.3)";
+        face_front.transform = tr;
+        transView.addSubview(face_front);
+
+        tr = new zl.Transform();
+        tr.translateZ(50);
+        tr.rotateY(Math.PI);
+        let face_back = new zl.Label();
+        face_back.setFrameSameAs(face_front);
+        face_back.textAlign = zl.TextAlignMode.Center;
+        face_back.text = "B";
+        face_back.font = font;
+        face_back.color = "black";
+        face_back.backgroudColor = "rgba(0, 255, 0, 0.6)";
+        face_back.transform = tr;
+        transView.addSubview(face_back);
+
+        tr = new zl.Transform();
+        tr.translateZ(50);
+        tr.rotateY(Math.PI/2);
+        let face_right = new zl.Label();
+        face_right.setFrameSameAs(face_front);
+        face_right.textAlign = zl.TextAlignMode.Center;
+        face_right.text = "C";
+        face_right.font = font;
+        face_right.color = "white";
+        face_right.backgroudColor = "rgba(196, 0, 0, 0.7)";
+        face_right.transform = tr;
+        transView.addSubview(face_right);
+
+        tr = new zl.Transform();
+        tr.translateZ(50);
+        tr.rotateY(-Math.PI/2);
+        let face_left = new zl.Label();
+        face_left.setFrameSameAs(face_front);
+        face_left.textAlign = zl.TextAlignMode.Center;
+        face_left.text = "D";
+        face_left.font = font;
+        face_left.color = "white";
+        face_left.backgroudColor = "rgba(0, 0, 196, 0.7)";
+        face_left.transform = tr;
+        transView.addSubview(face_left);
+
+        tr = new zl.Transform();
+        tr.translateZ(50);
+        tr.rotateX(Math.PI/2);
+        let face_top = new zl.Label();
+        face_top.setFrameSameAs(face_front);
+        face_top.textAlign = zl.TextAlignMode.Center;
+        face_top.text = "E";
+        face_top.font = font;
+        face_top.color = "white";
+        face_top.backgroudColor = "rgba(196, 196, 0, 0.7)";
+        face_top.transform = tr;
+        transView.addSubview(face_top);
+
+        tr = new zl.Transform();
+        tr.translateZ(50);
+        tr.rotateX(-Math.PI/2);
+        let face_bottom = new zl.Label();
+        face_bottom.setFrameSameAs(face_front);
+        face_bottom.textAlign = zl.TextAlignMode.Center;
+        face_bottom.text = "F";
+        face_bottom.font = font;
+        face_bottom.color = "white";
+        face_bottom.backgroudColor = "rgba(196, 0, 196, 0.7)";
+        face_bottom.transform = tr;
+        transView.addSubview(face_bottom);
+
+        return transView;
+    }
 
     viewDidLoad()
     {
         super.viewDidLoad?.();
-        let transView = new zl.View();
+        let transView = this.create3DBox();
         this.view.addSubview(transView);
 
-        let startTransform = this.create3DTransForm();
-        if(true)
-        {
-            // https://developer.mozilla.org/zh-CN/docs/Web/CSS/perspective
-            transView.backgroudColor = "rgb(240,230,210,0.2)";
-            transView.width = 200;
-            transView.height = 200;
-            transView.center = this.view.center;
-            transView.left += 200;
-            transView.transform = startTransform;
-
-            let font = new zl.Font(50,"sans-serif");
-
-            let tr = new zl.Transform();
-            tr.translateZ(50);
-            let face_front = new zl.Label();
-            face_front.width = 100;
-            face_front.height = 100;
-            face_front.textAlign = zl.TextAlignMode.Center;
-            face_front.text = "A";
-            face_front.font = font;
-            face_front.color = "white";
-            face_front.backgroudColor = "rgba(0, 0, 0, 0.3)";
-            face_front.transform = tr;
-            transView.addSubview(face_front);
-
-            tr = new zl.Transform();
-            tr.translateZ(50);
-            tr.rotateY(Math.PI);
-            let face_back = new zl.Label();
-            face_back.setFrameSameAs(face_front);
-            face_back.textAlign = zl.TextAlignMode.Center;
-            face_back.text = "B";
-            face_back.font = font;
-            face_back.color = "black";
-            face_back.backgroudColor = "rgba(0, 255, 0, 0.6)";
-            face_back.transform = tr;
-            transView.addSubview(face_back);
-
-            tr = new zl.Transform();
-            tr.translateZ(50);
-            tr.rotateY(Math.PI/2);
-            let face_right = new zl.Label();
-            face_right.setFrameSameAs(face_front);
-            face_right.textAlign = zl.TextAlignMode.Center;
-            face_right.text = "C";
-            face_right.font = font;
-            face_right.color = "white";
-            face_right.backgroudColor = "rgba(196, 0, 0, 0.7)";
-            face_right.transform = tr;
-            transView.addSubview(face_right);
-
-            tr = new zl.Transform();
-            tr.translateZ(50);
-            tr.rotateY(-Math.PI/2);
-            let face_left = new zl.Label();
-            face_left.setFrameSameAs(face_front);
-            face_left.textAlign = zl.TextAlignMode.Center;
-            face_left.text = "D";
-            face_left.font = font;
-            face_left.color = "white";
-            face_left.backgroudColor = "rgba(0, 0, 196, 0.7)";
-            face_left.transform = tr;
-            transView.addSubview(face_left);
-
-            tr = new zl.Transform();
-            tr.translateZ(50);
-            tr.rotateX(Math.PI/2);
-            let face_top = new zl.Label();
-            face_top.setFrameSameAs(face_front);
-            face_top.textAlign = zl.TextAlignMode.Center;
-            face_top.text = "E";
-            face_top.font = font;
-            face_top.color = "white";
-            face_top.backgroudColor = "rgba(196, 196, 0, 0.7)";
-            face_top.transform = tr;
-            transView.addSubview(face_top);
-
-            tr = new zl.Transform();
-            tr.translateZ(50);
-            tr.rotateX(-Math.PI/2);
-            let face_bottom = new zl.Label();
-            face_bottom.setFrameSameAs(face_front);
-            face_bottom.textAlign = zl.TextAlignMode.Center;
-            face_bottom.text = "F";
-            face_bottom.font = font;
-            face_bottom.color = "white";
-            face_bottom.backgroudColor = "rgba(196, 0, 196, 0.7)";
-            face_bottom.transform = tr;
-            transView.addSubview(face_bottom);
-        }
+        let startTransform = transView.transform!.copy();
 
         let btn = new zl.Button();
         this.view.addSubview(btn);
@@ -131,7 +134,7 @@ export class TransformPage extends zl.ViewPage
             });
         };
 
-        let view = btn;
+        let view :zl.View = btn;
         btn = new zl.Button();
         this.view.addSubview(btn);
         btn.title = "rotate2d";
@@ -426,27 +429,29 @@ export class TransformPage extends zl.ViewPage
         };
 
         view = btn;
-        btn = new zl.Button();
-        this.view.addSubview(btn);
-        btn.title = "perspective";
-        btn.setFrameSameAs(view);
-        btn.left = 10;
-        btn.top = view.bottom + 10;
-        btn.onClick = ()=>{
-            transView.transform = startTransform;
+        let lb = new zl.Label();
+        this.view.addSubview(lb);
+        lb.text = "perspective";
+        lb.left = 10;
+        lb.top = view.bottom + 10;
+        lb.width = 110;
+        lb.height = 20;
+        view = lb;
 
+        let slider = new zl.Slider();
+        this.view.addSubview(slider);
+        slider.left = lb.right + 5;
+        slider.width = 150;
+        slider.height = 10;
+        slider.center_y = lb.center_y;
+        slider.minValue = 1;
+        slider.value = 6;
+        slider.onValueChanged = (v) =>{
             let trans = this.create3DTransForm();
-            trans.perspective(100);
-            transView.cssAnimation({
-                to:()=>{
-                    transView.transform = trans;
-                },
-                duration:3000,
-                iterationCount:"infinite"
-            });
-        };
-
-        
+            trans.perspective(100*v);
+            transView.transform = trans;
+            transView.refresh();
+        }
     }
     viewDidMount()
     {

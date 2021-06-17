@@ -188,6 +188,10 @@ export class ZLView extends ZLObject
     public get color():string | undefined { return this.__zl_cssStyle__.color;}
     public set color(v:string | undefined ){ this.__zl_cssStyle__.color = v;}
     /**
+     * 是否禁用
+     */
+    public disabled? : boolean;
+    /**
      * 是否可见 
      */
     public get visibility():boolean { return (this.__zl_cssStyle__.visibility !== "hidden");}
@@ -434,11 +438,13 @@ export class ZLView extends ZLObject
         if(this.__zl_boxShadow__) {
             style.boxShadow = this.__zl_boxShadow__.toCSSString();
         }
-
+        // transform
         ZLTransform.clearCSSStyle(style);
         if (this.__zl_transform__) {
             this.__zl_transform__.toCSSStyle(style);
         }
+
+        // 坐标
         if (this.width !== undefined) {
             style.width = this.width.toString() + ZLCurrentSizeUnit;
         }
@@ -490,6 +496,11 @@ export class ZLView extends ZLObject
 
         // 生成html属性
         let attr = new ZLHtmlAttribute(this.uniqueString, style, event , refCb);
+
+        //disabled
+        if (this.disabled === true) {
+            (attr.otherAttr as any).disabled = "disabled";
+        }
         return attr
     }
     /**

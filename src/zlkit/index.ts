@@ -22,6 +22,10 @@ export {
     ZLLabel as Label
 } from './zlview/ZLLabel';
 
+export { 
+    ZLSlider as Slider
+} from './zlview/ZLSlider';
+
 
 export { 
     ZLTextArea as TextArea
