@@ -21,7 +21,12 @@ export class ZLEventCallbackList
             cbmap = new Map();
             this.__zl_EventHandlerMap__.set(name,cbmap);
         }
-        cbmap.set(cb,cbThis);
+
+        let weakCbThis = cbThis;
+        if (cbThis !== undefined ||cbThis!== null) {
+            weakCbThis = new WeakRef(cbThis);
+        }
+        cbmap.set(cb,weakCbThis);
     }
 
     /**
@@ -48,7 +53,7 @@ export class ZLEventCallbackList
      */
     public removeEvntCallbackByThis(cbThis : any)
     {
-        if (cbThis === undefined){
+        if (cbThis === undefined || cbThis === null){
             return;
         }
         if (this.__zl_EventHandlerMap__)
@@ -56,10 +61,12 @@ export class ZLEventCallbackList
             this.__zl_EventHandlerMap__.forEach((v,name) => {
                 let cbArr : any[]= [];
                 v.forEach((cbThis_,cb)=>{
-                    if (cbThis === cbThis_) {
-                        cbArr.push(cb);
+                    if (cbThis_) {
+                        if (cbThis === cbThis_.deref()) {
+                            cbArr.push(cb);
+                        }
                     }
-                })
+                });
                 cbArr.forEach((cb)=>{
                     v.delete(cb)
                 })
@@ -86,7 +93,7 @@ export class ZLEventCallbackList
         if (cbMap && cbMap.size>0)
         {
             cbMap.forEach((cbThis,cb)=>{
-                cb.call(cbThis,cbArg);
+                cb.call(cbThis?.deref(),cbArg);
             });
         }
     }
@@ -110,5 +117,5 @@ export class ZLEventCallbackList
     /**
      * 事件回调列表 {事件名 : {事件回调 : 事件回调的This} }
      */
-    private __zl_EventHandlerMap__? : Map<string, Map<any,any>>;
+    private __zl_EventHandlerMap__? : Map<string, Map<any,WeakRef<any>|undefined>>;
 }
