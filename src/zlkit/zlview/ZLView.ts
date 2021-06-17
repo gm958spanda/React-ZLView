@@ -84,12 +84,13 @@ class ZLViewComponent extends React.Component<ZLViewComponentProps>
         let childs = undefined;
         {
             let subvs = v.subViews;
-            if ( subvs !== undefined && subvs.count() > 0 )
+            if ( subvs !== undefined && subvs.length > 0 )
             {
                 childs = [];
-                for (let index = 0; index <subvs.count(); index++)
+                for (let index = 0; index <subvs.length; index++)
                 {
-                    const sub= subvs.getElementAt(index);
+                    const sub= subvs.at(index)!;
+                    childs.push(sub.reactElement);
                     childs[index] = sub.reactElement();
                 }
             }
@@ -300,7 +301,7 @@ export class ZLView extends ZLObject
         this.__zl_subViews__.add(view);
     }
     /**
-     * 子视图列表
+     * 子视图列表  （仅复制数组，数组元素指向的引用对象依然相同）
      */
     public get subViews() { return this.__zl_subViews__?.toReadOnlyList();}
 

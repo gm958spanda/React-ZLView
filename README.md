@@ -304,3 +304,18 @@ router.replace("/");
 // 等同于  router.push("/OtherPage");
 router.pushViewPage(OtherPage);
 ```
+
+
+##更新日志
+
+### 0.1.0
+* 使用x-y-width-height坐标系统
+* 支持px/rem两种单位
+* 方便管理子视图添加和移除的操作
+* 使用矩阵乘法，支持transform2d/3d
+* 支持dom事件监听
+* 支持简单css动画
+* 封装了路由的基本操作，可在运行时更新路由
+
+### 0.1.1
+* 重写ZLList和ZLReadOnlyList的实现

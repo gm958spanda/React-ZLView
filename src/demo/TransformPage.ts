@@ -215,7 +215,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let sub = transView.subViews?.getElementAt(0);
+            let sub = transView.subViews?.at(0);
             if (sub)
             {
                 let old = sub.transform;
