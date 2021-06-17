@@ -12,7 +12,7 @@ export class ZLSlider extends ZLView
         this.__zl_slider_value__ = 0;
 
         this.addListenDOMEvent("onChange",(e)=>{
-            this.value = parseFloat((e.currentTarget as HTMLInputElement).value);
+            this.value = (e.currentTarget as HTMLInputElement).valueAsNumber;
         },this);
     }
 
@@ -49,7 +49,7 @@ export class ZLSlider extends ZLView
     protected __reactRender__(children?:React.ReactNode[])
     {
         let attr = this.__htmlAttributes__();
-        return React.createElement("input",attr.toReactClassAttributes(), children);
+        return React.createElement("input",attr.toReactClassAttributes());
     }
     protected __htmlAttributes__() : ZLHtmlAttribute
     {

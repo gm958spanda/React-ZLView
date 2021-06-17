@@ -26,6 +26,9 @@ export {
     ZLSlider as Slider
 } from './zlview/ZLSlider';
 
+export { 
+    ZLCheckBox as CheckBox
+} from './zlview/ZLCheckBox';
 
 export { 
     ZLTextArea as TextArea

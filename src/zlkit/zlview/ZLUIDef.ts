@@ -613,6 +613,8 @@ export class ZLTransform
             }
             if (this._backfaceVisibility === true) {
                 style.backfaceVisibility = "visible";
+            } else if  (this._backfaceVisibility === false) {
+                style.backfaceVisibility = "hidden";   
             }
             if(this._pz)
             {

@@ -3,12 +3,19 @@ import * as zl from  "../zlkit/index"
 
 export class TransformPage extends zl.ViewPage
 {
-    create3DTransForm() {
+    private m_perspective = 600;
+    private m_perspectiveOriginX = 1.5;
+    private m_perspectiveOriginY = 1.5;
+    private m_backfaceVisibility = true;
+    private m_preserve3d = true;
+
+    create3DTransForm()
+    {
         let s = new zl.Transform();
-        s.backfaceVisibility = true;
-        s.perspectiveOrigin(1.5,1.5);
-        s.preserve3d = true;
-        s.perspective(600);
+        s.backfaceVisibility = this.m_backfaceVisibility;
+        s.perspectiveOrigin(this.m_perspectiveOriginX,this.m_perspectiveOriginY);
+        s.preserve3d = this.m_preserve3d;
+        s.perspective(this.m_perspective);
         return s;
     }
     create3DBox() : zl.View
@@ -436,20 +443,115 @@ export class TransformPage extends zl.ViewPage
         lb.top = view.bottom + 10;
         lb.width = 110;
         lb.height = 20;
-        view = lb;
-
-        let slider = new zl.Slider();
-        this.view.addSubview(slider);
-        slider.left = lb.right + 5;
-        slider.width = 150;
-        slider.height = 10;
-        slider.center_y = lb.center_y;
-        slider.minValue = 1;
-        slider.value = 6;
-        slider.onValueChanged = (v) =>{
+        let slider1 = new zl.Slider();
+        this.view.addSubview(slider1);
+        slider1.left = lb.right + 5;
+        slider1.width = 150;
+        slider1.height = 10;
+        slider1.center_y = lb.center_y;
+        slider1.minValue = 1;
+        slider1.value = 6;
+        slider1.onValueChanged = (v) =>{
             transView.cssAnimationClear();
             let trans = this.create3DTransForm();
             trans.perspective(100*v);
+            transView.transform = trans;
+            transView.refresh();
+        }
+
+        view = lb;
+        lb = new zl.Label();
+        this.view.addSubview(lb);
+        lb.setFrameSameAs(view);
+        lb.text = "perspective-origin-x";
+        lb.left = 10;
+        lb.top = view.bottom + 10;
+        lb.width = 150;
+        view = lb;
+        let slider2 = new zl.Slider();
+        this.view.addSubview(slider2);
+        slider2.setFrameSameAs(slider1);
+        slider2.left = lb.right + 5;
+        slider2.center_y = lb.center_y;
+        slider2.minValue = 0.1;
+        slider2.maxValue = 10;
+        slider2.value = this.m_perspectiveOriginX;
+        slider2.onValueChanged = (v) =>{
+            transView.cssAnimationClear();
+            let trans = this.create3DTransForm();
+            trans.perspectiveOrigin(v,this.m_perspectiveOriginY);
+            transView.transform = trans;
+            transView.refresh();
+        }
+        view = lb;
+        lb = new zl.Label();
+        this.view.addSubview(lb);
+        lb.setFrameSameAs(view);
+        lb.text = "perspective-origin-y";
+        lb.left = 10;
+        lb.top = view.bottom + 10;
+        lb.width = 150;
+        view = lb;
+        let slider3 = new zl.Slider();
+        this.view.addSubview(slider3);
+        slider3.setFrameSameAs(slider1);
+        slider3.left = lb.right + 5;
+        slider3.center_y = lb.center_y;
+        slider3.minValue = 0.1;
+        slider3.maxValue = 10;
+        slider3.value = this.m_perspectiveOriginY;
+        slider3.onValueChanged = (v) =>{
+            transView.cssAnimationClear();
+            let trans = this.create3DTransForm();
+            transView.transform = trans;
+            transView.refresh();
+        }
+
+        view = lb;
+        lb = new zl.Label();
+        this.view.addSubview(lb);
+        lb.setFrameSameAs(view);
+        lb.text = "preserve3d";
+        lb.left = 10;
+        lb.top = view.bottom + 10;
+        lb.width = 80;
+        view = lb;
+        let checkbox = new zl.CheckBox();
+        this.view.addSubview(checkbox);
+        checkbox.checked = this.m_preserve3d;
+        checkbox.left = view.right;
+        checkbox.width = 15;
+        checkbox.height = 15;
+        checkbox.center_y = lb.center_y;
+        checkbox.onCheckedChanged = (b)=>{
+            transView.cssAnimationClear();
+            this.m_preserve3d = b;
+            let trans = this.create3DTransForm();
+            transView.transform = trans;
+            transView.refresh();
+        }
+
+        view = lb;
+        lb = new zl.Label();
+        this.view.addSubview(lb);
+        lb.setFrameSameAs(view);
+        lb.text = "backfaceVisibility";
+        lb.left = 10;
+        lb.top = view.bottom + 10;
+        lb.width = 130;
+        view = lb;
+        checkbox = new zl.CheckBox();
+        this.view.addSubview(checkbox);
+        checkbox.checked = this.m_preserve3d;
+        checkbox.left = view.right;
+        checkbox.width = 15;
+        checkbox.height = 15;
+        checkbox.center_y = lb.center_y;
+        checkbox.onCheckedChanged = (b)=>{
+            transView.cssAnimationClear();
+            this.m_backfaceVisibility = b;
+            let trans = this.create3DTransForm();
+            trans.rotateY(Math.PI);
             transView.transform = trans;
             transView.refresh();
         }
