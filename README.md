@@ -319,3 +319,4 @@ router.pushViewPage(OtherPage);
 
 ### 0.1.1
 * 重写ZLList和ZLReadOnlyList的实现
+* 修复ZLCSSAnimation在含有perspective时，生成tansform字符串格式错误。

@@ -17,6 +17,7 @@ export class TransformPage extends zl.ViewPage
             transView.width = 200;
             transView.height = 200;
             transView.center = this.view.center;
+            transView.left += 200;
             startTransform.backfaceVisibility = true;
             startTransform.perspectiveOrigin(1.5,1.5);
             startTransform.preserve3d = true;
@@ -418,6 +419,28 @@ export class TransformPage extends zl.ViewPage
                 iterationCount:"infinite"
             });
         };
+
+        view = btn;
+        btn = new zl.Button();
+        this.view.addSubview(btn);
+        btn.title = "perspective";
+        btn.setFrameSameAs(view);
+        btn.left = view.right + 10;
+        btn.onClick = ()=>{
+            transView.transform = startTransform;
+
+            let trans = new zl.Transform();
+            trans.perspective(100);
+            transView.cssAnimation({
+                to:()=>{
+                    transView.transform = trans;
+                },
+                duration:3000,
+                iterationCount:"infinite"
+            });
+        };
+
+        
     }
     viewDidMount()
     {

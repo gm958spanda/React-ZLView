@@ -307,12 +307,12 @@ export class ZLCSSAnimationKeyFrame
                 s += `transform-style:${tsf.transformStyle};`;
             }
             if (tsf.backfaceVisibility) {
-                s +=`backface-visibility:${tsf.backfaceVisibility}`;
+                s +=`backface-visibility:${tsf.backfaceVisibility};`;
             }
             if(tsf.perspective) {
-                s += `perspective:${tsf.perspective}`;
+                s += `perspective:${tsf.perspective};`;
                 if (tsf.perspectiveOrigin) {
-                    s+= `perspective-origin:${tsf.perspectiveOrigin}`;
+                    s+= `perspective-origin:${tsf.perspectiveOrigin};`;
                 }
             }
         } else {
