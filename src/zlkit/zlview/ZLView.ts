@@ -434,6 +434,8 @@ export class ZLView extends ZLObject
         if(this.__zl_boxShadow__) {
             style.boxShadow = this.__zl_boxShadow__.toCSSString();
         }
+
+        ZLTransform.clearCSSStyle(style);
         if (this.__zl_transform__) {
             this.__zl_transform__.toCSSStyle(style);
         }

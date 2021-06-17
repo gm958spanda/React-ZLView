@@ -577,6 +577,16 @@ export class ZLTransform
             return m;
         }
     }
+
+    public static clearCSSStyle(style:CSSProperties)
+    {
+        delete style.transformOrigin;
+        delete style.transform;
+        delete style.transformStyle;
+        delete style.backfaceVisibility;
+        delete style.perspective;
+        delete style.perspectiveOrigin;
+    }
     public toCSSStyle(style:CSSProperties)
     {
         if (this._ox) 
