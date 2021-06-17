@@ -3,13 +3,22 @@ import * as zl from  "../zlkit/index"
 
 export class TransformPage extends zl.ViewPage
 {
+    create3DTransForm() {
+        let s = new zl.Transform();
+        s.backfaceVisibility = true;
+        s.perspectiveOrigin(1.5,1.5);
+        s.preserve3d = true;
+        s.perspective(600);
+        return s;
+    }
+
     viewDidLoad()
     {
         super.viewDidLoad?.();
         let transView = new zl.View();
         this.view.addSubview(transView);
 
-        let startTransform = new zl.Transform();
+        let startTransform = this.create3DTransForm();
         if(true)
         {
             // https://developer.mozilla.org/zh-CN/docs/Web/CSS/perspective
@@ -18,10 +27,6 @@ export class TransformPage extends zl.ViewPage
             transView.height = 200;
             transView.center = this.view.center;
             transView.left += 200;
-            startTransform.backfaceVisibility = true;
-            startTransform.perspectiveOrigin(1.5,1.5);
-            startTransform.preserve3d = true;
-            startTransform.perspective(250);
             transView.transform = startTransform;
 
             let font = new zl.Font(50,"sans-serif");
@@ -115,7 +120,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.translate(100,100);
             transView.cssAnimation({
                 to:()=>{
@@ -135,7 +140,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.rotate(45/Math.PI);
             transView.cssAnimation({
                 to:()=>{
@@ -155,7 +160,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.skew(75/Math.PI,75/Math.PI);
             transView.cssAnimation({
                 to:()=>{
@@ -176,7 +181,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.translateX(100);
             transView.cssAnimation({
                 to:()=>{
@@ -196,7 +201,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.translateY(100);
             transView.cssAnimation({
                 to:()=>{
@@ -221,7 +226,7 @@ export class TransformPage extends zl.ViewPage
             {
                 let old = sub.transform;
 
-                let trans = new zl.Transform();
+                let trans = this.create3DTransForm();
                 trans.translateZ(-100);
                 sub.cssAnimation({
                     to:()=>{
@@ -247,7 +252,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.rotateX(Math.PI/4);
             transView.cssAnimation({
                 to:()=>{
@@ -267,7 +272,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.rotateY(Math.PI/4);
             transView.cssAnimation({
                 to:()=>{
@@ -287,7 +292,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.rotateZ(Math.PI/4);
             transView.cssAnimation({
                 to:()=>{
@@ -308,7 +313,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.skewX(Math.PI/4);
             transView.cssAnimation({
                 to:()=>{
@@ -328,7 +333,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.skewY(Math.PI/4);
             transView.cssAnimation({
                 to:()=>{
@@ -348,7 +353,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.skew3d(0,0,0,0,Math.PI/3 ,Math.PI/4)
             transView.cssAnimation({
                 to:()=>{
@@ -369,7 +374,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.reflectX(true);
             transView.cssAnimation({
                 to:()=>{
@@ -389,7 +394,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.reflectY(true);
             transView.cssAnimation({
                 to:()=>{
@@ -409,7 +414,7 @@ export class TransformPage extends zl.ViewPage
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.reflectZ(true);
             transView.cssAnimation({
                 to:()=>{
@@ -425,11 +430,12 @@ export class TransformPage extends zl.ViewPage
         this.view.addSubview(btn);
         btn.title = "perspective";
         btn.setFrameSameAs(view);
-        btn.left = view.right + 10;
+        btn.left = 10;
+        btn.top = view.bottom + 10;
         btn.onClick = ()=>{
             transView.transform = startTransform;
 
-            let trans = new zl.Transform();
+            let trans = this.create3DTransForm();
             trans.perspective(100);
             transView.cssAnimation({
                 to:()=>{
