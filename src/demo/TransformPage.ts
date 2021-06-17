@@ -477,9 +477,9 @@ export class TransformPage extends zl.ViewPage
         slider2.maxValue = 10;
         slider2.value = this.m_perspectiveOriginX;
         slider2.onValueChanged = (v) =>{
+            this.m_perspectiveOriginX = v;
             transView.cssAnimationClear();
             let trans = this.create3DTransForm();
-            trans.perspectiveOrigin(v,this.m_perspectiveOriginY);
             transView.transform = trans;
             transView.refresh();
         }
@@ -501,6 +501,7 @@ export class TransformPage extends zl.ViewPage
         slider3.maxValue = 10;
         slider3.value = this.m_perspectiveOriginY;
         slider3.onValueChanged = (v) =>{
+            this.m_perspectiveOriginY = v;
             transView.cssAnimationClear();
             let trans = this.create3DTransForm();
             transView.transform = trans;
