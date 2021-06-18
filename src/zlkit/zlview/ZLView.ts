@@ -6,7 +6,6 @@ import {ZLEventCallbackList} from '../sugar/eventcb'
 import {ZLPoint,
     ZLHref, 
     ZLCurrentSizeUnit, 
-    ZLCSSAnimationParams, 
     ZLEdgeInset,
     ZLBorderStyle,
     ZLBoxShadow,
@@ -14,7 +13,13 @@ import {ZLPoint,
 } from './ZLUIDef'
 import {ZLViewPage} from './ZLViewPage'
 import {ZLObject} from './ZLObject'
-import {ZLCSSAnimation, ZLCSSAnimationKeyFrame} from './ZLCSSAnimation'
+
+import {ZLCSSAnimation,
+    ZLCSSAnimationParams,
+    ZLCSSAnimationKeyFrame
+} from './ZLCSSAnimation'
+
+import { ZLCSSTransition } from './ZLCSSTransition';
 
 
 enum ZLViewEventName
@@ -259,13 +264,16 @@ export class ZLView extends ZLObject
      */
     public get borderStyle():ZLBorderStyle | undefined { return this.__cssStyle__.borderStyle as ZLBorderStyle;}
     public set borderStyle(m:ZLBorderStyle | undefined) {this.__cssStyle__.borderStyle = m;}
-
     /**
      * transform
      */
     public get transform():ZLTransform | undefined { return this.__zl_transform__;}
     public set transform(m:ZLTransform | undefined) { ;this.__zl_transform__ = m?.copy();}
-
+    /**
+     * transition
+     */
+    public get transition():ZLCSSTransition | undefined { return this.__zl_transition__;}
+    public set transition(m:ZLCSSTransition | undefined) { ;this.__zl_transition__ = m;}
     /**
      * 跳转连接
      */
@@ -442,15 +450,6 @@ export class ZLView extends ZLObject
     {
         let style =  this.__zl_cssStyle__;
         style.position = "absolute";
-        if(this.__zl_boxShadow__) {
-            style.boxShadow = this.__zl_boxShadow__.toCSSString();
-        }
-        // transform
-        ZLTransform.clearCSSStyle(style);
-        if (this.__zl_transform__) {
-            this.__zl_transform__.toCSSStyle(style);
-        }
-
         // 坐标
         if (this.width !== undefined) {
             style.width = this.width.toString() + ZLCurrentSizeUnit;
@@ -464,9 +463,22 @@ export class ZLView extends ZLObject
         if (this.y !== undefined) {
             style.top = this.y.toString()+ ZLCurrentSizeUnit;
         }
+        if(this.__zl_boxShadow__) {
+            style.boxShadow = this.__zl_boxShadow__.toCSSString();
+        }
+        // transform
+        ZLTransform.clearCSSStyle(style);
+        if (this.__zl_transform__) {
+            this.__zl_transform__.toCSSStyle(style);
+        }        
+        // 过渡 transition
+        if (this.__zl_transition__) {
+            style.transition = this.__zl_transition__.toTransitionStr();
+        } else {
+            style.transition = undefined;
+        }
         // 动画处理
-        let zlAn = this.__zl_animation__;
-        if (zlAn && zlAn.isEnd === false){
+        if (this.__zl_animation__ && this.__zl_animation__.isEnd === false){
             ;
         } else {
             style.animation = undefined;
@@ -559,6 +571,7 @@ export class ZLView extends ZLObject
     private __zl_boxShadow__?:ZLBoxShadow;
     private __zl_transform__?:ZLTransform;
     private __zl_animation__?:ZLCSSAnimation;
+    private __zl_transition__?:ZLCSSTransition;
     ///padding border
     private __zl_padding__? :ZLEdgeInset;
     private __zl_borderWidth__? : number;

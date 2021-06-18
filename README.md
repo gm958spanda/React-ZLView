@@ -326,3 +326,6 @@ router.pushViewPage(OtherPage);
 * 增加ZLSlider（封装input type="range"）
 * 增加ZLCheckBox（封装input type="checkbox"）
 * 增加ZLRadioButton（封装input type="radio"）
+
+### 0.2.0
+* 增加对css transition的支持

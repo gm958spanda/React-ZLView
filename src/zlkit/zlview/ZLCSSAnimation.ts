@@ -1,13 +1,47 @@
-import { CSSProperties} from 'react';
+import { CSSProperties, SyntheticEvent} from 'react';
 import {ZLObject} from './ZLObject'
-import { ZLBoxShadow,
-     ZLCSSAnimationDirection,
-     ZLCSSAnimationParams, 
-     ZLCSSAnimationTimingFunction,
+import { ZLBoxShadow, 
      ZLCurrentSizeUnit, 
      ZLTransform} from './ZLUIDef';
 import {ZLView}  from './ZLView'
 
+
+export enum ZLCSSAnimationDirection
+{
+    normal = "normal",
+    alternate = "alternate" //动画应该轮流反向播放。
+}
+
+//动画的速度曲线
+export enum ZLCSSAnimationTimingFunction
+{
+    linear = "linear",
+    ease = "ease",
+    easeIn = "ease-in",
+    easeOut = "ease-out",
+    easeInOut = "ease-out",
+    cubicBezier = "cubic-bezier",//cubic-bezier(n,n,n,n) ,在 cubic-bezier 函数中自己的值。可能的值是从 0 到 1 的数值。
+}
+
+export interface ZLCSSAnimationParams
+{
+    /** 终状态*/
+    to : () => void;
+    /** 动画结束*/
+    end? : () => void;
+    /** 持续时间 单位毫秒 默认300毫秒*/
+    duration? : number;
+    /** 动画的速度曲线 默认ease*/
+    timingFunction? : ZLCSSAnimationTimingFunction;
+    /** cubic-bezier(n,n,n,n) ,在 cubic-bezier 函数中自己的值。可能的值是从 0 到 1 的数值。*/
+    cubicBezierValue? : number[];
+    /** 在动画开始之前的延迟 单位毫秒 默认0毫秒*/
+    delay?:number;
+    /** 动画播放次数，默认1 */
+    iterationCount?:number | "infinite";
+    /** 定义是否应该轮流反向播放动画 默认normal*/
+    direction?:ZLCSSAnimationDirection;
+}
 
 export class ZLCSSAnimation extends ZLObject
 {
@@ -20,7 +54,6 @@ export class ZLCSSAnimation extends ZLObject
         this.__zl_view__ = new WeakRef(view);
 
         view.addListenViewWillRender(this.__onViewWillRender__,this);
-        view.addListenOnReactRefCallback(this.__onViewReactRefCallback__,this);
         view.addListenWiewWillUnMount(this.__onViewWillUnmount__,this);
     }
     /**
@@ -39,7 +72,7 @@ export class ZLCSSAnimation extends ZLObject
         if(this.params)
         {
             if(this.params.duration) {
-                duration = this.params?.duration;
+                duration = this.params.duration;
             }
             if(this.params.delay) {
                 delay = this.params.delay;
@@ -72,36 +105,37 @@ export class ZLCSSAnimation extends ZLObject
 
     private __onViewWillRender__ = ()=>
     {
-        this.updateCSS();
-    }
-
-    private __onViewReactRefCallback__ = (e:Element) =>
-    {
-        if (e !== undefined && e !== null) {
-            this.__elem__ = new WeakRef(e);
-            if (this.__onViewAnimationend__) {
-                e.addEventListener("animationend",this.__onViewAnimationend__);
+        if (this.__is_end__ === false) 
+        {
+            let view = this.__zl_view__?.deref();
+            if (view)
+            {
+                if (this.__onViewAnimationStart__ ) {
+                    view.addListenDOMEvent("onAnimationStart",this.__onViewAnimationStart__ , this);
+                }
+                if (this.__onViewAnimationend__) {
+                    view.addListenDOMEvent("onAnimationEnd",this.__onViewAnimationend__,this);
+                }
             }
-            if (this.__onViewAnimationStart__) {
-                e.addEventListener("animationstart",this.__onViewAnimationStart__);
-            }
+            this.updateCSS();
         }
     }
-
     private __onViewWillUnmount__ = () =>
     {
         this.clearresource();
     }
 
-    private __onViewAnimationend__? = (e?:Event)=> {
-        this.params?.end?.();
-        this.clearresource();
+    private __onViewAnimationend__?= ()=> {
+        if (this.__is_end__ === false) {
+            this.params?.end?.();
+            this.clearresource();
+        }
     }
-    private __onViewAnimationStart__? = (e:Event)=> {
+    private __onViewAnimationStart__?= (e:SyntheticEvent)=> {
         if (e && e.currentTarget!==null){
             let str = (e.currentTarget as HTMLElement).style.animation;
             if (str === undefined || str.indexOf(this.uniqueString) < 0) {
-                this.__onViewAnimationend__?.(e);
+                this.__onViewAnimationend__?.();
             }
         }
     }
@@ -118,29 +152,21 @@ export class ZLCSSAnimation extends ZLObject
 
             let view = this.__zl_view__;
             this.__zl_view__ = undefined;
-            
-            let elem = this.__elem__;
-            this.__elem__ = undefined;
 
             setTimeout(() => {
                 let v = view.deref();
                 if (v) {
-                    v.removeListenOnReactRefCallback(this.__onViewReactRefCallback__);
                     v.removeListenViewWillRender(this.__onViewWillRender__);
                     v.removeListenWiewWillUnMount(this.__onViewWillUnmount__);
-                }
-
-                let e = elem?.deref();
-                if(e) {
-                    if (this.__onViewAnimationend__ ) {
-                        e.removeEventListener("animationend",this.__onViewAnimationend__);
+                    if (this.__onViewAnimationStart__) {
+                        v.removeListenDOMEvent("onAnimationStart",this.__onViewAnimationStart__);
+                        this.__onViewAnimationStart__ = undefined;
                     }
-                    if (this.__onViewAnimationStart__ ) {
-                        e.removeEventListener("animationstart",this.__onViewAnimationStart__);
+                    if (this.__onViewAnimationend__) {
+                        v.removeListenDOMEvent("onAnimationEnd",this.__onViewAnimationend__!);
+                        this.__onViewAnimationend__ = undefined;
                     }
                 }
-                this.__onViewAnimationend__ = undefined;
-                this.__onViewAnimationStart__ = undefined;
             }, 0);
         }
     }
@@ -149,7 +175,7 @@ export class ZLCSSAnimation extends ZLObject
      */
     private updateCSS()
     {
-        if (this.__is_css_created__) {
+        if (this.__is_css_created__ === true) {
             return;
         }
         if(this.__keyFrames__.length < 2) {
@@ -182,7 +208,7 @@ export class ZLCSSAnimation extends ZLObject
         document.head.append(style);
     }
 
-    public removeCSS()
+    private removeCSS()
     {
         let idstr = this.uniqueString;
         let style = document.getElementById(idstr) as HTMLStyleElement;
@@ -195,7 +221,6 @@ export class ZLCSSAnimation extends ZLObject
     private __is_css_created__ : boolean;
     private __keyFrames__ : ZLCSSAnimationKeyFrame[];
     private __zl_view__? : WeakRef<ZLView>;
-    private __elem__? : WeakRef<Element>;
 }
 
 

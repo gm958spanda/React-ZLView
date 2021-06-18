@@ -4,11 +4,20 @@ export {
     ZLHtmlAttribute as HtmlAttribute,
 } from './zlview/ZLView';
 
-
 export { 
     ZLCSSAnimation as CSSAnimation,
-    ZLCSSAnimationKeyFrame as CSSAnimationKeyFrame
+    ZLCSSAnimationKeyFrame as CSSAnimationKeyFrame,
+    ZLCSSAnimationDirection as CSSAnimationDirection,
+    ZLCSSAnimationTimingFunction as CSSAnimationTimingFunction
 } from './zlview/ZLCSSAnimation';
+
+
+export { 
+    ZLCSSTransition as CSSTransition,
+    ZLCSSTransitionProperty as CSSTransitionProperty,
+    ZLCSSTransitionTimingFunction as CSSTransitionTimingFunction
+} from './zlview/ZLCSSTransition';
+
 
 export { 
     ZLButton as Button
@@ -63,7 +72,6 @@ export {
     ZLFontStyle as FontStyle,
 
     ZLTransform as Transform,
-    ZLCSSAnimationTimingFunction as CSSAnimationTimingFunction
  } from './zlview/ZLUIDef';
 
 export { 
