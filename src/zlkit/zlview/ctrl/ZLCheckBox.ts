@@ -1,12 +1,12 @@
 import React from 'react';
-import {ZLHtmlAttribute, ZLView}  from './ZLView'
+import {ZLHtmlAttribute, ZLView}  from '../ZLView'
 
 export class ZLCheckBox extends ZLView
 {
     constructor() 
     {
         super();
-        this.__zl_slider_checked__ = false;
+        this.__zl_checkbox_checked__ = false;
         this.addListenDOMEvent("onChange",(e)=>{
             this.checked = (e.currentTarget as HTMLInputElement).checked;
         },this);
@@ -14,11 +14,11 @@ export class ZLCheckBox extends ZLView
     /**
      * 是否选中
      */
-    public get checked():boolean { return this.__zl_slider_checked__;}
+    public get checked():boolean { return this.__zl_checkbox_checked__;}
     public set checked(v:boolean)
     {
-        if (v !== this.__zl_slider_checked__) {
-            this.__zl_slider_checked__ = v;
+        if (v !== this.__zl_checkbox_checked__) {
+            this.__zl_checkbox_checked__ = v;
             this.onCheckedChanged?.(v);
         }
     }
@@ -37,9 +37,9 @@ export class ZLCheckBox extends ZLView
         let attr = super.__htmlAttributes__();
         let other:any = attr.otherAttr;
         other.type = "checkbox";
-        other.defaultChecked = this.__zl_slider_checked__;
+        other.defaultChecked = this.__zl_checkbox_checked__;
         return attr;
     }
 
-    private __zl_slider_checked__ : boolean;
+    private __zl_checkbox_checked__ : boolean;
 }

@@ -323,4 +323,6 @@ router.pushViewPage(OtherPage);
 * ZLEventCallbackList使用WeakRef存储thisArg
 * 修复ZLCSSAnimation在含有perspective时，生成tansform字符串格式错误。
 * 修复ZLView的tansform style样式字符串格式错误
-* 增加ZLSlider（封装input type="range"）,ZLCheckBox（封装input type="checkbox"）
+* 增加ZLSlider（封装input type="range"）
+* 增加ZLCheckBox（封装input type="checkbox"）
+* 增加ZLRadioButton（封装input type="radio"）

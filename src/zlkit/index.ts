@@ -12,32 +12,37 @@ export {
 
 export { 
     ZLButton as Button
-} from './zlview/ZLButton';
+} from './zlview/ctrl/ZLButton';
 
 export { 
     ZLImageView as ImageView 
-} from './zlview/ZLImageView';
+} from './zlview/ctrl/ZLImageView';
 
 export { 
     ZLLabel as Label
-} from './zlview/ZLLabel';
+} from './zlview/ctrl/ZLLabel';
 
 export { 
     ZLSlider as Slider
-} from './zlview/ZLSlider';
+} from './zlview/ctrl/ZLSlider';
 
 export { 
     ZLCheckBox as CheckBox
-} from './zlview/ZLCheckBox';
+} from './zlview/ctrl/ZLCheckBox';
+
+export { 
+    ZLRadioButton as RadioButton,
+    ZLRadioGroup as RadioGroup
+} from './zlview/ctrl/ZLRadioButton';
 
 export { 
     ZLTextArea as TextArea
-} from './zlview/ZLTextArea';
+} from './zlview/ctrl/ZLTextArea';
 
 
 export {
      ZLScrollView as ScrollView
-} from  './zlview/ZLScrollView';
+} from  './zlview/ctrl/ZLScrollView';
 
 export { 
     ZLPoint as Point,

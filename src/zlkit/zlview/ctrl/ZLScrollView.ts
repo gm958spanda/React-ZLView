@@ -1,5 +1,5 @@
-import {ZLHtmlAttribute, ZLView}  from './ZLView'
-import './ZLCSS.css'
+import {ZLHtmlAttribute, ZLView}  from '../ZLView'
+import '../ZLCSS.css'
 
 export class ZLScrollView extends ZLView
 {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {ZLHtmlAttribute, ZLView}  from './ZLView'
+import {ZLHtmlAttribute, ZLView}  from '../ZLView'
 
 export class ZLSlider extends ZLView
 {

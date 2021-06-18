@@ -1,7 +1,7 @@
 import React from 'react';
 
-import {ZLHtmlAttribute, ZLView}  from './ZLView'
-import {ZLFont, ZLWordBreakMode, ZLWorkWrapMode, ZLTextAlignMode} from './ZLUIDef'
+import {ZLHtmlAttribute, ZLView}  from '../ZLView'
+import {ZLFont, ZLWordBreakMode, ZLWorkWrapMode, ZLTextAlignMode} from '../ZLUIDef'
 
 export class ZLTextBaseView extends ZLView
 {

@@ -70,6 +70,19 @@ class HomePage extends zl.ViewPage
 
             view = btn;
         });
+
+        // let rgroup = new zl.RadioGroup()
+        // for (let i = 0 ; i < 3 ;i ++)
+        // {
+        //     let btn = new zl.RadioButton(rgroup);
+        //     btn.left = 20;
+        //     btn.top = view.bottom + 20;
+        //     btn.width = 120;
+        //     btn.height = 30;
+        //     this.view.addSubview(btn);
+
+        //     view = btn;
+        // }
     }
         
     viewDidMount()

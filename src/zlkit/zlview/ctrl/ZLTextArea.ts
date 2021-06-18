@@ -1,8 +1,8 @@
 import React from 'react';
 
-import {ZLHtmlAttribute}  from './ZLView'
-import {ZLSize,ZLFont, ZLEdgeInset, ZLCurrentSizeUnit} from './ZLUIDef'
-import {ZLEventCallbackList} from '../sugar/eventcb'
+import {ZLHtmlAttribute}  from '../ZLView'
+import {ZLSize,ZLFont, ZLEdgeInset, ZLCurrentSizeUnit} from '../ZLUIDef'
+import {ZLEventCallbackList} from '../../sugar/eventcb'
 import {ZLTextBaseView}  from './ZLTextBaseView'
 
 

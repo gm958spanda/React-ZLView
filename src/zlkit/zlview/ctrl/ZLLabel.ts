@@ -1,6 +1,6 @@
 import {ZLTextBaseView}  from './ZLTextBaseView'
-import { ZLSize } from './ZLUIDef';
-import {ZLUtils} from './ZLUtils'
+import { ZLSize } from '../ZLUIDef';
+import {ZLUtils} from '../ZLUtils'
 
 
 export class ZLLabel extends ZLTextBaseView

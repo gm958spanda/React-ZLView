@@ -1,5 +1,5 @@
 import React from 'react';
-import {ZLView}  from './ZLView'
+import {ZLView}  from '../ZLView'
 
 type ZLButtonOnClickCallback = (sender:ZLButton)=>void;
 
