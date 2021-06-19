@@ -15,8 +15,8 @@ import {ZLViewPage} from './ZLViewPage'
 import {ZLObject} from './ZLObject'
 
 import {ZLCSSAnimation,
-    ZLCSSAnimationParams,
-    ZLCSSAnimationKeyFrame
+    ZLCSSAnimationKeyFrame,
+    ZLCSSAnimationParams
 } from './ZLCSSAnimation'
 
 import { ZLCSSTransition } from './ZLCSSTransition';
@@ -48,8 +48,9 @@ class ZLViewComponent extends React.Component<ZLViewComponentProps>
         (v as any).__zl_weakReactComponent__ = new WeakRef(this);
 
         // ZLViewPage 生命周期
-        if (v.viewPage !==undefined) {
-            v.viewPage.viewDidMount?.();
+        let viewPage = v.viewPage;
+        if (viewPage !==undefined) {
+            viewPage.viewDidMount?.();
         }
 
         // ZLView生命周期
@@ -64,10 +65,11 @@ class ZLViewComponent extends React.Component<ZLViewComponentProps>
         ((v as any).__zl_lifeCycleEventCblist__ as ZLEventCallbackList)?.onEvnt(ZLViewEventName.ViewWillUnmount);
 
         // ZLViewPage 生命周期
-        if (v.viewPage !==undefined) 
+        let viewPage = v.viewPage;
+        if (viewPage !==undefined) 
         {
-            v.viewPage.viewWillUnmount?.();
-            (v.viewPage as any).__zl_weakRouter__ = undefined;
+            viewPage.viewWillUnmount?.();
+            (viewPage as any).__zl_weakRouter__ = undefined;
             (v as any).__zl_weakViewPage__ = undefined;
         }
         (v as any).__zl_weakReactComponent__ = undefined;

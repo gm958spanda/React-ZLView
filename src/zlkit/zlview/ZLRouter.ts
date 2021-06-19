@@ -10,6 +10,7 @@ import {ZLViewPage, ZLViewPageClass} from './ZLViewPage'
 
 import * as History from 'history';
 import { ZLSize } from './ZLUIDef';
+// import { ZLView } from './ZLView';
 
 
  interface ZLRouterComponentProps
@@ -53,19 +54,20 @@ function ZLRouteRenderFunction( p:any )
 {   
     let history = useHistory();
     let router : ZLRouter = p.zlrouter;
-    (router as any).__history__ = history;
+    (router as any).__zl_router_history__ = history;
     let loc = useLocation<History.LocationState>();
     let cls_ins = router.findRoute(loc.pathname);
     if (cls_ins === undefined) {
         return React.createElement("div",null,"404 not found " + loc.pathname);
     }
     let page : ZLViewPage = (cls_ins as ZLViewPage);
-    if (page instanceof ZLViewPage) {
+    if (page instanceof ZLViewPage) 
+    {
         page.view.width = router.defaultPageWidth;
         page.view.height = router.defaultPageHeight;
-        // page.viewLayoutSubViews?.();
     }
-    else {
+    else 
+    {
         page = new (cls_ins as ZLViewPageClass)(new ZLSize(router.defaultPageWidth,router.defaultPageHeight));
     }
     (page as any).__zl_weakRouter__ = new WeakRef(router);
@@ -73,7 +75,7 @@ function ZLRouteRenderFunction( p:any )
     return page.reactElement();
 }
 
-export class ZLRouter
+export class ZLRouter// extends ZLViewPage
 {
     /**
      * 构造函数
@@ -83,8 +85,9 @@ export class ZLRouter
      */
     constructor(rootPath? : string, defaultPageSize? : ZLSize, useHashRouter? : boolean)
     {
+        // super(defaultPageSize);
         if (rootPath === undefined || rootPath.length === 0) {
-            this.__root_path__ = "/";
+            this.__zl_router_rootPath__ = "/";
         } else {
             if (rootPath.charAt(0) !== "/") {
                 rootPath = "/" + rootPath;
@@ -92,19 +95,19 @@ export class ZLRouter
             if (rootPath.charAt(rootPath.length -1) !== "/") {
                 rootPath = rootPath.substr(0,rootPath.length -1);
             }
-            this.__root_path__ = rootPath;
+            this.__zl_router_rootPath__ = rootPath;
         }
-        this.__path_calss__ = new Map();
-        this.__default_pagesize = defaultPageSize ? defaultPageSize : ZLSize.getWindowContentSize();
-        this.__useHashRouter__ = useHashRouter ? useHashRouter : false;
+        this.__zl_router_pathPages__ = new Map();
+        this.__zl_router_defaultPagesize__ = defaultPageSize ? defaultPageSize : ZLSize.getWindowContentSize();
+        this.__zl_router_useHashRouter__ = useHashRouter ? useHashRouter : false;
     }
     /**
      * 路由匹配的根路径
      */
-    public get rootPath() : string {return this.__root_path__;}
+    public get rootPath() : string {return this.__zl_router_rootPath__;}
 
-    public get defaultPageWidth() : number { return this.__default_pagesize.width;}
-    public get defaultPageHeight() : number { return this.__default_pagesize.height;}
+    public get defaultPageWidth() : number { return this.__zl_router_defaultPagesize__.width;}
+    public get defaultPageHeight() : number { return this.__zl_router_defaultPagesize__.height;}
     /**
      * 注册路由
      * @param path 路径
@@ -112,35 +115,170 @@ export class ZLRouter
      */
     public registRoute( path : string , class_instance : ZLViewPageClass | ZLViewPage)
     {
-        if (path === undefined || path.length === 0 ) {
+        let s = this.__zl_build_route_path__(path);
+        if (s === undefined ) {
             return;
         }
-        if (path.charAt(0) !== "/") {
-            path = "/" + path;
-        }
-        if (this.__root_path__ !== "/") {
-            path = this.__root_path__ + path;
-        }
-        this.__path_calss__.set( path ,class_instance);
+        this.__zl_router_pathPages__.set( s ,class_instance);
     }
     /**
-     * 注册页面，用class_instance的类型名生成路由的path
+     * 解除路由注册
+     * @param path 路径
+     */
+    public unRegistRoute(path : string)
+    {
+        let s = this.__zl_build_route_path__(path);
+        if (s === undefined ) {
+            return;
+        }
+        this.__zl_router_pathPages__.delete(s);
+    }
+    /**
+     * 获取路径对应的渲染类或实例
+     * @param path 路径
+     */
+    public findRoute(path : string) : ZLViewPageClass | ZLViewPage | undefined
+    {
+        let s = this.__zl_build_route_path__(path);
+        if (s === undefined ) {
+            return;
+        }
+        return this.__zl_router_pathPages__.get(s);
+    }
+
+    /**
+     * 更新路由渲染 React setState
+     * 在路由挂载后，可调用本方法来刷新路由
+     */
+    public reloadRoute(callback?:() => void) 
+    { 
+        let c = this.__zl_weakReactComponent__?.deref();
+        if (c) {
+            c.setState({},callback);
+        } else if (callback){
+            callback();
+        }
+    }
+    
+    /**
+     * 推入页面
+     */
+    public push(path : string)
+    {
+        let s = this.__zl_build_route_path__(path);
+        if (s === undefined ) {
+            return;
+        }
+        this.__zl_router_history__?.push(s)
+    }
+    /**
+     * 替换当前页面
+     */
+    public replace(path : string) 
+    {
+        let s = this.__zl_build_route_path__(path);
+        if (s === undefined ) {
+            return;
+        }
+        this.__zl_router_history__?.replace(s);
+    }
+    /**
+     * 返回上一页面
+     */
+    public goBack() {
+        this.__zl_router_history__?.goBack();
+    }
+    /**
+     * 前进
+     */
+    public goForward() {
+        this.__zl_router_history__?.goForward();
+    }
+
+    /**
+     * 注册Home ,path = ZLRouter.rootPath
+     * @param class_instance 
+     */
+    public registHome(class_instance : ZLViewPageClass | ZLViewPage) {
+        this.registRoute(this.__zl_router_rootPath__,class_instance);
+    }
+
+    /**
+     * 注册页面，用page的类型名生成路由的path 
      * @param page 页面 
-     * @returns 
      */
     public registViewPage(page : ZLViewPageClass)
     {
         if (page === undefined) {
             return;
         }
-        this.registRoute("/"+page.name,page);
+        this.registRoute(page.name,page);
+    }
+    /**
+     * 解除路由注册
+     * @param page 页面
+     */
+    public unRegistViewPage(page : ZLViewPageClass)
+    {
+        if (page === undefined) {
+            return;
+        }
+        this.unRegistRoute(page.name);
     }
 
     /**
-     * 获取路径对应的渲染类或实例
-     * @param path 路径
+     * 推入页面
+     * @param page 页面 
+     * @param registPageFirst 页面没有注册路由时，是否先进行路由注册。注册动作参考registViewPage
      */
-    public findRoute(path : string) : ZLViewPageClass | ZLViewPage | undefined
+    public pushViewPage(page :ZLViewPageClass , registPageFirst?:boolean)
+    {
+        let path = this.__zl_build_route_path__(page.name);
+        if (path === undefined ) {
+            return;
+        }
+        let history = this.__zl_router_history__;
+
+        if (registPageFirst === true) 
+        {
+            this.__zl_registRoute_ifNotExist__(path,page, ()=>{
+                history?.push(path!);
+            });
+            return;
+        }
+        history?.push(path);
+    }
+    /**
+     * 替换当前页面（page页面需要先注册路由）
+     * @param page 页面 
+     * @param registPageFirst 页面没有注册路由时，是否先进行路由注册。注册动作参考registViewPage
+     */
+    public replaceViewPage(page : ZLViewPageClass,registPageFirst?:boolean) 
+    {
+        let path = this.__zl_build_route_path__(page.name);
+        if (path === undefined ) {
+            return;
+        }
+        let history = this.__zl_router_history__;
+        if (registPageFirst === true) 
+        {
+            this.__zl_registRoute_ifNotExist__(path,page, ()=>{
+                history?.replace(path!);
+            });
+            return;
+        }
+        history?.replace(path);
+    }
+    
+    /**
+     * 返回React元素
+     */
+    public reactElement() : React.ReactElement
+    {
+        return React.createElement(ZLRouterComponent,{zlrouter:this, routeMap:this.__zl_router_pathPages__,useHashRouter:this.__zl_router_useHashRouter__});
+    }
+
+    private __zl_build_route_path__(path:string) : string | undefined
     {
         if (path === undefined || path.length === 0 ) {
             return undefined;
@@ -148,97 +286,55 @@ export class ZLRouter
         if (path.charAt(0) !== "/") {
             path = "/" + path;
         }
-        if (this.__root_path__ !== "/") {
-            path = this.__root_path__ + path;
+        if (this.__zl_router_rootPath__ !== "/") {
+            path = this.__zl_router_rootPath__ + path;
         }
-        return this.__path_calss__.get(path);
+        return path;
+    }
+    private __zl_registRoute_ifNotExist__(path : string,page:ZLViewPageClass, cb:()=>void)
+    {
+        let r = this.findRoute(path);
+        if (r===undefined) 
+        {
+            this.registRoute(path,page);
+            // this.reloadRoute(()=>{
+                cb();
+            // });
+            return;
+        }
+        cb();
     }
     
     /**
-     * 推入页面
-     */
-    public push(path : string) {
-        this.__history__?.push(path)
-    }
-    /**
-     * 推入页面（page页面需要先注册路由）
-     * @param page 页面 
-     */
-    public pushViewPage(page :ZLViewPageClass){
-        this.push("/"+page.name);
-    }
-    /**
-     * 替换当前页面
-     */
-    public replace(path : string) {
-        this.__history__?.replace(path);
-    }
-    /**
-     * 替换当前页面（page页面需要先注册路由）
-     * @param page 页面 
-     */
-    public replaceViewPage(page : ZLViewPageClass) {
-        this.__history__?.replace("/"+page.name);
-    }
-    /**
-     * 返回上一页面
-     */
-    public goBack() {
-        this.__history__?.goBack();
-    }
-    /**
-     * 前进
-     */
-    public goForward() {
-        this.__history__?.goForward();
-    }
-
-
-    /**
-     * 更新路由渲染 React setState
-     * 在路由挂载后，通过registRoute注册新的路由时，需要调用本方法来刷新路由
-     */
-     public reloadRoute(callback?:() => void) 
-     { 
-         let c = this.__zl_weakReactComponent__?.deref();
-         if (c) {
-             c.setState({},callback);
-         } else if (callback){
-             callback();
-         }
-     }
-
-    /**
-     * 返回React元素
-     */
-    reactElement() : React.ReactElement
-    {
-        return React.createElement(ZLRouterComponent,{zlrouter:this, routeMap:this.__path_calss__,useHashRouter:this.__useHashRouter__});
-    }
-
-    /**
      * React 容器
      */
-     private __zl_weakReactComponent__ : WeakRef<ZLRouterComponent> | undefined;
+    private __zl_weakReactComponent__ : WeakRef<ZLRouterComponent> | undefined;
 
     /**
      * 路由匹配的根路径
      */
-    private __root_path__ : string;
+    private __zl_router_rootPath__ : string;
 
     /**
      * 路由表
      */
-    private __path_calss__ : Map<string,ZLViewPageClass | ZLViewPage>;
+    private __zl_router_pathPages__ : Map<string,ZLViewPageClass | ZLViewPage>;
     /**
      * 默认页面尺寸
      */
-    private __default_pagesize : ZLSize;
+    private __zl_router_defaultPagesize__ : ZLSize;
 
-    private __useHashRouter__ : boolean;
+    private __zl_router_useHashRouter__ : boolean;
 
     /**
      * history
      */
-    private __history__ : History.History | undefined;
+    private __zl_router_history__ : History.History | undefined;
+
+    // private __zl_router_wrapperView__ : ZLRouterWrapperView;
 }
+
+
+// class ZLRouterWrapperView extends ZLView
+// {
+// }

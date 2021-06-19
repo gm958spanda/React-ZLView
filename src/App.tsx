@@ -13,11 +13,7 @@ class App extends React.Component
     {
         if (this.router === undefined) {
             this.router = new zl.Router();
-            this.router.registRoute("/",HomePage);
-            this.router.registViewPage(SinPage);
-            this.router.registViewPage(ScrollPage);
-            this.router.registViewPage(AnimationPage);
-            this.router.registViewPage(TransformPage);
+            this.router.registHome(HomePage);
         }
         return this.router.reactElement();
     }
@@ -64,7 +60,7 @@ class HomePage extends zl.ViewPage
             btn.height = 30;
             btn.title = v.name
             btn.onClick = (sender)=>{
-                this.router?.pushViewPage(v);
+                this.router?.pushViewPage(v,true);
             };
             this.view.addSubview(btn);
 
@@ -90,7 +86,7 @@ class HomePage extends zl.ViewPage
         console.log( this.constructor.name + " mount");
     }
 
-    viewWillUnMount()
+    viewWillUnmount()
     {
         console.log( this.constructor.name + " unmount");
     }
