@@ -95,7 +95,6 @@ class ZLViewComponent extends React.Component<ZLViewComponentProps>
                 for (let index = 0; index <subvs.length; index++)
                 {
                     const sub= subvs.at(index)!;
-                    childs.push(sub.reactElement);
                     childs[index] = sub.reactElement();
                 }
             }

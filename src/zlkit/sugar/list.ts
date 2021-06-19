@@ -1,5 +1,14 @@
 export class ZLList<T> extends Array
 {
+    constructor(arrayLength?:number)
+    {
+        super(arrayLength);
+        //https://github.com/Microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
+        Object.setPrototypeOf(this, ZLList.prototype);
+        if(arrayLength!== undefined && this.length === (arrayLength+1) ) {
+            this.pop() //移除
+        }
+    }
     /**
      * 数组长度
      */
