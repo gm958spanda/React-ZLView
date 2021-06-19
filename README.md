@@ -330,3 +330,6 @@ router.pushViewPage(OtherPage);
 ### 0.2.0
 * 增加对css transition的支持
 * 修复ZLList的protoltype问题 https://github.com/Microsoft/TypeScript/wiki/FAQ#why-doesnt-extending-built-ins-like-error-array-and-map-work
+
+### 0.2.1
+* 继续修复ZLList(问题：使用默认构造函数创建时，多出一个undefined元素)
