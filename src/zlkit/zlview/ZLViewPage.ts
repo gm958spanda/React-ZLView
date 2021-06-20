@@ -4,17 +4,25 @@ import { ZLSize } from './ZLUIDef';
 import { ZLRouter } from './ZLRouter';
 import {ZLObject} from './ZLObject'
 
-export type ZLViewPageClass = new (pageSize?: ZLSize) => ZLViewPage
+export type ZLViewPageClass = new (paras? : {pageSize?: ZLSize}) => ZLViewPage
 export class ZLViewPage extends ZLObject
 {
     /**
      * 构造函数
      */
-    constructor(pageSize?: ZLSize)
+    constructor(paras? : {pageSize?: ZLSize})
     {
         super();
-        if (pageSize) {
-            this.__zl_defaultSZ__ = new ZLSize(pageSize.width,pageSize.height);
+        if (paras)
+        {
+            if (paras instanceof ZLSize) {
+                this.__zl_defaultSZ__ = new ZLSize((paras as ZLSize).width,(paras as ZLSize).height);
+            } else {
+                if (paras.pageSize) {
+                    this.__zl_defaultSZ__ = new ZLSize(paras.pageSize.width,paras.pageSize.height);
+                }
+                
+            }
         }
     }
     

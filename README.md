@@ -337,3 +337,4 @@ router.pushViewPage(OtherPage);
 ## 0.2.2
 * ZLRouter 优化pushViewPage/replaceViewPage方法，运行时自动注册路由。
 * ZLRouter 支持解除路由注册
+* ZLRouter 继承ZLViewPage
