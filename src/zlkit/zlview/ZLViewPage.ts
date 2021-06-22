@@ -1,27 +1,32 @@
 import { ZLView } from './ZLView';
 import * as History from 'history';
-import { ZLSize } from './ZLUIDef';
+import { ZLPoint, ZLRect, ZLSize } from './ZLUIDef';
 import { ZLRouter } from './ZLRouter';
 import {ZLObject} from './ZLObject'
 
-export type ZLViewPageClass = new (paras? : {pageSize?: ZLSize}) => ZLViewPage
+export type ZLViewPageClass = new (paras? : {pageSize?: ZLSize, pageOrigin?:ZLPoint}) => ZLViewPage
 export class ZLViewPage extends ZLObject
 {
     /**
      * 构造函数
      */
-    constructor(paras? : {pageSize?: ZLSize})
+    constructor(paras? : {pageSize?: ZLSize, pageOrigin?:ZLPoint})
     {
         super();
         if (paras)
         {
             if (paras instanceof ZLSize) {
-                this.__zl_defaultSZ__ = new ZLSize((paras as ZLSize).width,(paras as ZLSize).height);
+                this.__zl_defaultRect__ = new ZLRect(0,0,(paras as ZLSize).width,(paras as ZLSize).height);
             } else {
-                if (paras.pageSize) {
-                    this.__zl_defaultSZ__ = new ZLSize(paras.pageSize.width,paras.pageSize.height);
+                let sz = paras.pageSize;
+                let origin = paras.pageOrigin;
+                if (sz === undefined) {
+                    sz = ZLSize.getWindowContentSize();
+                } 
+                if (origin === undefined) {
+                    origin = ZLPoint.Zero;
                 }
-                
+                this.__zl_defaultRect__ = new ZLRect(origin.x,origin.y,sz.width,sz.height);
             }
         }
     }
@@ -42,13 +47,15 @@ export class ZLViewPage extends ZLObject
     /**
      * 创建视图，子类可重写
      */
-    protected loadView( pageSize?: ZLSize ): ZLView 
+    protected loadView( pageRect?: ZLRect ): ZLView 
     {
         let v = new ZLView();
-        if (pageSize !== undefined ) 
+        if (pageRect !== undefined ) 
         {
-            v.width = pageSize?.width;
-            v.height = pageSize?.height;
+            v.width = pageRect.width;
+            v.height = pageRect.height;
+            v.x = pageRect.x;
+            v.y = pageRect.y;
         }
         return v;
     }
@@ -59,7 +66,7 @@ export class ZLViewPage extends ZLObject
     {
         if (this.__zl_view__ === undefined) 
         {
-            let v = this.loadView(this.__zl_defaultSZ__);
+            let v = this.loadView(this.__zl_defaultRect__);
             this.__zl_view__ = v;
 
             (v as any).__zl_weakViewPage__ = new WeakRef(this);
@@ -96,7 +103,7 @@ export class ZLViewPage extends ZLObject
     /**
      * 默认尺寸
      */
-    private __zl_defaultSZ__? : ZLSize;
+    private __zl_defaultRect__? : ZLRect;
     /**
      * 视图
      */

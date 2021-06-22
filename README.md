@@ -334,7 +334,8 @@ router.pushViewPage(OtherPage);
 ### 0.2.1
 * 继续修复ZLList(问题：使用默认构造函数创建时，多出一个undefined元素)
 
-## 0.2.2
+### 0.2.3
 * ZLRouter 优化pushViewPage/replaceViewPage方法，运行时自动注册路由。
 * ZLRouter 支持解除路由注册
 * ZLRouter 继承ZLViewPage
+* ZLRouter 默认使用自身坐标来初始化推入的页面坐标

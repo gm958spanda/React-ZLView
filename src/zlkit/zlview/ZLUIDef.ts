@@ -27,7 +27,6 @@ export class ZLPoint
     public static Zero = new ZLPoint();
 }
 
-
 export class ZLSize
 {
     constructor(width ?:number,height ?:number)
@@ -60,6 +59,18 @@ export class ZLRect
     }
     public origin : ZLPoint;
     public size : ZLSize;
+
+    public get x() { return this.origin.x;}
+    public set x(v:number) {this.origin.x = v;}
+
+    public get y()  { return this.origin.y;}
+    public set y(v:number) {this.origin.y = v;}
+
+    public get width() { return this.size.width;}
+    public set width(v:number) {this.size.width = v;}
+
+    public get height()  { return this.size.height;}
+    public set height(v:number) {this.size.height = v;}
 
     public static Zero = new ZLRect();
 }

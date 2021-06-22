@@ -9,7 +9,7 @@ import { BrowserRouter,HashRouter,
 import {ZLViewPage, ZLViewPageClass} from './ZLViewPage'
 
 import * as History from 'history';
-import { ZLSize } from './ZLUIDef';
+import { ZLPoint, ZLRect, ZLSize } from './ZLUIDef';
 import { ZLView } from './ZLView';
 
 
@@ -61,12 +61,13 @@ function ZLRouteRenderFunction( p:any )
     let page : ZLViewPage = (cls_ins as ZLViewPage);
     if (page instanceof ZLViewPage) 
     {
-        page.view.width = router.defaultPageWidth;
-        page.view.height = router.defaultPageHeight;
+        page.view.setFrameSameAs(router.view);
     }
     else 
     {
-        page = new (cls_ins as ZLViewPageClass)({pageSize:new ZLSize(router.defaultPageWidth,router.defaultPageHeight)});
+        let pageSize = new ZLSize(router.view.width,router.view.height);
+        let pageOrigin = new ZLPoint(router.view.x,router.view.y);
+        page = new (cls_ins as ZLViewPageClass)({pageSize:pageSize ,pageOrigin:pageOrigin});
     }
     (page as any).__zl_weakRouter__ = new WeakRef(router);
     page.onRouterMatchMe?.(loc);
@@ -83,11 +84,15 @@ export class ZLRouter extends ZLViewPage
         rootPath? : string;
         /** 打开新页面时的默认大小 */
         pageSize? : ZLSize,
+        /** 打开新页面时的默认x,y */
+        pageOrigin? : ZLPoint,
         /** 是否使用HashRouter。默认不使用 */
         useHashRouter? : boolean})
     {
-        let rootPath = "/";
         let pageSize = ZLSize.getWindowContentSize();
+        let pageOrigin = ZLPoint.Zero;
+
+        let rootPath = "/";
         let useHashRouter = false;
         if (arguments.length > 0 && typeof arguments[0] === "string") 
         {
@@ -107,12 +112,15 @@ export class ZLRouter extends ZLViewPage
             if (paras.pageSize) {
                 pageSize = paras.pageSize;
             }
+            if (paras.pageOrigin) {
+                pageOrigin = paras.pageOrigin;
+            }
             if (paras.useHashRouter) {
                 useHashRouter = paras.useHashRouter;
             }
         }
 
-        super({pageSize:pageSize});
+        super({pageSize:pageSize,pageOrigin:pageOrigin});
 
         if (rootPath === undefined || rootPath.length === 0) {
             this.__zl_router_rootPath__ = "/";
@@ -128,13 +136,14 @@ export class ZLRouter extends ZLViewPage
             this.__zl_router_rootPath__ = rootPath;
         }
 
-        this.__zl_router_defaultPagesize__ = pageSize;
         this.__zl_router_useHashRouter__ = useHashRouter;
         this.__zl_router_pathPages__ = new Map();
 
         let v = new ZLRouterWrapperView(this);
-        v.width = this.__zl_router_defaultPagesize__.width;
-        v.height = this.__zl_router_defaultPagesize__.height;
+        v.width = pageSize.width;
+        v.height = pageSize.height;
+        v.x = pageOrigin.x;
+        v.y = pageOrigin.y;
         this.__zl_router_wrapperView__ = v;
     }
     /**
@@ -145,15 +154,6 @@ export class ZLRouter extends ZLViewPage
      * 是否使用hash路由
      */
     public get useHashRouter() : boolean {return this.__zl_router_useHashRouter__;}
-
-    /**
-     * 跳转到页面时的初始化宽度
-     */
-    public get defaultPageWidth() : number { return this.__zl_router_defaultPagesize__.width;}
-    /**
-     * 跳转到页面时的初始化高度
-     */
-    public get defaultPageHeight() : number { return this.__zl_router_defaultPagesize__.height;}
     /**
      * 注册路由
      * @param path 路径
@@ -323,7 +323,7 @@ export class ZLRouter extends ZLViewPage
     }
 
 
-    protected loadView(pageSize?: ZLSize) : ZLView
+    protected loadView(pageRect:ZLRect) : ZLView
     {
         return this.__zl_router_wrapperView__;
     }
@@ -378,10 +378,8 @@ export class ZLRouter extends ZLViewPage
      */
     private __zl_router_pathPages__ : Map<string,ZLViewPageClass | ZLViewPage>;
     /**
-     * 默认页面尺寸
+     * 是否使用Hash路由
      */
-    private __zl_router_defaultPagesize__ : ZLSize;
-
     private __zl_router_useHashRouter__ : boolean;
 
     /**
