@@ -84,6 +84,11 @@ export class ZLRect
     public get height()  { return this.size.height;}
     public set height(v:number) {this.size.height = v;}
 
+    public getHalfLeft() { return new ZLRect(this.x,this.y,this.width / 2,this.height); }
+    public getHalfRight() { return new ZLRect(this.x + this.width /2 ,this.y,this.width / 2,this.height); }
+    public getHalfTop() { return new ZLRect(this.x,this.y,this.width,this.height / 2 ); }
+    public getHalfBottom() { return new ZLRect(this.x ,this.y + this.height /2,this.width,this.height /2); }
+
     public static Zero = new ZLRect();
 }
 

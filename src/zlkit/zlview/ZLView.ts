@@ -10,7 +10,8 @@ import {ZLPoint,
     ZLBorderStyle,
     ZLBoxShadow,
     ZLTransform,
-    ZLRect
+    ZLRect,
+    ZLSize
 } from './ZLUIDef'
 import {ZLViewPage} from './ZLViewPage'
 import {ZLObject} from './ZLObject'
@@ -21,7 +22,6 @@ import {ZLCSSAnimation,
 } from './ZLCSSAnimation'
 
 import { ZLCSSTransition } from './ZLCSSTransition';
-import { Zlib } from 'zlib';
 
 
 enum ZLViewEventName
@@ -194,6 +194,23 @@ export class ZLView extends ZLObject
         this.y = rect.origin.y;
         this.width = rect.size.width;
         this.height = rect.size.height;
+    }
+    public getFrame() {return new ZLRect(this.x,this.y,this.width,this.height);}
+    /**
+     * 设置尺寸
+     */
+    public setSize(width:number,height:number)
+    {
+        this.width = width;
+        this.height = height;
+    }
+    /**
+     * 设置尺寸
+     */
+    public setSizeWithSize(size:ZLSize)
+    {
+        this.width = size.width;
+        this.height = size.height;
     }
     /**
      * 背景色
