@@ -99,6 +99,10 @@ export class ZLReadOnlyList<T>// implements ReadonlyArray<T>
     }
     private _arr : Array<T>;
 
+    toArrayCopy() : Array<T>
+    {
+        return this._arr.concat([]);
+    }
 
     [Symbol.iterator](): IterableIterator<T> {
         return this._arr.values();

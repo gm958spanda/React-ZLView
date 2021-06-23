@@ -21,6 +21,7 @@ import {ZLCSSAnimation,
 } from './ZLCSSAnimation'
 
 import { ZLCSSTransition } from './ZLCSSTransition';
+import { Zlib } from 'zlib';
 
 
 enum ZLViewEventName
@@ -311,7 +312,18 @@ export class ZLView extends ZLObject
             this.__zl_weakSuperview__ = undefined;
         }
     }
-
+    /**
+     * 移除所有子视图
+     */
+    public removeAllSubviews()
+    {
+        if (this.__zl_subViews__){
+            let subs : ZLView[] = this.__zl_subViews__.concat([]);
+            subs.forEach((v)=>{
+                v.removeFromSuperview();
+            });
+        }
+    }
     /**
      * 添加子视图
      */
