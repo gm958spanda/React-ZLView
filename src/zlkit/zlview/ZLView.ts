@@ -9,7 +9,8 @@ import {ZLPoint,
     ZLEdgeInset,
     ZLBorderStyle,
     ZLBoxShadow,
-    ZLTransform
+    ZLTransform,
+    ZLRect
 } from './ZLUIDef'
 import {ZLViewPage} from './ZLViewPage'
 import {ZLObject} from './ZLObject'
@@ -150,7 +151,7 @@ export class ZLView extends ZLObject
     public set top(p:number) { this.y = p;}
     public get top():number { return this.y;}
 
-    public set right(p:number) { this.y = p - this.width;}
+    public set right(p:number) { this.x = p - this.width;}
     public get right():number { return this.x + this.width;}
 
     public set bottom(p:number) { this.y = p - this.height;}
@@ -182,6 +183,16 @@ export class ZLView extends ZLObject
         this.y = y;
         this.width = width;
         this.height = height;
+    }
+    /**
+     * 设置坐标和尺寸
+     */
+    public setFrameWithRect(rect:ZLRect)
+    {
+        this.x = rect.origin.x;
+        this.y = rect.origin.y;
+        this.width = rect.size.width;
+        this.height = rect.size.height;
     }
     /**
      * 背景色

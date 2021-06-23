@@ -339,3 +339,7 @@ router.pushViewPage(OtherPage);
 * ZLRouter 支持解除路由注册
 * ZLRouter 继承ZLViewPage
 * ZLRouter 默认使用自身坐标来初始化推入的页面坐标
+
+### 0.2.4
+* 添加一些便利方法,如获取屏幕DPI
+* 修复ZLView.right属性设置错误
