@@ -152,6 +152,30 @@ export class UIControlView extends zl.ScrollView
             
             viewtop = lb.bottom + 30;
         }
+
+        if (true)
+        {
+            let lb = this.createNameLabel("SelectOption");
+            lb.top = viewtop;
+            this.addSubview(lb);
+            
+            let ta = new zl.SelectOptionView()
+            ta.top = viewtop;
+            ta.left = lb.right + 5;
+            ta.width = 180;
+            ta.height = 20;
+            this.addSubview(ta);
+
+            ta.addOption("选择1");
+            ta.addOption("选择2");
+            ta.addOption("选择3");
+            ta.selectedIndex = 1;
+            ta.onSelectedIndexChanged = v=>{
+                console.log(v);
+            };
+            
+            viewtop = lb.bottom + 30;
+        }
     }
 
     createNameLabel(str:string)

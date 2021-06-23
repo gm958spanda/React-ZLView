@@ -11,11 +11,6 @@ export class ZLButton extends ZLView
     public title? : string;
 
     /**
-     * 是否禁用按钮
-     */
-    public disabled? : boolean;
-
-    /**
      * 点击回调
      */
     public get onClick () {return this.__zl_btn_onclick__;}
