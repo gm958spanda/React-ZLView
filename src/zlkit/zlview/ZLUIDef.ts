@@ -41,12 +41,24 @@ export class ZLSize
 
     public static getWindowContentSize()
     {
-        let sz = new ZLSize(window.document.body.clientWidth,window.innerHeight)
-        if (ZLCurrentSizeUnit !== ZLSizeUnit.px) {
-            sz.width /= ZLCurrentSizeUnitOneRemToPx;
-            sz.height /= ZLCurrentSizeUnitOneRemToPx;
-        }
+        let sz = new ZLSize(this.getWindowContentWidth(),this.getWindowContentHeight());
         return sz;
+    }
+    public static getWindowContentWidth()
+    {
+        let w = window.document.body.clientWidth;
+        if (ZLCurrentSizeUnit !== ZLSizeUnit.px) {
+            w /= ZLCurrentSizeUnitOneRemToPx;
+        }
+        return w;
+    }
+    public static getWindowContentHeight()
+    {
+        let h = window.innerHeight;
+        if (ZLCurrentSizeUnit !== ZLSizeUnit.px) {
+            h /= ZLCurrentSizeUnitOneRemToPx;
+        }
+        return h;
     }
 }
 

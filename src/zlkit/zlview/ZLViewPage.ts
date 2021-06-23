@@ -4,30 +4,90 @@ import { ZLPoint, ZLRect, ZLSize } from './ZLUIDef';
 import { ZLRouter } from './ZLRouter';
 import {ZLObject} from './ZLObject'
 
-export type ZLViewPageClass = new (paras? : {pageSize?: ZLSize, pageOrigin?:ZLPoint}) => ZLViewPage
+
+export interface ZLViewPageInitParas
+{
+    /** 页面坐标*/
+    x?: number;
+    /** 页面坐标*/
+    y?: number;
+    /** 页面坐标*/
+    width?:number;
+    /** 页面坐标*/
+    height?:number;
+
+    /** 页面坐标 优先使用x-y-width-height*/
+    pageSize?:ZLSize;
+    /** 页面坐标 优先使用x-y-width-height*/
+    pageOrigin?:ZLPoint;
+}
+
+export type ZLViewPageClass = new (paras? : ZLViewPageInitParas) => ZLViewPage
 export class ZLViewPage extends ZLObject
 {
     /**
      * 构造函数
      */
-    constructor(paras? : {pageSize?: ZLSize, pageOrigin?:ZLPoint})
+    constructor(paras? : ZLViewPageInitParas )
     {
         super();
-        if (paras)
+        if (paras instanceof ZLSize) {
+            this.__zl_defaultRect__ = new ZLRect(0,0,(paras as ZLSize).width,(paras as ZLSize).height);
+        } 
+        else 
         {
-            if (paras instanceof ZLSize) {
-                this.__zl_defaultRect__ = new ZLRect(0,0,(paras as ZLSize).width,(paras as ZLSize).height);
-            } else {
-                let sz = paras.pageSize;
-                let origin = paras.pageOrigin;
-                if (sz === undefined) {
-                    sz = ZLSize.getWindowContentSize();
-                } 
-                if (origin === undefined) {
-                    origin = ZLPoint.Zero;
-                }
-                this.__zl_defaultRect__ = new ZLRect(origin.x,origin.y,sz.width,sz.height);
+            let x : number | undefined = undefined;
+            let y : number | undefined = undefined;
+            let w : number | undefined = undefined;
+            let h : number | undefined = undefined;
+            let sz : ZLSize | undefined = undefined;
+            let origin : ZLPoint | undefined = undefined;
+            if (paras) {
+                x = paras.x;
+                y = paras.y;
+                w = paras.width;
+                h = paras.height;
+                sz = paras.pageSize;
+                origin = paras.pageOrigin;
             }
+            if (origin !== undefined)
+            {
+                if (x === undefined ) {
+                    x = origin.x
+                }
+                if (y === undefined ) {
+                    y = origin.y
+                }
+            }
+            else 
+            {
+                if (x === undefined){
+                    x = 0;
+                }
+                if (x === undefined){
+                    y = 0;
+                }
+            }
+
+            if (sz !== undefined)
+            {
+                if (w === undefined ) {
+                    w = sz.width
+                }
+                if (h === undefined ) {
+                    h = sz.height
+                }
+            }
+            else 
+            {
+                if (w === undefined){
+                    w = ZLSize.getWindowContentWidth();
+                }
+                if (h === undefined){
+                    h = ZLSize.getWindowContentHeight();
+                }
+            }
+            this.__zl_defaultRect__ = new ZLRect(x,y,w,h);
         }
     }
     
@@ -47,7 +107,7 @@ export class ZLViewPage extends ZLObject
     /**
      * 创建视图，子类可重写
      */
-    protected loadView( pageRect?: ZLRect ): ZLView 
+    protected loadView( pageRect: ZLRect ): ZLView 
     {
         let v = new ZLView();
         if (pageRect !== undefined ) 
@@ -103,7 +163,7 @@ export class ZLViewPage extends ZLObject
     /**
      * 默认尺寸
      */
-    private __zl_defaultRect__? : ZLRect;
+    private __zl_defaultRect__ : ZLRect;
     /**
      * 视图
      */

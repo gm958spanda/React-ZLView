@@ -6,7 +6,7 @@ import { BrowserRouter,HashRouter,
     Switch
  } from 'react-router-dom'
 
-import {ZLViewPage, ZLViewPageClass} from './ZLViewPage'
+import {ZLViewPage, ZLViewPageClass, ZLViewPageInitParas} from './ZLViewPage'
 
 import * as History from 'history';
 import { ZLPoint, ZLRect, ZLSize } from './ZLUIDef';
@@ -74,53 +74,34 @@ function ZLRouteRenderFunction( p:any )
     return page.reactElement();
 }
 
+interface ZLRouterInitParas extends ZLViewPageInitParas
+{
+    /** 路由匹配的根路径，默认 "/" */
+    rootPath? : string;
+    /** 是否使用HashRouter。默认不使用 */
+    useHashRouter? : boolean;
+}
+
 export class ZLRouter extends ZLViewPage
 {
     /**
      * 构造函数
      */
-    constructor(paras?:{
-        /** 路由匹配的根路径，默认 "/" */
-        rootPath? : string;
-        /** 打开新页面时的默认大小 */
-        pageSize? : ZLSize,
-        /** 打开新页面时的默认x,y */
-        pageOrigin? : ZLPoint,
-        /** 是否使用HashRouter。默认不使用 */
-        useHashRouter? : boolean})
+    constructor(paras?:ZLRouterInitParas)
     {
-        let pageSize = ZLSize.getWindowContentSize();
-        let pageOrigin = ZLPoint.Zero;
+        super(paras);
 
         let rootPath = "/";
         let useHashRouter = false;
-        if (arguments.length > 0 && typeof arguments[0] === "string") 
-        {
-            rootPath = arguments[0];
-            if (arguments.length > 1) {
-                pageSize = arguments[1];
-            }
-            if (arguments.length > 2) {
-                useHashRouter = arguments[2];
-            }
-        }
-        else if (paras)
+        if (paras)
         {
             if (paras.rootPath) {
                 rootPath = paras.rootPath;
-            }
-            if (paras.pageSize) {
-                pageSize = paras.pageSize;
-            }
-            if (paras.pageOrigin) {
-                pageOrigin = paras.pageOrigin;
             }
             if (paras.useHashRouter) {
                 useHashRouter = paras.useHashRouter;
             }
         }
-
-        super({pageSize:pageSize,pageOrigin:pageOrigin});
 
         if (rootPath === undefined || rootPath.length === 0) {
             this.__zl_router_rootPath__ = "/";
@@ -140,10 +121,6 @@ export class ZLRouter extends ZLViewPage
         this.__zl_router_pathPages__ = new Map();
 
         let v = new ZLRouterWrapperView(this);
-        v.width = pageSize.width;
-        v.height = pageSize.height;
-        v.x = pageOrigin.x;
-        v.y = pageOrigin.y;
         this.__zl_router_wrapperView__ = v;
     }
     /**
@@ -325,7 +302,12 @@ export class ZLRouter extends ZLViewPage
 
     protected loadView(pageRect:ZLRect) : ZLView
     {
-        return this.__zl_router_wrapperView__;
+        let v = this.__zl_router_wrapperView__;
+        v.x = pageRect.x;
+        v.y = pageRect.y;
+        v.width = pageRect.width;
+        v.height = pageRect.height;
+        return v;
     }
     
     // /**
