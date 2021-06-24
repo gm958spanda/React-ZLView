@@ -343,3 +343,6 @@ router.pushViewPage(OtherPage);
 ### 0.2.4
 * 添加一些便利方法,如获取屏幕DPI
 * 修复ZLView.right属性设置错误
+* 封装Textfield,select-option
+
+
