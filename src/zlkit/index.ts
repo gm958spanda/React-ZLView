@@ -81,10 +81,14 @@ export {
     ZLTextArea as TextArea
 } from './zlview/ctrl/ZLTextArea';
 
+export { 
+    ZLTextField as TextField
+} from './zlview/ctrl/ZLTextField';
+
+
 export {
      ZLScrollView as ScrollView
 } from  './zlview/ctrl/ZLScrollView';
-
 
 export {
     ZLSelectOptionView as SelectOptionView

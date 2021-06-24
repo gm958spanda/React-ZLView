@@ -282,7 +282,7 @@ export class ZLView extends ZLObject
     public get borderWidth():number | undefined { return this.__zl_borderWidth__;}
     public set borderWidth(w:number | undefined){
         this.__zl_borderWidth__ = w;
-        this.__zl_cssStyle__.borderWidth = w ? (w.toString() + ZLCurrentSizeUnit) : undefined;
+        this.__zl_cssStyle__.borderWidth = (w!==undefined) ? (w.toString() + ZLCurrentSizeUnit) : undefined;
     }
     /**
      * 边框线色
@@ -598,14 +598,14 @@ export class ZLView extends ZLObject
     /**
      * DOM事件回调列表 {事件名 : {事件回调 : 事件回调的This} }
      */
-     private __zl_DOMEventCblist__? : ZLEventCallbackList;
-     private __get_zl_DOMEventCblist__() :ZLEventCallbackList 
-     {
-         if (this.__zl_DOMEventCblist__ === undefined) {
-             this.__zl_DOMEventCblist__ = new ZLEventCallbackList();
-         }
-         return this.__zl_DOMEventCblist__;
-     }
+    private __zl_DOMEventCblist__? : ZLEventCallbackList;
+    private __get_zl_DOMEventCblist__() :ZLEventCallbackList 
+    {
+        if (this.__zl_DOMEventCblist__ === undefined) {
+            this.__zl_DOMEventCblist__ = new ZLEventCallbackList();
+        }
+        return this.__zl_DOMEventCblist__;
+    }
 
     /// css style
     private __zl_cssStyle__: CSSProperties;

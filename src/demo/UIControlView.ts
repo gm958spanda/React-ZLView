@@ -1,4 +1,5 @@
 import * as zl from  "../zlkit/index"
+import { ZLTextFieldInputType } from "../zlkit/zlview/ctrl/ZLTextField";
 
 export class UIControlView extends zl.ScrollView
 {
@@ -31,7 +32,7 @@ export class UIControlView extends zl.ScrollView
         }
         if (true)
         {
-            let lb = this.createNameLabel("Image");
+            let lb = this.createNameLabel("ImageView");
             lb.top = viewtop;
             this.addSubview(lb);
             
@@ -39,8 +40,8 @@ export class UIControlView extends zl.ScrollView
             ta.src = "https://tse2-mm.cn.bing.net/th/id/OIP-C.kHHQNIabX5tSN8rPWFNHpQHaE8?pid=ImgDet&rs=1";
             ta.top = viewtop;
             ta.left = lb.right + 5;
-            ta.width = 300;
-            ta.height = 300;
+            ta.width = 200;
+            ta.height = 160;
             this.addSubview(ta);
             
             viewtop = ta.bottom + 30;
@@ -72,9 +73,9 @@ export class UIControlView extends zl.ScrollView
             
             let ta = new zl.TextArea()
             ta.text = "456\n123\n789\nabc\nefg\nasdfgh\nqwer";
-            ta.addOnInputEventCallback((sender)=>{
+            ta.onInput = (sender)=>{
                 console.log(sender.scrollSize?.height);
-            })
+            };
             ta.top = viewtop;
             ta.left = lb.right + 5;
             ta.width = 180;
@@ -83,7 +84,27 @@ export class UIControlView extends zl.ScrollView
             
             viewtop = ta.bottom + 30;
         }
-
+        if (true)
+        {
+            let lb = this.createNameLabel("TextField");
+            lb.top = viewtop;
+            this.addSubview(lb);
+            
+            let ta = new zl.TextField()
+            ta.top = viewtop;
+            ta.left = lb.right + 5;
+            ta.width = 180;
+            ta.height = 24;
+            this.addSubview(ta);
+            ta.maxLength = 10;
+            ta.placeholder = "最多10个字符 ";
+            ta.inputType = ZLTextFieldInputType.password;
+            ta.onInput = (sender)=>{
+                console.log(sender.scrollSize?.height);
+            };
+            
+            viewtop = lb.bottom + 30;
+        }
         if (true)
         {
             let lb = this.createNameLabel("RadioButton");

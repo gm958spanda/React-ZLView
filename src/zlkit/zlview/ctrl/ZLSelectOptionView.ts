@@ -12,13 +12,16 @@ export class ZLSelectOptionView extends ZLView
             this.selectedIndex = (e.currentTarget as HTMLSelectElement).selectedIndex;
         },this);
         this.addListenOnReactRefCallback((e)=>{
-            if (this.__zl_select_options__ && this.__zl_select_options__.size > this.__zl_select_index__)
-            {
-                (e as HTMLSelectElement).selectedIndex = this.__zl_select_index__;
-            }
-            else
-            {
-                this.selectedIndex = (e as HTMLSelectElement).selectedIndex;
+            if (e !== null){
+                if (this.__zl_select_options__ && 
+                    this.__zl_select_options__.size > this.__zl_select_index__)
+                {
+                    (e as HTMLSelectElement).selectedIndex = this.__zl_select_index__;
+                }
+                else
+                {
+                    this.selectedIndex = (e as HTMLSelectElement).selectedIndex;
+                }
             }
         },this);
     }
