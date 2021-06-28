@@ -17,10 +17,10 @@ export class ZLUtils
         let elem = this.__html_div_elem__!;
         if (elem === undefined) {
             elem = document.createElement("div");
-            elem.id = "123";
             elem.style.visibility = "hidden";
             elem.style.display = "inline-block";
             elem.style.overflow = "hidden";
+            elem.style.whiteSpace = "pre";
 
             this.__html_div_elem__ = elem;
         }

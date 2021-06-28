@@ -1,6 +1,7 @@
 import {ZLTextBaseView}  from './ZLTextBaseView'
 import { ZLSize } from '../ZLUIDef';
 import {ZLUtils} from '../ZLUtils'
+import { ZLHtmlAttribute } from '../ZLView';
 
 
 export class ZLLabel extends ZLTextBaseView
@@ -12,13 +13,24 @@ export class ZLLabel extends ZLTextBaseView
     /**
      * 计算合适的尺寸
      */
-    sizeThatSize(size:ZLSize) : ZLSize {
+    public sizeThatSize(size:ZLSize) : ZLSize {
         return ZLUtils.textSize(this.text,size,this.font,this.wordBreak,this.wordWrap,this.textAlign);
     }
     /**
      * 计算合适的尺寸
      */
-    sizeThatWidthHeight(width:number ,height : number) : ZLSize {
+    public sizeThatWidthHeight(width:number ,height : number) : ZLSize {
         return this.sizeThatSize(new ZLSize(width,height));
+    }
+
+    protected __htmlAttributes__() : ZLHtmlAttribute
+    {
+        let attr = super.__htmlAttributes__()
+        let style = attr.style;
+        style.whiteSpace = "pre";
+        if (this.font !== undefined) {
+            this.font.toCSSStyle(style);
+        }
+        return attr;
     }
 }

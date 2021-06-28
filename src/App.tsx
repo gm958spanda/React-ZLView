@@ -1,5 +1,4 @@
 import React from 'react';
-import './App.css';
 import * as zl from  "./zlkit/index"
 import { HomePage } from './demo/HomePage';
 

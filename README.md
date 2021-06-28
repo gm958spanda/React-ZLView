@@ -345,4 +345,9 @@ router.pushViewPage(OtherPage);
 * 修复ZLView.right属性设置错误
 * 封装Textfield,select-option
 
+### 0.3.0
+* 优化ZLSelectOption ,ZLLabel
+* ZLView添加borderRadius属性
+* ZLView支持直接添加JSX元素
+
 

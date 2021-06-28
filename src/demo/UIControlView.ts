@@ -20,10 +20,11 @@ export class UIControlView extends zl.ScrollView
             this.addSubview(lb);
             
             let ta = new zl.Label()
-            ta.text = "hell world";
+            ta.text = "hell       world\n  !!!";
             ta.backgroudColor = "yellow";
             ta.font.bold = true;
-            ta.setSizeWithSize(ta.sizeThatWidthHeight(1000,100));
+            ta.wordWrap = zl.WorkWrapMode.BreakWord;
+            ta.setSizeWithSize(ta.sizeThatWidthHeight(500,100));
             ta.top = viewtop;
             ta.left = lb.right + 5;
             this.addSubview(ta);
@@ -42,6 +43,7 @@ export class UIControlView extends zl.ScrollView
             ta.left = lb.right + 5;
             ta.width = 200;
             ta.height = 160;
+            ta.borderRadius = 30;
             this.addSubview(ta);
             
             viewtop = ta.bottom + 30;

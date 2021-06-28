@@ -1,4 +1,4 @@
-import React, { CSSProperties, EventHandler, SyntheticEvent} from 'react';
+import React from 'react';
 
 import {ZLList} from '../sugar/list'
 import {ZLEventCallbackList} from '../sugar/eventcb'
@@ -276,6 +276,24 @@ export class ZLView extends ZLObject
             style.paddingRight = undefined
         }
     }
+    // border-radius
+    public get borderRadius():number | undefined { 
+        let r = this.__cssStyle__.borderRadius;
+        if (typeof r === "number") {
+            return r;
+        } 
+        else if (typeof r === "string") {
+            return parseFloat(r);
+        } 
+        return undefined;
+    }
+    public set borderRadius(r:number|undefined) {
+        if (r) {
+            this.__cssStyle__.borderRadius = (r.toString() + ZLCurrentSizeUnit);
+        } else {
+            this.__cssStyle__.borderRadius = undefined;
+        }
+    }
     /**
      * 边框线宽
      */
@@ -354,6 +372,20 @@ export class ZLView extends ZLObject
         this.__zl_subViews__.add(view);
     }
     /**
+     * 添加React元素（内部会用ZLView实例来封装React元素）
+     */
+    public addReactElement(elem:React.ReactElement)
+    {
+        this.addSubview(new ZLReactElementWrapView(elem));
+    }
+    /**
+     * 添加React ComponentClass （内部会用ZLView实例来封装ComponentClass）
+     */
+    public addReactCompomentClass(compoment:React.ComponentClass<any, any>)
+    {
+        this.addSubview(new ZLReactComponentClassWrapView(compoment));
+    }
+    /**
      * 子视图列表  （仅复制数组，数组元素指向的引用对象依然相同）
      */
     public get subViews() { return this.__zl_subViews__?.toReadOnlyList();}
@@ -396,7 +428,7 @@ export class ZLView extends ZLObject
     /**
      * DOM事件监听 参考React DOM事件
      */
-    public addListenDOMEvent(eventName:keyof React.DOMAttributes<HTMLElement>, cb:EventHandler<SyntheticEvent>, cbThis? : any)
+    public addListenDOMEvent(eventName:keyof React.DOMAttributes<HTMLElement>, cb:React.EventHandler<React.SyntheticEvent>, cbThis? : any)
     {
         if (eventName.startsWith("on")) {
             this.__get_zl_DOMEventCblist__().addEvntCallback(eventName,cb,cbThis);
@@ -405,7 +437,7 @@ export class ZLView extends ZLObject
     /**
      * 移除DOM事件监听 参考React DOM事件
      */
-    public removeListenDOMEvent(eventName:keyof React.DOMAttributes<HTMLElement>,cb:EventHandler<SyntheticEvent>) 
+    public removeListenDOMEvent(eventName:keyof React.DOMAttributes<HTMLElement>,cb:React.EventHandler<React.SyntheticEvent>) 
     {
         if (eventName.startsWith("on")) {
             this.__zl_DOMEventCblist__?.removeEvntCallback(eventName,cb);
@@ -548,7 +580,7 @@ export class ZLView extends ZLObject
         {
             event = {};
             this.__zl_DOMEventCblist__.getEventNameList().forEach(eventName => {
-                (event as any)[eventName] = (e :SyntheticEvent ) => {
+                (event as any)[eventName] = (e :React.SyntheticEvent ) => {
                     this.__zl_DOMEventCblist__?.onEvnt(eventName,e);
                 }
             });
@@ -566,7 +598,7 @@ export class ZLView extends ZLObject
     /**
      * 暴露给子类，方便访问
      */
-    protected get __cssStyle__() : CSSProperties {return this.__zl_cssStyle__;}
+    protected get __cssStyle__() : React.CSSProperties {return this.__zl_cssStyle__;}
 
     /**
      * 父视图
@@ -608,7 +640,7 @@ export class ZLView extends ZLObject
     }
 
     /// css style
-    private __zl_cssStyle__: CSSProperties;
+    private __zl_cssStyle__: React.CSSProperties;
     private __zl_boxShadow__?:ZLBoxShadow;
     private __zl_transform__?:ZLTransform;
     private __zl_animation__?:ZLCSSAnimation;
@@ -621,7 +653,7 @@ export class ZLView extends ZLObject
 
 export class ZLHtmlAttribute
 {
-    constructor(dom_node_id: string , style:CSSProperties , event?:React.DOMAttributes<HTMLElement>, ref?: ((ref:Element)=>void))
+    constructor(dom_node_id: string , style:React.CSSProperties , event?:React.DOMAttributes<HTMLElement>, ref?: ((ref:Element)=>void))
     {
         this.otherAttr = {};
         this.__style__ = style;
@@ -632,7 +664,7 @@ export class ZLHtmlAttribute
     /**
      * 行内样式
      */
-    public get style() : CSSProperties {return this.__style__;}
+    public get style() : React.CSSProperties {return this.__style__;}
     
     /**
      * css class name
@@ -666,7 +698,7 @@ export class ZLHtmlAttribute
     }
 
     private __event__? : React.DOMAttributes<HTMLElement>;
-    private __style__ : CSSProperties;
+    private __style__ : React.CSSProperties;
     /**
      * dom node id
      */
@@ -677,3 +709,36 @@ export class ZLHtmlAttribute
      */
     private __ref__? : ZLReactRefCallback;
 }
+
+
+
+// 使ZLView可直接添加React Component Class
+class ZLReactComponentClassWrapView extends ZLView
+{
+    constructor(compoment:React.ComponentClass<any, any>)
+    {
+        super();
+        this.__zl_react_compoment__ = compoment;
+    }
+    protected __reactRender__(children?: React.ReactNode[]): React.ReactElement
+    {
+        return React.createElement(this.__zl_react_compoment__, null,children);
+    }
+    private __zl_react_compoment__ : React.ComponentClass<{}, any>;
+}
+
+class ZLReactElementWrapView extends ZLView
+{
+    constructor(elem:React.ReactElement)
+    {
+        super();
+        this.__zl_react_element__ = elem;
+    }
+
+    protected __reactRender__(children?: React.ReactNode[]): React.ReactElement
+    {
+        return this.__zl_react_element__;
+    }
+    private __zl_react_element__ : React.ReactElement;
+}
+

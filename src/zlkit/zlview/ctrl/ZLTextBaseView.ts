@@ -40,7 +40,7 @@ export class ZLTextBaseView extends ZLView
     public get textAlign():ZLTextAlignMode |undefined { return this.__cssStyle__.textAlign as ZLTextAlignMode;}
     public set textAlign(m:ZLTextAlignMode |undefined) {this.__cssStyle__.textAlign = m;}
 
-    protected __reactRender__(children?:React.ReactNode[])
+    protected __reactRender__(children?:React.ReactNode[]) : React.ReactElement
     {
         let attr = this.__htmlAttributes__();
         return React.createElement("div",attr.toReactClassAttributes(), children,this.text);
