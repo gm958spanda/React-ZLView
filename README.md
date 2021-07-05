@@ -350,4 +350,5 @@ router.pushViewPage(OtherPage);
 * ZLView添加borderRadius属性
 * ZLView支持直接添加JSX元素
 
-
+### 0.3.1
+* ZLView onReactRefCallback获取的DOM节点可能为null（错误使用WeakRef引起）

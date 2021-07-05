@@ -101,7 +101,7 @@ export class ZLEventCallbackList
      * 获取事件名称对应的回调函数列表
      * @param name 事件名称
      */
-    public getEventCallbackList(name:string):Map<any,any> | undefined
+    public getEventCallbackList(name:string)
     {
         return this.__zl_EventHandlerMap__?.get(name);
     }

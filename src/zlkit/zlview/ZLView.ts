@@ -568,7 +568,7 @@ export class ZLView extends ZLObject
                 }
                 if (OnRefCallbackMap) {
                     OnRefCallbackMap.forEach((cbThis,cb)=>{
-                        cb.call(cbThis,e);
+                        cb.call(cbThis?.deref(),e);
                     });
                 }
             }

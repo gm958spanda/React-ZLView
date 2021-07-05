@@ -53,7 +53,7 @@ export class ScrollPage extends zl.ViewPage
         }
         this.timer_id = setInterval(()=>{
 
-            // scrollView.scrollTo(0, scrollView.contentOffSetY + 2);
+            scrollView.scrollTo(0, scrollView.contentOffSetY + 2);
             // scrollView.subViews?.getElementAt(0).removeFromSuperview();
             // scrollView.refresh();
         },100);
