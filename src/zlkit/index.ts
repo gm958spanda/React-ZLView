@@ -82,7 +82,8 @@ export {
 } from './zlview/ctrl/ZLTextArea';
 
 export { 
-    ZLTextField as TextField
+    ZLTextField as TextField,
+    ZLTextFieldInputType as TextFieldInputType
 } from './zlview/ctrl/ZLTextField';
 
 

@@ -352,3 +352,7 @@ router.pushViewPage(OtherPage);
 
 ### 0.3.1
 * ZLView onReactRefCallback获取的DOM节点可能为null（错误使用WeakRef引起）
+
+### 0.3.2
+* ZLTextInputView增加scrollTo方法
+
